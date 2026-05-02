@@ -45,7 +45,30 @@ It can then copy the data or autofill supported payment forms.
 
 ## Install from source
 
-### Chrome / Edge / Brave / Opera
+### Quick install
+
+Windows users can run:
+
+```bat
+install.bat
+```
+
+Or use npm:
+
+```bash
+npm run setup
+```
+
+This installs dependencies, builds `dist/`, and opens `chrome://extensions`.
+
+Then in Chrome:
+
+1. Enable **Developer mode**.
+2. Click **Load unpacked**.
+3. Select the `dist/` folder.
+4. Pin Autobilling in the browser toolbar.
+
+### Manual install — Chrome / Edge / Brave / Opera
 
 1. Clone or download this repository.
 2. Install dependencies and build the extension:
@@ -122,6 +145,8 @@ npm install
 npm test
 npm run lint
 npm run build
+npm run open:chrome
+npm run setup
 npm run zip
 ```
 
@@ -130,6 +155,8 @@ Commands:
 - `npm test` — runs Luhn/core/manifest/build tests
 - `npm run lint` — runs ESLint
 - `npm run build` — creates optimized `dist/`
+- `npm run open:chrome` — opens the browser extensions page and prints the `dist/` path
+- `npm run setup` — installs dependencies, builds `dist/`, and opens the browser extensions page
 - `npm run zip` — creates `autobilling.zip` from `dist/`
 
 ## Project structure

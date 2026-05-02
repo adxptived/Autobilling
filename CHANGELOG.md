@@ -2,6 +2,8 @@
 
 ## 1.3.0
 
+- Added `install.bat` for guided Windows setup
+- Added `npm run setup` and `npm run open:chrome`
 - Optimized loading by removing automatic content script injection; content script is injected on demand
 - Optimized dist popup loading by bundling popup scripts into one `popup.bundle.js`
 - Added build test to verify dist bundle and on-demand content script setup
