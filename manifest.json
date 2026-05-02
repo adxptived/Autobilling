@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Autobilling",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Auto-fill bank card forms with generated valid cards. Stripe support.",
   "author": "adxptived",
   "permissions": ["activeTab", "storage", "scripting", "contextMenus"],
@@ -21,6 +21,10 @@
   },
   "background": {
     "service_worker": "background.js"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
   },
   "commands": {
     "autofill": {

@@ -12,8 +12,9 @@ Auto-fill Stripe bank card forms with Luhn-valid generated cards. Works with any
 - **Quick Copy** — click any card field (number, expiry, CVV) to copy just that value
 - **BIN Live Lookup** — bank/country/type info from [binlist.net](https://binlist.net) when BIN is not in the built-in database
 - **BIN Database** — 8 built-in BINs (Mastercard + Visa) with bank/country/type metadata
-- **Custom BIN** — add your own BIN prefixes; auto-favorited
+- **Custom BIN** — add and delete your own BIN prefixes; new custom BINs are auto-favorited
 - **Favorites** — star BINs to pin them at the top of the list
+- **Options Page** — configure compact mode and live BIN lookup defaults
 - **History** — last 10 generated cards with one-click restore
 
 ## Install
@@ -51,8 +52,13 @@ Auto-fill Stripe bank card forms with Luhn-valid generated cards. Works with any
 |------|---------|
 | `manifest.json` | Extension manifest (MV3, Chrome + Firefox) |
 | `popup.html` | Popup UI |
-| `popup.js` | Popup UI logic: favorites, history, UI state |
-| `generator.js` | Luhn card generation and billing profile generation |
+| `bins.js` | Built-in BIN list and metadata |
+| `countries.js` | Country dropdown data |
+| `namePools.js` | Billing profile pools |
+| `generator.js` | Luhn card generation and shared core helpers |
+| `clipboard.js` | Clipboard helper used by popup fields |
+| `popup.js` | Popup UI logic: favorites, history, custom BINs, UI state |
+| `options.html` / `options.js` | Extension options page |
 | `content.js` | Page-injected autofill engine (Stripe iframe + HTML) |
 | `background.js` | Service worker: hotkey, context menu, BIN API proxy |
 | `icons/` | Extension icons (16, 48, 128px) |

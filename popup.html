@@ -192,8 +192,9 @@ select:focus, input:focus { outline: none; border-color: #e94560; box-shadow: 0 
 /* === Checkbox inline === */
 .check-inline {
   display: flex; align-items: center; gap: 5px; font-size: 11px; color: #8b949e;
-  cursor: pointer; margin-top: 4px;
+  cursor: pointer;
 }
+.settings-checks { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 2px; }
 .check-inline input[type="checkbox"] { width: auto; accent-color: #e94560; }
 
 /* === Footer === */
@@ -214,7 +215,7 @@ select:focus, input:focus { outline: none; border-color: #e94560; box-shadow: 0 
     <div class="brand-title">Autobilling</div>
     <div class="brand-subtitle">Luhn card generator + Stripe autofill</div>
   </div>
-  <div class="header-pill">v1.1.0</div>
+  <div class="header-pill">v1.2.0</div>
 </div>
 
 <!-- Card Visual -->
@@ -276,12 +277,18 @@ select:focus, input:focus { outline: none; border-color: #e94560; box-shadow: 0 
       <div class="bin-add-row">
         <input type="text" id="customBin" placeholder="Add custom prefix" maxlength="14">
         <button class="btn-sm primary" id="btnAddBin">Add</button>
+        <button class="btn-sm danger" id="btnDeleteBin" title="Delete selected custom BIN">Delete</button>
       </div>
     </div>
   </div>
-  <label class="check-inline">
-    <input type="checkbox" id="chkValidateBin" checked> Live BIN info
-  </label>
+  <div class="settings-checks">
+    <label class="check-inline">
+      <input type="checkbox" id="chkValidateBin" checked> Live BIN info
+    </label>
+    <label class="check-inline">
+      <input type="checkbox" id="chkDefaultCompact"> Compact by default
+    </label>
+  </div>
 </div>
 
 <!-- History Toggle -->
@@ -308,7 +315,11 @@ select:focus, input:focus { outline: none; border-color: #e94560; box-shadow: 0 
   <a href="https://github.com/adxptived" target="_blank">adxptived</a> &middot; <a href="https://github.com/NjProVk/CreditsCardTools" target="_blank">CreditsCardTools</a> &middot; Luhn-valid
 </div>
 
+<script src="bins.js"></script>
+<script src="countries.js"></script>
+<script src="namePools.js"></script>
 <script src="generator.js"></script>
+<script src="clipboard.js"></script>
 <script src="popup.js"></script>
 </body>
 </html>

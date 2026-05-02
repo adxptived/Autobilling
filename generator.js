@@ -30,13 +30,16 @@ function generateCardNumber(prefix, length) {
   return partial.concat([check]).join('');
 }
 
-function generateCard() {
-  var bin = BINS[state.binIdx] || BINS[0];
-  var number = generateCardNumber(bin.prefix, bin.length);
+function detectBin(prefix, bins) {
+  bins = bins || BINS;
+  for (var i = 0; i < bins.length; i++) {
+    if (bins[i].prefix === prefix) return i;
+  }
+  return -1;
+}
 
-  var expMonth = state.expMonth;
-  var expYear = state.expYear;
-  var nowYear = new Date().getFullYear() % 100;
+function resolveExpiry(expMonth, expYear, nowDate) {
+  var nowYear = (nowDate || new Date()).getFullYear() % 100;
 
   if (expMonth === 'random') {
     expMonth = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
@@ -45,6 +48,26 @@ function generateCard() {
     var r = nowYear + 1 + Math.floor(Math.random() * 7);
     expYear = String(r).padStart(2, '0');
   }
+
+  return { expMonth: expMonth, expYear: expYear, expYearFull: '20' + expYear };
+}
+
+function addHistoryEntry(history, entry, max) {
+  max = max || 10;
+  history = history.filter(function (h) {
+    return h.card.formatted !== entry.card.formatted;
+  });
+  history.unshift(entry);
+  return history.length > max ? history.slice(0, max) : history;
+}
+
+function generateCard() {
+  var bin = BINS[state.binIdx] || BINS[0];
+  var number = generateCardNumber(bin.prefix, bin.length);
+
+  var expiry = resolveExpiry(state.expMonth, state.expYear);
+  var expMonth = expiry.expMonth;
+  var expYear = expiry.expYear;
 
   var binInfo = state.validateBin ? (BIN_DB[bin.prefix] || null) : null;
 
@@ -56,7 +79,7 @@ function generateCard() {
     binInfo: binInfo,
     expMonth: expMonth,
     expYear: expYear,
-    expYearFull: '20' + expYear,
+    expYearFull: expiry.expYearFull,
     cvv: String(Math.floor(Math.random() * 900) + 100),
   };
 }
@@ -80,5 +103,12 @@ function generatePerson() {
 }
 
 if (typeof module !== 'undefined') {
-  module.exports = { luhnChecksum: luhnChecksum, validateLuhn: validateLuhn, generateCardNumber: generateCardNumber };
+  module.exports = {
+    luhnChecksum: luhnChecksum,
+    validateLuhn: validateLuhn,
+    generateCardNumber: generateCardNumber,
+    detectBin: detectBin,
+    resolveExpiry: resolveExpiry,
+    addHistoryEntry: addHistoryEntry,
+  };
 }

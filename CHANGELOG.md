@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.2.0
+
+- Added delete custom BIN button in popup
+- Added compact-by-default setting in popup and options page
+- Added `LICENSE` file
+- Extracted static data into `bins.js`, `countries.js`, and `namePools.js`
+- Added `clipboard.js` helper module
+- Added options page for global settings
+- Added tests for BIN detection, expiry generation, and history deduplication
+- Added ESLint and Prettier config/scripts
+
 ## 1.1.0
 
 - Reduced content script scope: removed `<all_urls>` from static injection matches

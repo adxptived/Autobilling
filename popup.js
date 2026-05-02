@@ -1,118 +1,6 @@
 // Autobilling popup — BIN, country, expiry, custom BIN, favorites, history, hotkey
 
-// ============ CONFIG ============
-
-var BINS = [
-  { brand: 'Mastercard', prefix: '515462002112', length: 16 },
-  { brand: 'Mastercard', prefix: '5154620022', length: 16 },
-  { brand: 'Mastercard', prefix: '515462', length: 16 },
-  { brand: 'Mastercard', prefix: '559888039', length: 16 },
-  { brand: 'Mastercard', prefix: '559888', length: 16 },
-  { brand: 'Mastercard', prefix: '528929', length: 16 },
-  { brand: 'Mastercard', prefix: '537100', length: 16 },
-  { brand: 'Visa', prefix: '409636', length: 16 },
-];
-
-var BIN_DB = {
-  '515462002112': { bank: 'The Bancorp Bank', country: 'US', countryName: 'USA', type: 'DEBIT', category: 'GIFT' },
-  '5154620022': { bank: 'The Bancorp Bank', country: 'US', countryName: 'USA', type: 'DEBIT', category: 'GIFT' },
-  '515462': { bank: 'The Bancorp Bank', country: 'US', countryName: 'USA', type: 'DEBIT', category: 'GIFT' },
-  '559888039': { bank: 'Bangkok Bank', country: 'TH', countryName: 'Thailand', type: 'DEBIT', category: 'STANDARD' },
-  '559888': { bank: 'Bangkok Bank', country: 'TH', countryName: 'Thailand', type: 'DEBIT', category: 'STANDARD' },
-  '528929': { bank: 'Scotiabank (Barbados)', country: 'BB', countryName: 'Barbados', type: 'DEBIT', category: 'PLATINUM' },
-  '537100': { bank: 'Sutton Bank', country: 'US', countryName: 'USA', type: 'CREDIT', category: 'CORPORATE PURCHASING' },
-  '409636': { bank: 'DBS Bank', country: 'SG', countryName: 'Singapore', type: 'DEBIT', category: 'BUSINESS ENHANCED' },
-};
-
-var COUNTRIES = [
-  { code: 'NL', name: 'Netherlands' },
-  { code: 'DE', name: 'Germany' },
-  { code: 'FR', name: 'France' },
-  { code: 'GB', name: 'United Kingdom' },
-  { code: 'US', name: 'United States' },
-  { code: 'CA', name: 'Canada' },
-  { code: 'ES', name: 'Spain' },
-  { code: 'IT', name: 'Italy' },
-  { code: 'BE', name: 'Belgium' },
-  { code: 'AT', name: 'Austria' },
-  { code: 'CH', name: 'Switzerland' },
-  { code: 'SE', name: 'Sweden' },
-  { code: 'NO', name: 'Norway' },
-  { code: 'DK', name: 'Denmark' },
-  { code: 'FI', name: 'Finland' },
-  { code: 'PL', name: 'Poland' },
-  { code: 'CZ', name: 'Czech Republic' },
-  { code: 'PT', name: 'Portugal' },
-  { code: 'IE', name: 'Ireland' },
-  { code: 'AU', name: 'Australia' },
-  { code: 'NZ', name: 'New Zealand' },
-  { code: 'JP', name: 'Japan' },
-  { code: 'SG', name: 'Singapore' },
-  { code: 'BR', name: 'Brazil' },
-  { code: 'MX', name: 'Mexico' },
-  { code: 'KR', name: 'South Korea' },
-  { code: 'IN', name: 'India' },
-];
-
-var NAME_POOLS = {
-  NL: {
-    first: ['Lucas','Emma','Noah','Sophie','Daan','Anna','Milan','Lieke','Thomas','Sanne','Sem','Lisa','Jesse','Eva','Levi','Julia'],
-    last: ['de Jong','Jansen','de Vries','van Dijk','Bakker','Visser','Smit','Meijer','de Boer','Mulder','Dekker','van Leeuwen'],
-    streets: ['Kerkstraat','Schoolstraat','Molenweg','Dorpsstraat','Wilhelminastraat','Julianastraat','Prinsengracht','Keizersgracht','Herengracht','Lindelaan'],
-    cities: ['Amsterdam','Rotterdam','Den Haag','Utrecht','Eindhoven','Groningen','Tilburg','Almere','Breda','Nijmegen'],
-    zip: function () { var n = 1000 + Math.floor(Math.random()*9000); var l = ['AA','BB','CC','DD','EE','AB','CD','EF'][Math.floor(Math.random()*8)]; return n + ' ' + l; },
-  },
-  DE: {
-    first: ['Lukas','Anna','Leon','Emilia','Paul','Lina','Jonas','Marie','Felix','Sophie'],
-    last: ['Muller','Schmidt','Schneider','Fischer','Weber','Meyer','Wagner','Becker','Hoffmann','Schulz'],
-    streets: ['Hauptstrasse','Schulstrasse','Bahnhofstrasse','Dorfstrasse','Ringstrasse','Birkenweg','Gartenstrasse','Bergstrasse','Lindenweg','Kirchstrasse'],
-    cities: ['Berlin','Hamburg','Munchen','Koln','Frankfurt','Stuttgart','Dusseldorf','Leipzig','Dortmund','Essen'],
-    zip: function () { return String(10000 + Math.floor(Math.random()*90000)); },
-  },
-  FR: {
-    first: ['Lucas','Emma','Hugo','Lea','Louis','Chloe','Gabriel','Ines','Raphael','Camille'],
-    last: ['Martin','Bernard','Dubois','Thomas','Robert','Richard','Petit','Durand','Leroy','Moreau'],
-    streets: ['Rue de la Paix','Avenue de France','Boulevard Saint-Germain','Rue du Faubourg','Place de la Republique'],
-    cities: ['Paris','Marseille','Lyon','Toulouse','Nice','Nantes','Strasbourg','Montpellier','Bordeaux','Lille'],
-    zip: function () { return String(75000 + Math.floor(Math.random()*20000)); },
-  },
-  GB: {
-    first: ['Oliver','Jack','Harry','George','Charlie','Amelia','Olivia','Isla','Emily','Poppy'],
-    last: ['Smith','Jones','Williams','Taylor','Brown','Davies','Evans','Wilson','Thomas','Roberts'],
-    streets: ['High Street','Station Road','Church Lane','Mill Lane','Victoria Road','Green Lane','Park Road','Kings Road','The Avenue'],
-    cities: ['London','Manchester','Birmingham','Leeds','Glasgow','Liverpool','Edinburgh','Bristol','Cardiff','Belfast'],
-    zip: function () { var l = ['SW','NW','SE','NE','WC','EC','WN','M','B','L']; var n = 1 + Math.floor(Math.random()*20); var s = ['AA','BB','CC','DD','EE'][Math.floor(Math.random()*5)]; return l[Math.floor(Math.random()*l.length)] + n + ' ' + s; },
-  },
-  US: {
-    first: ['James','John','Robert','Michael','Mary','Jennifer','Linda','Patricia','William','David'],
-    last: ['Smith','Johnson','Williams','Brown','Jones','Garcia','Miller','Davis','Rodriguez','Martinez'],
-    streets: ['Main St','Oak Ave','Elm St','Maple Dr','Cedar Ln','Pine Rd','Washington Blvd','Park Ave','Lake Dr','Hill St'],
-    cities: ['New York','Los Angeles','Chicago','Houston','Phoenix','Philadelphia','San Antonio','San Diego','Dallas','Austin'],
-    zip: function () { return String(10000 + Math.floor(Math.random()*90000)); },
-  },
-  CA: {
-    first: ['Liam','Emma','Noah','Olivia','Jackson','Sophia','Lucas','Ava','Benjamin','Mia'],
-    last: ['Smith','Brown','Tremblay','Martin','Roy','Wilson','Macdonald','Johnson','Taylor','Anderson'],
-    streets: ['King St','Queen St','Main St','Victoria St','Park Ave','Lake Drive','Mountain Rd','Bay Street','Church St','River Rd'],
-    cities: ['Toronto','Vancouver','Montreal','Calgary','Ottawa','Edmonton','Winnipeg','Quebec','Hamilton','Halifax'],
-    zip: function () { var l = ['A','B','C','E','G','H','J','K','L','M','N','P','R','S','T','V']; return l[Math.floor(Math.random()*l.length)] + Math.floor(Math.random()*10) + l[Math.floor(Math.random()*l.length)] + ' ' + Math.floor(Math.random()*10) + l[Math.floor(Math.random()*l.length)] + Math.floor(Math.random()*10); },
-  },
-  JP: {
-    first: ['Haruto','Yuto','Sota','Yuki','Hayato','Sakura','Yuna','Akari','Miyu','Rin'],
-    last: ['Sato','Suzuki','Takahashi','Tanaka','Watanabe','Ito','Yamamoto','Nakamura','Kobayashi','Kato'],
-    streets: ['Chuo-dori','Meiji-dori','Showa-dori','Sakura-dori','Midori-dori'],
-    cities: ['Tokyo','Osaka','Nagoya','Sapporo','Fukuoka','Kobe','Kyoto','Kawasaki','Saitama','Hiroshima'],
-    zip: function () { return String(100 + Math.floor(Math.random()*900)) + '-' + String(1000 + Math.floor(Math.random()*9000)); },
-  },
-};
-
-var DEFAULT_POOL = {
-  first: ['Lucas','Emma','Noah','Sophie','Thomas','Anna','Milan','Lisa','Jesse','Eva'],
-  last: ['Jansen','Visser','Smit','de Jong','Bakker','Meyer','Fischer','Weber','Wagner','Schneider'],
-  streets: ['Hauptstrasse','Schulstrasse','Bahnhofstrasse','Dorfstrasse','Ringstrasse','Birkenweg','Gartenstrasse','Bergstrasse','Lindenweg','Kirchstrasse'],
-  cities: ['Berlin','Paris','Madrid','Rome','Vienna','Bern','Stockholm','Oslo','Copenhagen','Helsinki'],
-  zip: function () { return String(10000 + Math.floor(Math.random()*90000)); },
-};
+// Data is loaded from bins.js, countries.js, and namePools.js
 
 // ============ STATE ============
 
@@ -125,6 +13,7 @@ var state = {
   expYear: 'random',
   validateBin: true,
   compactView: false,
+  defaultCompact: false,
   favBins: [],     // prefix strings the user starred
   customBins: [],  // {brand, prefix, length} added by user
   card: null,
@@ -143,10 +32,7 @@ function binLabel(bin) {
 }
 
 function findByPrefix(prefix) {
-  for (var i = 0; i < BINS.length; i++) {
-    if (BINS[i].prefix === prefix) return i;
-  }
-  return -1;
+  return detectBin(prefix, BINS);
 }
 
 // ============ GENERATION ============
@@ -200,13 +86,7 @@ function addHistory(card, person) {
     ts: Date.now(),
   };
 
-  // Deduplicate by card number
-  state.history = state.history.filter(function (h) {
-    return h.card.formatted !== entry.card.formatted;
-  });
-
-  state.history.unshift(entry);
-  if (state.history.length > 10) state.history = state.history.slice(0, 10);
+  state.history = addHistoryEntry(state.history, entry, 10);
 }
 
 function restoreHistory(idx) {
@@ -416,11 +296,12 @@ function buildBins() {
   }
 
   sel.value = state.binIdx;
-  sel.addEventListener('change', function () {
+  sel.onchange = function () {
     state.binIdx = parseInt(this.value);
     updateFavStar();
+    updateDeleteBinButton();
     generateAll();
-  });
+  };
 }
 
 function toggleFavCurrent() {
@@ -501,6 +382,21 @@ function buildExpiry() {
   });
 }
 
+function isCustomBin(prefix) {
+  for (var i = 0; i < state.customBins.length; i++) {
+    if (state.customBins[i].prefix === prefix) return true;
+  }
+  return false;
+}
+
+function updateDeleteBinButton() {
+  var btn = document.getElementById('btnDeleteBin');
+  var bin = BINS[state.binIdx];
+  var canDelete = bin && isCustomBin(bin.prefix);
+  btn.disabled = !canDelete;
+  btn.style.opacity = canDelete ? '1' : '0.35';
+}
+
 function doAddCustomBin() {
   var input = document.getElementById('customBin');
   var raw = input.value.replace(/\s/g, '');
@@ -540,7 +436,27 @@ function doAddCustomBin() {
     updateFavStar();
   }
   generateAll();
+  updateDeleteBinButton();
   setStatus('BIN added: ' + raw);
+}
+
+function doDeleteCustomBin() {
+  var bin = BINS[state.binIdx];
+  if (!bin || !isCustomBin(bin.prefix)) {
+    setStatus('Select a custom BIN first', true);
+    return;
+  }
+
+  var prefix = bin.prefix;
+  state.customBins = state.customBins.filter(function (b) { return b.prefix !== prefix; });
+  state.favBins = state.favBins.filter(function (p) { return p !== prefix; });
+  state.binIdx = 0;
+  buildBins();
+  document.getElementById('selBin').value = state.binIdx;
+  updateFavStar();
+  updateDeleteBinButton();
+  generateAll();
+  setStatus('BIN deleted: ' + prefix);
 }
 
 // ============ PERSISTENCE ============
@@ -553,6 +469,7 @@ function saveState() {
     expYear: state.expYear,
     validateBin: state.validateBin,
     compactView: state.compactView,
+    defaultCompact: state.defaultCompact,
     favBins: state.favBins,
     customBins: state.customBins,
     card: state.card,
@@ -563,14 +480,16 @@ function saveState() {
 
 function loadState() {
   chrome.storage.local.get(
-    ['binIdx', 'countryIdx', 'expMonth', 'expYear', 'validateBin', 'compactView', 'favBins', 'customBins', 'card', 'person', 'history'],
+    ['binIdx', 'countryIdx', 'expMonth', 'expYear', 'validateBin', 'compactView', 'defaultCompact', 'favBins', 'customBins', 'card', 'person', 'history'],
     function (data) {
       if (data.binIdx !== undefined) state.binIdx = data.binIdx;
       if (data.countryIdx !== undefined) state.countryIdx = data.countryIdx;
       if (data.expMonth) state.expMonth = data.expMonth;
       if (data.expYear) state.expYear = data.expYear;
       if (data.validateBin !== undefined) state.validateBin = data.validateBin;
+      if (data.defaultCompact !== undefined) state.defaultCompact = data.defaultCompact;
       if (data.compactView !== undefined) state.compactView = data.compactView;
+      else state.compactView = state.defaultCompact;
       if (data.favBins) state.favBins = data.favBins;
       if (data.customBins) state.customBins = data.customBins;
       if (data.history) state.history = data.history;
@@ -582,8 +501,10 @@ function loadState() {
       document.getElementById('selExpMonth').value = state.expMonth;
       document.getElementById('selExpYear').value = state.expYear;
       document.getElementById('chkValidateBin').checked = state.validateBin;
+      document.getElementById('chkDefaultCompact').checked = state.defaultCompact;
 
       updateFavStar();
+      updateDeleteBinButton();
       applyCompact();
 
       if (data.card) state.card = data.card;
@@ -662,17 +583,7 @@ function copyCard() {
   }
   var text = lines.join('\n');
 
-  navigator.clipboard.writeText(text).then(function () {
-    setStatus('Copied!');
-  }).catch(function () {
-    var ta = document.createElement('textarea');
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    setStatus('Copied!');
-  });
+  copyToClipboard(text, function () { setStatus('Copied!'); });
 }
 
 // ============ INIT ============
@@ -681,6 +592,7 @@ document.getElementById('btnGenerate').addEventListener('click', generateAll);
 document.getElementById('btnAutofill').addEventListener('click', doAutofill);
 document.getElementById('btnCopy').addEventListener('click', copyCard);
 document.getElementById('btnAddBin').addEventListener('click', doAddCustomBin);
+document.getElementById('btnDeleteBin').addEventListener('click', doDeleteCustomBin);
 document.getElementById('btnClearHistory').addEventListener('click', clearHistory);
 document.getElementById('btnToggleHistory').addEventListener('click', toggleHistory);
 document.getElementById('btnToggleFav').addEventListener('click', toggleFavCurrent);
@@ -688,18 +600,7 @@ document.getElementById('btnCompactToggle').addEventListener('click', toggleComp
 
 // Quick copy: delegated click on .copyable elements inside cardVisual
 function copyText(text) {
-  if (!text) return;
-  navigator.clipboard.writeText(text).then(function () {
-    setStatus('Copied: ' + text);
-  }).catch(function () {
-    var ta = document.createElement('textarea');
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    setStatus('Copied: ' + text);
-  });
+  copyToClipboard(text, function (copied) { setStatus('Copied: ' + copied); });
 }
 
 document.getElementById('cardVisual').addEventListener('click', function (e) {
@@ -745,6 +646,13 @@ document.querySelector('.person-compact').addEventListener('click', function (e)
 document.getElementById('chkValidateBin').addEventListener('change', function () {
   state.validateBin = this.checked;
   generateAll();
+});
+
+document.getElementById('chkDefaultCompact').addEventListener('change', function () {
+  state.defaultCompact = this.checked;
+  state.compactView = this.checked;
+  applyCompact();
+  saveState();
 });
 
 // Custom BIN: Enter key
