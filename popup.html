@@ -18,6 +18,10 @@
   --yellow: #d29922;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
+html {
+  border-radius: 18px;
+  overflow: hidden;
+}
 body {
   width: 420px;
   padding: 14px;
@@ -30,6 +34,14 @@ body {
     linear-gradient(180deg, #0d1117 0%, var(--bg) 100%);
 }
 button, select, input { font: inherit; }
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: rgba(7, 11, 18, 0.55); border-radius: 999px; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(239, 71, 111, 0.72), rgba(124, 58, 237, 0.62));
+  border: 2px solid rgba(7, 11, 18, 0.75);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #ef476f, #7c3aed); }
 
 .header {
   display: flex;
@@ -198,6 +210,7 @@ button, select, input { font: inherit; }
   transition: color 0.12s ease, background 0.12s ease, transform 0.12s ease;
 }
 .copyable:hover { color: var(--accent) !important; background: rgba(239, 71, 111, 0.09); }
+.card-visual .copyable:hover { background: transparent; text-shadow: 0 0 14px rgba(239, 71, 111, 0.35); }
 .copyable:active { transform: scale(0.98); }
 
 .bin-bar {
