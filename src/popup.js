@@ -276,7 +276,7 @@ function render() {
 function applyCompact(skipAnimation) {
   var card = document.getElementById('cardVisual');
   var btn = document.getElementById('btnCompactToggle');
-  if (skipAnimation) card.classList.add('no-animate');
+  card.classList.add('no-animate');
   if (state.compactView) {
     card.classList.add('compact');
     btn.innerHTML = '&#9650;';
@@ -286,8 +286,12 @@ function applyCompact(skipAnimation) {
   }
   if (skipAnimation) {
     requestAnimationFrame(function () {
-      card.classList.remove('no-animate');
+      requestAnimationFrame(function () {
+        card.classList.remove('no-animate');
+      });
     });
+  } else {
+    card.classList.remove('no-animate');
   }
 }
 
