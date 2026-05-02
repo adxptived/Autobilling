@@ -198,8 +198,9 @@ select:focus, input:focus { outline: none; border-color: #e94560; box-shadow: 0 
 .footer { margin-top: 6px; font-size: 10px; color: #484f58; text-align: center; }
 .footer a { color: #8b949e; }
 .divider { height: 1px; background: #21262d; margin: 8px 0; }
-.settings-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 8px; margin-bottom: 8px; }
-.inline-label { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; align-items: end; }
+.bin-select-row { display: grid; grid-template-columns: 1fr 32px; gap: 6px; align-items: center; }
+.bin-select-row .btn-sm { min-height: 32px; padding: 0; font-size: 14px; }
 .action-stack { margin-top: 8px; }
 </style>
 </head>
@@ -251,11 +252,11 @@ select:focus, input:focus { outline: none; border-color: #e94560; box-shadow: 0 
 
   <div class="settings-grid">
     <div>
-      <div class="inline-label">
-        <span class="label" style="margin-bottom:0;">BIN</span>
+      <span class="label">BIN</span>
+      <div class="bin-select-row">
+        <select id="selBin"></select>
         <button class="btn-sm ghost" id="btnToggleFav" title="Toggle favorite">&#9734;</button>
       </div>
-      <select id="selBin"></select>
     </div>
     <div>
       <span class="label">Country</span>
