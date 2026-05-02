@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.3.0
+
+- Added `npm run zip` build script
+- Added manifest file existence test
+- Added GitHub Actions CI for test, lint, and zip build
+- Installed ESLint and Prettier dev dependencies with lockfile
+- Added popup settings button to open options page
+- Added billing profiles: Generated, US, NL, and saved Custom profile
+- Expanded options page with default profile and custom profile editing
+
 ## 1.2.0
 
 - Added delete custom BIN button in popup

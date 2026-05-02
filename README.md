@@ -14,7 +14,10 @@ Auto-fill Stripe bank card forms with Luhn-valid generated cards. Works with any
 - **BIN Database** — 8 built-in BINs (Mastercard + Visa) with bank/country/type metadata
 - **Custom BIN** — add and delete your own BIN prefixes; new custom BINs are auto-favorited
 - **Favorites** — star BINs to pin them at the top of the list
-- **Options Page** — configure compact mode and live BIN lookup defaults
+- **Options Page** — configure compact mode, live BIN lookup, default profile, and custom profile
+- **Billing Profiles** — use generated profiles, built-in US/NL profiles, or a saved custom profile
+- **Build Script** — `npm run zip` creates the release archive
+- **CI** — GitHub Actions runs tests, lint, and zip build on push/PR
 - **History** — last 10 generated cards with one-click restore
 
 ## Install
@@ -63,11 +66,16 @@ Auto-fill Stripe bank card forms with Luhn-valid generated cards. Works with any
 | `background.js` | Service worker: hotkey, context menu, BIN API proxy |
 | `icons/` | Extension icons (16, 48, 128px) |
 
-## Testing
+## Development
 
 ```bash
+npm install
 npm test
+npm run lint
+npm run zip
 ```
+
+`npm run zip` creates `autobilling.zip` for sharing or GitHub Releases.
 
 ## Privacy
 

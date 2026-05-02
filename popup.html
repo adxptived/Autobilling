@@ -80,15 +80,17 @@ button, select, input { font: inherit; }
   color: var(--muted);
 }
 .header-pill {
-  padding: 5px 9px;
-  border: 1px solid rgba(63, 185, 80, 0.35);
+  padding: 7px 10px;
+  border: 1px solid rgba(239, 71, 111, 0.35);
   border-radius: 999px;
-  background: rgba(63, 185, 80, 0.1);
-  color: #7ee787;
+  background: rgba(239, 71, 111, 0.08);
+  color: #ff9aaa;
   font-size: 10px;
-  font-weight: 700;
-  box-shadow: 0 0 22px rgba(63, 185, 80, 0.08);
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 0 22px rgba(239, 71, 111, 0.08);
 }
+.header-pill:hover { background: rgba(239, 71, 111, 0.16); color: #fff; }
 
 .card-visual {
   position: relative;
@@ -306,6 +308,12 @@ button, select, input { font: inherit; }
   text-overflow: ellipsis;
 }
 .person-compact .copyable:hover { background: rgba(239, 71, 111, 0.08); color: var(--accent); }
+.profile-row {
+  display: grid;
+  grid-template-columns: 1fr 96px;
+  gap: 8px;
+  margin-top: 10px;
+}
 
 .row { display: flex; gap: 9px; margin-bottom: 9px; }
 .row:last-child { margin-bottom: 0; }
@@ -471,7 +479,7 @@ input:focus {
     <div class="brand-title">Autobilling</div>
     <div class="brand-subtitle">Luhn card generator + Stripe autofill</div>
   </div>
-  <div class="header-pill">v1.2.0</div>
+  <button class="header-pill" id="btnOptions" title="Open settings">Settings</button>
 </div>
 
 <div class="card-visual" id="cardVisual">
@@ -500,6 +508,15 @@ input:focus {
     <span class="row-label">Addr</span><span class="val copyable" id="personAddr" title="Click to copy address">---</span>
     <span class="row-label">City</span><span class="val copyable" id="personZipCity" title="Click to copy city and ZIP">---</span>
     <span class="row-label">Country</span><span class="val copyable" id="personCountry" title="Click to copy country">---</span>
+  </div>
+  <div class="profile-row">
+    <select id="selProfile">
+      <option value="generated">Generated</option>
+      <option value="US">US profile</option>
+      <option value="NL">NL profile</option>
+      <option value="custom">Custom profile</option>
+    </select>
+    <button class="btn-sm" id="btnSaveProfile">Save custom</button>
   </div>
 </div>
 

@@ -14,6 +14,10 @@ var state = {
   validateBin: true,
   compactView: false,
   defaultCompact: false,
+  selectedProfile: 'generated',
+  savedProfiles: {
+    custom: null,
+  },
   favBins: [],     // prefix strings the user starred
   customBins: [],  // {brand, prefix, length} added by user
   card: null,
@@ -48,9 +52,42 @@ function lookupLiveBin(card) {
   });
 }
 
+function profilePerson(profile) {
+  if (profile === 'US') {
+    return {
+      firstName: 'Alex',
+      lastName: 'Morgan',
+      fullName: 'Alex Morgan',
+      address1: '125 Main St',
+      address2: '',
+      postalCode: '10001',
+      city: 'New York',
+      country: 'US',
+      countryName: 'United States',
+    };
+  }
+  if (profile === 'NL') {
+    return {
+      firstName: 'Daan',
+      lastName: 'de Jong',
+      fullName: 'Daan de Jong',
+      address1: 'Kerkstraat 12',
+      address2: '',
+      postalCode: '1012 AB',
+      city: 'Amsterdam',
+      country: 'NL',
+      countryName: 'Netherlands',
+    };
+  }
+  if (profile === 'custom' && state.savedProfiles.custom) {
+    return Object.assign({}, state.savedProfiles.custom);
+  }
+  return generatePerson();
+}
+
 function generateAll() {
   var card = generateCard();
-  var person = generatePerson();
+  var person = profilePerson(state.selectedProfile);
 
   state.card = card;
   state.person = person;
@@ -470,6 +507,8 @@ function saveState() {
     validateBin: state.validateBin,
     compactView: state.compactView,
     defaultCompact: state.defaultCompact,
+    selectedProfile: state.selectedProfile,
+    savedProfiles: state.savedProfiles,
     favBins: state.favBins,
     customBins: state.customBins,
     card: state.card,
@@ -480,7 +519,7 @@ function saveState() {
 
 function loadState() {
   chrome.storage.local.get(
-    ['binIdx', 'countryIdx', 'expMonth', 'expYear', 'validateBin', 'compactView', 'defaultCompact', 'favBins', 'customBins', 'card', 'person', 'history'],
+    ['binIdx', 'countryIdx', 'expMonth', 'expYear', 'validateBin', 'compactView', 'defaultCompact', 'selectedProfile', 'savedProfiles', 'favBins', 'customBins', 'card', 'person', 'history'],
     function (data) {
       if (data.binIdx !== undefined) state.binIdx = data.binIdx;
       if (data.countryIdx !== undefined) state.countryIdx = data.countryIdx;
@@ -490,6 +529,8 @@ function loadState() {
       if (data.defaultCompact !== undefined) state.defaultCompact = data.defaultCompact;
       if (data.compactView !== undefined) state.compactView = data.compactView;
       else state.compactView = state.defaultCompact;
+      if (data.selectedProfile) state.selectedProfile = data.selectedProfile;
+      if (data.savedProfiles) state.savedProfiles = data.savedProfiles;
       if (data.favBins) state.favBins = data.favBins;
       if (data.customBins) state.customBins = data.customBins;
       if (data.history) state.history = data.history;
@@ -502,6 +543,7 @@ function loadState() {
       document.getElementById('selExpYear').value = state.expYear;
       document.getElementById('chkValidateBin').checked = state.validateBin;
       document.getElementById('chkDefaultCompact').checked = state.defaultCompact;
+      document.getElementById('selProfile').value = state.selectedProfile;
 
       updateFavStar();
       updateDeleteBinButton();
@@ -566,6 +608,21 @@ function doAutofill() {
   });
 }
 
+function saveCustomProfile() {
+  if (!state.person) return;
+  state.savedProfiles.custom = Object.assign({}, state.person);
+  state.selectedProfile = 'custom';
+  document.getElementById('selProfile').value = 'custom';
+  saveState();
+  setStatus('Custom profile saved');
+}
+
+function openOptions() {
+  if (chrome.runtime.openOptionsPage) {
+    chrome.runtime.openOptionsPage();
+  }
+}
+
 function copyCard() {
   if (!state.card) return;
   var lines = [
@@ -589,6 +646,8 @@ function copyCard() {
 // ============ INIT ============
 
 document.getElementById('btnGenerate').addEventListener('click', generateAll);
+document.getElementById('btnOptions').addEventListener('click', openOptions);
+document.getElementById('btnSaveProfile').addEventListener('click', saveCustomProfile);
 document.getElementById('btnAutofill').addEventListener('click', doAutofill);
 document.getElementById('btnCopy').addEventListener('click', copyCard);
 document.getElementById('btnAddBin').addEventListener('click', doAddCustomBin);
@@ -641,6 +700,11 @@ document.querySelector('.person-compact').addEventListener('click', function (e)
   }
 
   copyText(text);
+});
+
+document.getElementById('selProfile').addEventListener('change', function () {
+  state.selectedProfile = this.value;
+  generateAll();
 });
 
 document.getElementById('chkValidateBin').addEventListener('change', function () {
