@@ -687,6 +687,21 @@ document.getElementById('btnToggleFav').addEventListener('click', toggleFavCurre
 document.getElementById('btnCompactToggle').addEventListener('click', toggleCompact);
 
 // Quick copy: delegated click on .copyable elements inside cardVisual
+function copyText(text) {
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(function () {
+    setStatus('Copied: ' + text);
+  }).catch(function () {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    setStatus('Copied: ' + text);
+  });
+}
+
 document.getElementById('cardVisual').addEventListener('click', function (e) {
   var el = e.target;
   if (!el.classList.contains('copyable')) return;
@@ -706,19 +721,25 @@ document.getElementById('cardVisual').addEventListener('click', function (e) {
     text = state.card ? state.card.cvv : '';
   }
 
-  if (!text) return;
+  copyText(text);
+});
 
-  navigator.clipboard.writeText(text).then(function () {
-    setStatus('Copied: ' + text);
-  }).catch(function () {
-    var ta = document.createElement('textarea');
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    setStatus('Copied: ' + text);
-  });
+document.querySelector('.person-compact').addEventListener('click', function (e) {
+  var el = e.target;
+  if (!el.classList.contains('copyable')) return;
+
+  var text = '';
+  if (el.id === 'personName') {
+    text = state.person ? state.person.fullName : '';
+  } else if (el.id === 'personAddr') {
+    text = state.person ? state.person.address1 : '';
+  } else if (el.id === 'personZipCity') {
+    text = state.person ? state.person.postalCode + ' ' + state.person.city : '';
+  } else if (el.id === 'personCountry') {
+    text = state.person ? state.person.countryName : '';
+  }
+
+  copyText(text);
 });
 
 document.getElementById('chkValidateBin').addEventListener('change', function () {
