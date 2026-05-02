@@ -181,11 +181,12 @@ select:focus, input:focus { outline: none; border-color: #e94560; box-shadow: 0 
 
 /* === Status === */
 .status {
-  font-size: 11px; color: #3fb950; text-align: center; margin-top: 3px;
-  min-height: 18px;
+  display: none; font-size: 11px; color: #3fb950; text-align: center;
+  margin: 4px 0 2px;
 }
+.status:not(:empty) { display: block; }
 .status.error { color: #e94560; }
-.hint { font-size: 10px; color: #484f58; text-align: center; margin: 2px 0 6px; }
+.hint { display: none; }
 
 /* === Checkbox inline === */
 .check-inline {
@@ -195,8 +196,9 @@ select:focus, input:focus { outline: none; border-color: #e94560; box-shadow: 0 
 .check-inline input[type="checkbox"] { width: auto; accent-color: #e94560; }
 
 /* === Footer === */
-.footer { margin-top: 6px; font-size: 10px; color: #484f58; text-align: center; }
-.footer a { color: #8b949e; }
+.footer { margin-top: 2px; font-size: 10px; color: #6e7681; text-align: center; line-height: 1.4; }
+.footer a { color: #9ba3af; text-decoration: none; }
+.footer a:hover { color: #e94560; }
 .divider { height: 1px; background: #21262d; margin: 8px 0; }
 .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; align-items: end; }
 .bin-select-row { display: grid; grid-template-columns: 1fr 32px; gap: 6px; align-items: center; }
@@ -301,7 +303,6 @@ select:focus, input:focus { outline: none; border-color: #e94560; box-shadow: 0 
 </div>
 
 <div class="status" id="status"></div>
-<div class="hint">Ctrl+Shift+F autofill · click card fields to copy</div>
 <div class="footer">
   <a href="https://github.com/adxptived" target="_blank">adxptived</a> &middot; <a href="https://github.com/NjProVk/CreditsCardTools" target="_blank">CreditsCardTools</a> &middot; Luhn-valid
 </div>
