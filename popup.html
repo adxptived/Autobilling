@@ -5,22 +5,32 @@
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
-  width: 400px; padding: 14px;
+  width: 420px; padding: 14px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background: #0d1117; color: #c9d1d9; font-size: 12px;
+}
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 10px;
+}
+.brand-title { font-size: 15px; font-weight: 800; color: #f0f6fc; letter-spacing: 0.2px; }
+.brand-subtitle { font-size: 10px; color: #6e7681; margin-top: 1px; }
+.header-pill {
+  font-size: 10px; color: #3fb950; border: 1px solid rgba(63,185,80,0.35);
+  background: rgba(63,185,80,0.08); border-radius: 999px; padding: 4px 8px;
 }
 
 /* === Card Visual === */
 .card-visual {
   position: relative;
-  height: 190px; border-radius: 12px; padding: 18px;
+  height: 180px; border-radius: 16px; padding: 18px;
   background: linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%);
   border: 1px solid #30363d;
   margin-bottom: 8px;
   display: flex; flex-direction: column; justify-content: space-between;
   overflow: hidden; transition: height 0.2s;
 }
-.card-visual.compact { height: 56px; flex-direction: row; align-items: center; padding: 10px 14px; }
+.card-visual.compact { height: 58px; flex-direction: row; align-items: center; padding: 10px 14px; }
 .card-visual::before {
   content: ''; position: absolute; top: -40px; right: -40px;
   width: 120px; height: 120px; border-radius: 50%;
@@ -28,14 +38,16 @@ body {
 }
 .card-visual.compact::before { display: none; }
 .card-toggle {
-  position: absolute; top: 4px; left: 8px;
-  font-size: 12px; background: none; border: none; color: rgba(255,255,255,0.2);
-  cursor: pointer; padding: 2px 4px; line-height: 1;
+  position: absolute; top: 10px; left: 10px;
+  width: 24px; height: 24px; border-radius: 999px;
+  font-size: 11px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); color: rgba(255,255,255,0.45);
+  cursor: pointer; line-height: 1; z-index: 2;
 }
-.card-toggle:hover { color: rgba(255,255,255,0.6); }
+.card-toggle:hover { color: #fff; background: rgba(255,255,255,0.12); }
 .card-chip {
-  width: 42px; height: 32px; border-radius: 6px;
-  background: linear-gradient(135deg, #d4af37, #b8960c); opacity: 0.7;
+  width: 42px; height: 32px; border-radius: 7px;
+  background: linear-gradient(135deg, #d4af37, #b8960c); opacity: 0.8;
+  margin-top: 10px;
 }
 .card-network {
   position: absolute; top: 18px; right: 18px;
@@ -45,70 +57,80 @@ body {
   font-family: "Courier New", monospace;
   font-size: 19px; letter-spacing: 2px; color: #fff;
   word-break: break-all; line-height: 1.3;
+  padding: 8px 0;
 }
 .card-details {
-  display: flex; gap: 24px; font-size: 11px; color: rgba(255,255,255,0.5);
+  display: flex; gap: 10px; font-size: 11px; color: rgba(255,255,255,0.5);
 }
-.card-details span { color: rgba(255,255,255,0.8); font-family: "Courier New", monospace; }
+.card-details > span {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 8px; border-radius: 999px; background: rgba(255,255,255,0.05);
+}
+.card-details span span { color: rgba(255,255,255,0.9); font-family: "Courier New", monospace; }
 
 /* === Card Compact Row === */
 .card-compact-row {
-  display: none; align-items: center; gap: 12px; width: 100%; font-size: 13px; color: #fff;
+  display: none; align-items: center; gap: 10px; width: 100%; font-size: 13px; color: #fff; padding-left: 26px;
 }
 .card-visual.compact .card-compact-row { display: flex; }
 .card-visual.compact .card-chip { display: none; }
 .card-visual.compact .card-number { display: none; }
 .card-visual.compact .card-details { display: none; }
-.card-visual.compact .card-network { position: static; font-size: 12px; margin-right: 2px; }
+.card-visual.compact .card-network { display: none; }
+.card-compact-row span { white-space: nowrap; }
+#compactNum { font-family: "Courier New", monospace; font-weight: 700; letter-spacing: 0.5px; }
 
 /* === Quick Copy === */
 .copyable {
-  cursor: pointer; transition: color 0.1s;
+  cursor: pointer; transition: all 0.12s;
+  border-radius: 5px;
 }
-.copyable:hover { color: #e94560 !important; }
+.copyable:hover { color: #e94560 !important; background: rgba(233,69,96,0.08); }
 .copyable:active { opacity: 0.7; }
 
 /* === BIN Bar === */
 .bin-bar {
-  font-size: 10px; padding: 4px 10px; border-radius: 5px;
+  font-size: 10px; padding: 7px 10px; border-radius: 9px;
   margin-bottom: 8px; text-align: center;
-  background: #161b22; color: #484f58; border: 1px solid #21262d;
+  background: #161b22; color: #6e7681; border: 1px solid #21262d;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .bin-bar.valid { color: #3fb950; border-color: #238636; background: rgba(35,134,54,0.08); }
 .bin-bar.warn  { color: #d2991d; border-color: #9e6a03; background: rgba(158,106,3,0.08); }
 
 /* === Sections === */
 .section {
-  background: #161b22; border-radius: 8px; padding: 10px 12px;
-  margin-bottom: 6px; border: 1px solid #21262d;
+  background: #161b22; border-radius: 12px; padding: 11px 12px;
+  margin-bottom: 8px; border: 1px solid #21262d;
 }
 .section-title {
-  font-size: 10px; color: #484f58; text-transform: uppercase; letter-spacing: 1px;
-  margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between;
+  font-size: 10px; color: #6e7681; text-transform: uppercase; letter-spacing: 1px;
+  margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;
 }
 
 /* === Person === */
-.person-compact { font-size: 11px; line-height: 1.6; }
-.person-compact .lbl { color: #484f58; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; margin-right: 4px; }
-.person-compact .val { color: #c9d1d9; }
+.person-compact { display: grid; grid-template-columns: 54px 1fr; gap: 6px 8px; font-size: 11px; align-items: center; }
+.person-compact .row-label { color: #6e7681; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; }
+.person-compact .val { color: #c9d1d9; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* === Row/Grid === */
-.row { display: flex; gap: 6px; margin-bottom: 5px; }
-.row > * { flex: 1; }
-.col2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.row { display: flex; gap: 8px; margin-bottom: 8px; }
+.row:last-child { margin-bottom: 0; }
+.row > * { flex: 1; min-width: 0; }
+.col2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
-.label { font-size: 10px; color: #8b949e; margin-bottom: 2px; display: block; }
+.label { font-size: 10px; color: #8b949e; margin-bottom: 4px; display: block; }
 select, input[type="text"], input[type="number"] {
-  width: 100%; padding: 5px 7px; border: 1px solid #30363d; border-radius: 5px;
+  width: 100%; height: 32px; padding: 6px 8px; border: 1px solid #30363d; border-radius: 8px;
   background: #0d1117; color: #c9d1d9; font-size: 11px;
 }
-select:focus, input:focus { outline: none; border-color: #e94560; }
+select:focus, input:focus { outline: none; border-color: #e94560; box-shadow: 0 0 0 2px rgba(233,69,96,0.12); }
 
 /* === Custom BIN === */
-.bin-add-row { display: flex; gap: 4px; }
+.bin-add-row { display: flex; gap: 6px; }
 .bin-add-row input { flex: 1; }
 .btn-sm {
-  padding: 5px 10px; border: 1px solid #30363d; border-radius: 5px;
+  min-height: 30px; padding: 6px 10px; border: 1px solid #30363d; border-radius: 8px;
   cursor: pointer; font-size: 11px; font-weight: 600;
   background: #21262d; color: #c9d1d9; white-space: nowrap;
 }
@@ -145,22 +167,22 @@ select:focus, input:focus { outline: none; border-color: #e94560; }
 
 /* === Buttons === */
 .btn {
-  display: block; width: 100%; padding: 8px; border: 1px solid #30363d;
-  border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600;
-  margin-bottom: 4px; transition: all 0.15s;
+  display: block; width: 100%; min-height: 36px; padding: 9px 10px; border: 1px solid #30363d;
+  border-radius: 10px; cursor: pointer; font-size: 13px; font-weight: 700;
+  margin-bottom: 6px; transition: all 0.15s;
   background: #21262d; color: #c9d1d9;
 }
 .btn:hover { background: #30363d; }
 .btn:active { opacity: 0.8; }
 .btn-primary { background: #e94560; color: #fff; border-color: #e94560; }
 .btn-primary:hover { background: #d63852; }
-.btn-row { display: flex; gap: 4px; }
+.btn-row { display: flex; gap: 8px; }
 .btn-row .btn { flex: 1; }
 
 /* === Status === */
 .status {
-  font-size: 11px; color: #3fb950; text-align: center; margin-top: 4px;
-  min-height: 16px;
+  font-size: 11px; color: #3fb950; text-align: center; margin-top: 3px;
+  min-height: 18px;
 }
 .status.error { color: #e94560; }
 .hint { font-size: 10px; color: #484f58; text-align: center; margin: 2px 0 6px; }
@@ -175,9 +197,21 @@ select:focus, input:focus { outline: none; border-color: #e94560; }
 /* === Footer === */
 .footer { margin-top: 6px; font-size: 10px; color: #484f58; text-align: center; }
 .footer a { color: #8b949e; }
+.divider { height: 1px; background: #21262d; margin: 8px 0; }
+.settings-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 8px; margin-bottom: 8px; }
+.inline-label { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.action-stack { margin-top: 8px; }
 </style>
 </head>
 <body>
+
+<div class="header">
+  <div>
+    <div class="brand-title">Autobilling</div>
+    <div class="brand-subtitle">Luhn card generator + Stripe autofill</div>
+  </div>
+  <div class="header-pill">v1.1.0</div>
+</div>
 
 <!-- Card Visual -->
 <div class="card-visual" id="cardVisual">
@@ -204,10 +238,10 @@ select:focus, input:focus { outline: none; border-color: #e94560; }
 <div class="section">
   <div class="section-title">Billing</div>
   <div class="person-compact">
-    <div><span class="lbl">Name</span><span class="val" id="personName">---</span></div>
-    <div><span class="lbl">Addr</span><span class="val" id="personAddr">---</span></div>
-    <div><span class="lbl">City</span><span class="val" id="personZipCity">---</span></div>
-    <div><span class="lbl">Country</span><span class="val" id="personCountry">---</span></div>
+    <span class="row-label">Name</span><span class="val" id="personName">---</span>
+    <span class="row-label">Addr</span><span class="val" id="personAddr">---</span>
+    <span class="row-label">City</span><span class="val" id="personZipCity">---</span>
+    <span class="row-label">Country</span><span class="val" id="personCountry">---</span>
   </div>
 </div>
 
@@ -215,9 +249,9 @@ select:focus, input:focus { outline: none; border-color: #e94560; }
 <div class="section">
   <div class="section-title">Configuration</div>
 
-  <div class="row">
+  <div class="settings-grid">
     <div>
-      <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div class="inline-label">
         <span class="label" style="margin-bottom:0;">BIN</span>
         <button class="btn-sm ghost" id="btnToggleFav" title="Toggle favorite">&#9734;</button>
       </div>
@@ -229,25 +263,25 @@ select:focus, input:focus { outline: none; border-color: #e94560; }
     </div>
   </div>
   <div class="row">
+    <div><span class="label">Exp Month</span><select id="selExpMonth"></select></div>
+    <div><span class="label">Exp Year</span><select id="selExpYear"></select></div>
+  </div>
+  <div class="row">
     <div>
       <span class="label">Custom BIN</span>
       <div class="bin-add-row">
-        <input type="text" id="customBin" placeholder="e.g. 400000" maxlength="14">
+        <input type="text" id="customBin" placeholder="Add custom prefix" maxlength="14">
         <button class="btn-sm primary" id="btnAddBin">Add</button>
       </div>
     </div>
   </div>
-  <div class="row">
-    <div><span class="label">Exp Month</span><select id="selExpMonth"></select></div>
-    <div><span class="label">Exp Year</span><select id="selExpYear"></select></div>
-  </div>
   <label class="check-inline">
-    <input type="checkbox" id="chkValidateBin" checked> Validate BIN
+    <input type="checkbox" id="chkValidateBin" checked> Live BIN info
   </label>
 </div>
 
 <!-- History Toggle -->
-<button class="btn" id="btnToggleHistory" style="margin-bottom:4px;">History</button>
+<button class="btn" id="btnToggleHistory" style="margin-bottom:4px;">History ▼</button>
 <div class="section" id="historyPanel" style="display:none;">
   <div class="section-title">
     History
@@ -257,14 +291,16 @@ select:focus, input:focus { outline: none; border-color: #e94560; }
 </div>
 
 <!-- Actions -->
-<div class="btn-row">
-  <button class="btn btn-primary" id="btnGenerate">Generate</button>
-  <button class="btn" id="btnCopy">Copy</button>
+<div class="action-stack">
+  <button class="btn btn-primary" id="btnAutofill">Fill Stripe Form</button>
+  <div class="btn-row">
+    <button class="btn" id="btnGenerate">Generate</button>
+    <button class="btn" id="btnCopy">Copy all</button>
+  </div>
 </div>
-<button class="btn" id="btnAutofill">Fill Stripe Form (Ctrl+Shift+F)</button>
 
 <div class="status" id="status"></div>
-<div class="hint">Tip: click card fields to copy them separately</div>
+<div class="hint">Ctrl+Shift+F autofill · click card fields to copy</div>
 <div class="footer">
   <a href="https://github.com/adxptived" target="_blank">adxptived</a> &middot; <a href="https://github.com/NjProVk/CreditsCardTools" target="_blank">CreditsCardTools</a> &middot; Luhn-valid
 </div>

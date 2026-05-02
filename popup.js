@@ -274,7 +274,7 @@ function toggleHistory() {
   var btn = document.getElementById('btnToggleHistory');
   var show = panel.style.display === 'none';
   panel.style.display = show ? 'block' : 'none';
-  btn.textContent = show ? 'History \u25B2' : 'History';
+  btn.textContent = show ? 'History \u25B2' : 'History \u25BC';
   if (show) renderHistory();
 }
 
