@@ -27,6 +27,12 @@ It generates:
 
 It can then copy the data or autofill supported payment forms.
 
+## Responsibility notice
+
+Autobilling is provided for development, QA, and legitimate testing workflows only.
+
+You are responsible for how you use this extension. Do not use it for fraud, unauthorized transactions, bypassing payment systems, abusing services, or any activity that violates laws, platform rules, or third-party terms. The author is not responsible for misuse, damages, account restrictions, or legal consequences caused by improper use.
+
 ## Main features
 
 - **Generate card data** — one click creates card + billing details.
@@ -171,8 +177,6 @@ Commands:
 
 ## Project structure
 
-| Path | Purpose |
-| --- | --- |
 | Path | Purpose |
 | --- | --- |
 | `src/` | Extension source files loaded into `dist/` |

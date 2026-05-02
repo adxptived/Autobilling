@@ -2,6 +2,7 @@
 
 ## 1.3.0
 
+- Added responsibility notice to README
 - Added `install.bat` for guided Windows setup
 - Added `npm run setup`, `npm run open:extensions`, and `npm run open:chrome` alias
 - Optimized loading by removing automatic content script injection; content script is injected on demand
