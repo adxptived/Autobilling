@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  width: 400px; padding: 14px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #0d1117; color: #c9d1d9; font-size: 12px;
+}
+
+/* === Card Visual === */
+.card-visual {
+  position: relative;
+  height: 190px; border-radius: 12px; padding: 18px;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%);
+  border: 1px solid #30363d;
+  margin-bottom: 8px;
+  display: flex; flex-direction: column; justify-content: space-between;
+  overflow: hidden; transition: height 0.2s;
+}
+.card-visual.compact { height: 56px; flex-direction: row; align-items: center; padding: 10px 14px; }
+.card-visual::before {
+  content: ''; position: absolute; top: -40px; right: -40px;
+  width: 120px; height: 120px; border-radius: 50%;
+  background: rgba(233,69,96,0.08);
+}
+.card-visual.compact::before { display: none; }
+.card-toggle {
+  position: absolute; top: 4px; left: 8px;
+  font-size: 12px; background: none; border: none; color: rgba(255,255,255,0.2);
+  cursor: pointer; padding: 2px 4px; line-height: 1;
+}
+.card-toggle:hover { color: rgba(255,255,255,0.6); }
+.card-chip {
+  width: 42px; height: 32px; border-radius: 6px;
+  background: linear-gradient(135deg, #d4af37, #b8960c); opacity: 0.7;
+}
+.card-network {
+  position: absolute; top: 18px; right: 18px;
+  font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.3); letter-spacing: 1px;
+}
+.card-number {
+  font-family: "Courier New", monospace;
+  font-size: 19px; letter-spacing: 2px; color: #fff;
+  word-break: break-all; line-height: 1.3;
+}
+.card-details {
+  display: flex; gap: 24px; font-size: 11px; color: rgba(255,255,255,0.5);
+}
+.card-details span { color: rgba(255,255,255,0.8); font-family: "Courier New", monospace; }
+
+/* === Card Compact Row === */
+.card-compact-row {
+  display: none; align-items: center; gap: 12px; width: 100%; font-size: 13px; color: #fff;
+}
+.card-visual.compact .card-compact-row { display: flex; }
+.card-visual.compact .card-chip { display: none; }
+.card-visual.compact .card-number { display: none; }
+.card-visual.compact .card-details { display: none; }
+.card-visual.compact .card-network { position: static; font-size: 12px; margin-right: 2px; }
+
+/* === Quick Copy === */
+.copyable {
+  cursor: pointer; transition: color 0.1s;
+}
+.copyable:hover { color: #e94560 !important; }
+.copyable:active { opacity: 0.7; }
+
+/* === BIN Bar === */
+.bin-bar {
+  font-size: 10px; padding: 4px 10px; border-radius: 5px;
+  margin-bottom: 8px; text-align: center;
+  background: #161b22; color: #484f58; border: 1px solid #21262d;
+}
+.bin-bar.valid { color: #3fb950; border-color: #238636; background: rgba(35,134,54,0.08); }
+.bin-bar.warn  { color: #d2991d; border-color: #9e6a03; background: rgba(158,106,3,0.08); }
+
+/* === Sections === */
+.section {
+  background: #161b22; border-radius: 8px; padding: 10px 12px;
+  margin-bottom: 6px; border: 1px solid #21262d;
+}
+.section-title {
+  font-size: 10px; color: #484f58; text-transform: uppercase; letter-spacing: 1px;
+  margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between;
+}
+
+/* === Person === */
+.person-compact { font-size: 11px; line-height: 1.6; }
+.person-compact .lbl { color: #484f58; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; margin-right: 4px; }
+.person-compact .val { color: #c9d1d9; }
+
+/* === Row/Grid === */
+.row { display: flex; gap: 6px; margin-bottom: 5px; }
+.row > * { flex: 1; }
+.col2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+
+.label { font-size: 10px; color: #8b949e; margin-bottom: 2px; display: block; }
+select, input[type="text"], input[type="number"] {
+  width: 100%; padding: 5px 7px; border: 1px solid #30363d; border-radius: 5px;
+  background: #0d1117; color: #c9d1d9; font-size: 11px;
+}
+select:focus, input:focus { outline: none; border-color: #e94560; }
+
+/* === Custom BIN === */
+.bin-add-row { display: flex; gap: 4px; }
+.bin-add-row input { flex: 1; }
+.btn-sm {
+  padding: 5px 10px; border: 1px solid #30363d; border-radius: 5px;
+  cursor: pointer; font-size: 11px; font-weight: 600;
+  background: #21262d; color: #c9d1d9; white-space: nowrap;
+}
+.btn-sm:hover { background: #30363d; }
+.btn-sm.primary { background: #238636; color: #fff; border-color: #238636; }
+.btn-sm.primary:hover { background: #2ea043; }
+.btn-sm.danger { background: transparent; color: #e94560; border-color: #e94560; }
+.btn-sm.danger:hover { background: #e94560; color: #fff; }
+.btn-sm.ghost { background: transparent; border-color: transparent; color: #8b949e; padding: 4px 6px; }
+
+/* === Favorites row === */
+.fav-row { display: flex; gap: 3px; flex-wrap: wrap; margin-top: 4px; }
+.fav-chip {
+  font-size: 10px; padding: 2px 7px; border-radius: 10px;
+  background: #21262d; border: 1px solid #30363d; color: #8b949e;
+  cursor: pointer; white-space: nowrap; transition: all 0.1s;
+}
+.fav-chip:hover { border-color: #e94560; color: #e94560; }
+.fav-chip.active { border-color: #e94560; color: #e94560; background: rgba(233,69,96,0.1); }
+.fav-chip .star { margin-right: 2px; }
+
+/* === History === */
+.history-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 5px 0; border-bottom: 1px solid #21262d; font-size: 11px;
+  cursor: pointer; transition: background 0.1s;
+}
+.history-item:last-child { border-bottom: none; }
+.history-item:hover { background: rgba(255,255,255,0.02); }
+.history-card { font-family: "Courier New", monospace; font-size: 12px; color: #c9d1d9; letter-spacing: 0.5px; }
+.history-meta { font-size: 10px; color: #484f58; }
+.history-actions { display: flex; gap: 2px; }
+.history-empty { font-size: 11px; color: #30363d; text-align: center; padding: 8px 0; }
+
+/* === Buttons === */
+.btn {
+  display: block; width: 100%; padding: 8px; border: 1px solid #30363d;
+  border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600;
+  margin-bottom: 4px; transition: all 0.15s;
+  background: #21262d; color: #c9d1d9;
+}
+.btn:hover { background: #30363d; }
+.btn:active { opacity: 0.8; }
+.btn-primary { background: #e94560; color: #fff; border-color: #e94560; }
+.btn-primary:hover { background: #d63852; }
+.btn-row { display: flex; gap: 4px; }
+.btn-row .btn { flex: 1; }
+
+/* === Status === */
+.status {
+  font-size: 11px; color: #3fb950; text-align: center; margin-top: 4px;
+  min-height: 16px;
+}
+.status.error { color: #e94560; }
+
+/* === Checkbox inline === */
+.check-inline {
+  display: flex; align-items: center; gap: 5px; font-size: 11px; color: #8b949e;
+  cursor: pointer; margin-top: 4px;
+}
+.check-inline input[type="checkbox"] { width: auto; accent-color: #e94560; }
+
+/* === Footer === */
+.footer { margin-top: 6px; font-size: 10px; color: #484f58; text-align: center; }
+.footer a { color: #8b949e; }
+</style>
+</head>
+<body>
+
+<!-- Card Visual -->
+<div class="card-visual" id="cardVisual">
+  <button class="card-toggle" id="btnCompactToggle" title="Compact view">&#9660;</button>
+  <div class="card-network" id="cardNetwork">MC</div>
+  <div class="card-chip"></div>
+  <div class="card-number copyable" id="cardNum" title="Click to copy card number">---- ---- ---- ----</div>
+  <div class="card-details">
+    <span>EXP <span class="copyable" id="expiry" title="Click to copy expiry">--/--</span></span>
+    <span>CVV <span class="copyable" id="cvv" title="Click to copy CVV">---</span></span>
+  </div>
+  <div class="card-compact-row">
+    <span id="compactBrand">MC</span>
+    <span class="copyable" id="compactNum" title="Click to copy">····</span>
+    <span>| EXP <span class="copyable" id="compactExp" title="Click to copy">--/--</span></span>
+    <span>| CVV <span class="copyable" id="compactCvv" title="Click to copy">---</span></span>
+  </div>
+</div>
+
+<!-- BIN Info -->
+<div class="bin-bar" id="binInfo">BIN validation</div>
+
+<!-- Person -->
+<div class="section">
+  <div class="section-title">Billing</div>
+  <div class="person-compact">
+    <div><span class="lbl">Name</span><span class="val" id="personName">---</span></div>
+    <div><span class="lbl">Addr</span><span class="val" id="personAddr">---</span></div>
+    <div><span class="lbl">City</span><span class="val" id="personZipCity">---</span></div>
+    <div><span class="lbl">Country</span><span class="val" id="personCountry">---</span></div>
+  </div>
+</div>
+
+<!-- Settings -->
+<div class="section">
+  <div class="section-title">Configuration</div>
+
+  <div class="row">
+    <div>
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <span class="label" style="margin-bottom:0;">BIN</span>
+        <button class="btn-sm ghost" id="btnToggleFav" title="Toggle favorite">&#9734;</button>
+      </div>
+      <select id="selBin"></select>
+    </div>
+    <div>
+      <span class="label">Country</span>
+      <select id="selCountry"></select>
+    </div>
+  </div>
+  <div class="row">
+    <div>
+      <span class="label">Custom BIN</span>
+      <div class="bin-add-row">
+        <input type="text" id="customBin" placeholder="e.g. 400000" maxlength="14">
+        <button class="btn-sm primary" id="btnAddBin">Add</button>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div><span class="label">Exp Month</span><select id="selExpMonth"></select></div>
+    <div><span class="label">Exp Year</span><select id="selExpYear"></select></div>
+  </div>
+  <label class="check-inline">
+    <input type="checkbox" id="chkValidateBin" checked> Validate BIN
+  </label>
+</div>
+
+<!-- History Toggle -->
+<button class="btn" id="btnToggleHistory" style="margin-bottom:4px;">History</button>
+<div class="section" id="historyPanel" style="display:none;">
+  <div class="section-title">
+    History
+    <button class="btn-sm ghost" id="btnClearHistory">Clear</button>
+  </div>
+  <div id="historyList"><div class="history-empty">No cards yet</div></div>
+</div>
+
+<!-- Actions -->
+<div class="btn-row">
+  <button class="btn btn-primary" id="btnGenerate">Generate</button>
+  <button class="btn" id="btnCopy">Copy</button>
+</div>
+<button class="btn" id="btnAutofill">Fill Stripe Form (Ctrl+Shift+F)</button>
+
+<div class="status" id="status"></div>
+<div class="footer">
+  <a href="https://github.com/adxptived" target="_blank">adxptived</a> &middot; <a href="https://github.com/NjProVk/CreditsCardTools" target="_blank">CreditsCardTools</a> &middot; Luhn-valid
+</div>
+
+<script src="popup.js"></script>
+</body>
+</html>
