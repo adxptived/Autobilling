@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { detectBin, resolveExpiry, addHistoryEntry } = require('../generator');
+const { detectBin, resolveExpiry, addHistoryEntry } = require('../src/generator');
 
 const bins = [
   { prefix: '400000' },

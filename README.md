@@ -1,7 +1,7 @@
 # Autobilling
 
 <p align="center">
-  <img src="icon.png" alt="Autobilling icon" width="128" height="128">
+  <img src="assets/icon.png" alt="Autobilling icon" width="128" height="128">
 </p>
 
 <p align="center">
@@ -136,17 +136,15 @@ Commands:
 
 | Path | Purpose |
 | --- | --- |
-| `manifest.json` | Extension manifest |
-| `popup.html` / `popup.js` | Popup UI and interactions |
-| `options.html` / `options.js` | Settings page |
-| `background.js` | Service worker: context menu, hotkey, BIN proxy |
-| `content.js` | On-demand autofill script injected into pages |
-| `generator.js` | Luhn generation and shared helpers |
-| `bins.js` | Built-in BIN data |
-| `countries.js` | Country list |
-| `namePools.js` | Billing name/address pools |
-| `clipboard.js` | Clipboard helper |
-| `icons/` | Extension icons |
+| Path | Purpose |
+| --- | --- |
+| `src/` | Extension source files loaded into `dist/` |
+| `src/manifest.json` | Extension manifest |
+| `src/popup.html` / `src/popup.js` | Popup UI and interactions |
+| `src/options.html` / `src/options.js` | Settings page |
+| `src/background.js` | Service worker: context menu, hotkey, BIN proxy |
+| `src/content.js` | On-demand autofill script injected into pages |
+| `assets/icon.png` | Source icon used in README and build |
 | `scripts/` | Build/zip scripts |
 | `tests/` | Node tests |
 

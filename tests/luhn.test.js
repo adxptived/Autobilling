@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { validateLuhn, generateCardNumber } = require('../generator');
+const { validateLuhn, generateCardNumber } = require('../src/generator');
 
 assert.strictEqual(validateLuhn('4242424242424242'), true);
 assert.strictEqual(validateLuhn('4242424242424241'), false);

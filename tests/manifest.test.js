@@ -3,10 +3,11 @@ const fs = require('fs');
 const path = require('path');
 
 const root = path.resolve(__dirname, '..');
-const manifest = require('../manifest.json');
+const src = path.join(root, 'src');
+const manifest = require('../src/manifest.json');
 
 function exists(file) {
-  assert.ok(fs.existsSync(path.join(root, file)), `${file} is missing`);
+  assert.ok(fs.existsSync(path.join(src, file)), `${file} is missing`);
 }
 
 exists(manifest.action.default_popup);
@@ -25,7 +26,7 @@ if (manifest.options_ui && manifest.options_ui.page) exists(manifest.options_ui.
 
 const htmlFiles = [manifest.action.default_popup, manifest.options_ui && manifest.options_ui.page].filter(Boolean);
 for (const htmlFile of htmlFiles) {
-  const html = fs.readFileSync(path.join(root, htmlFile), 'utf8');
+  const html = fs.readFileSync(path.join(src, htmlFile), 'utf8');
   const scripts = Array.from(html.matchAll(/<script src="([^"]+)"/g)).map((m) => m[1]);
   for (const script of scripts) exists(script);
 }

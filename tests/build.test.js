@@ -11,6 +11,7 @@ execFileSync('node', ['scripts/build.js'], { cwd: root, stdio: 'pipe' });
 assert.ok(fs.existsSync(path.join(dist, 'manifest.json')), 'dist manifest is missing');
 assert.ok(fs.existsSync(path.join(dist, 'popup.bundle.js')), 'popup bundle is missing');
 assert.ok(fs.existsSync(path.join(dist, 'content.js')), 'content.js is missing for on-demand injection');
+assert.ok(fs.existsSync(path.join(dist, 'icon.png')), 'README icon source is missing in dist');
 
 const popupHtml = fs.readFileSync(path.join(dist, 'popup.html'), 'utf8');
 assert.ok(popupHtml.includes('popup.bundle.js'), 'popup.html must load popup.bundle.js');
