@@ -1,71 +1,119 @@
 # Autobilling
 
-Auto-fill Stripe bank card forms with Luhn-valid generated cards. Works with any Stripe Checkout / Stripe Elements form.
+<p align="center">
+  <img src="icon.png" alt="Autobilling icon" width="128" height="128">
+</p>
 
-## Features
+<p align="center">
+  <b>Browser extension for generating Luhn-valid card data and autofilling Stripe payment forms.</b>
+</p>
 
-- **One-click Generate** — produces a valid card number (Luhn algorithm), realistic expiry date, CVV, and matching billing address from 25+ countries
-- **Fill Stripe Forms** — detects Stripe iframes and standard HTML inputs; fills card number, expiry, CVV, cardholder name, and full billing address
-- **Context Menu** — right-click any editable field → *Autofill card* without opening the popup
-- **Hotkey** — `Ctrl+Shift+F` (macOS: `Cmd+Shift+F`) fills the active Stripe form instantly
-- **Compact Card View** — toggle between full card visual and a single-line compact view
-- **Quick Copy** — click any card field (number, expiry, CVV) to copy just that value
-- **BIN Live Lookup** — bank/country/type info from [binlist.net](https://binlist.net) when BIN is not in the built-in database
-- **BIN Database** — 8 built-in BINs (Mastercard + Visa) with bank/country/type metadata
-- **Custom BIN** — add and delete your own BIN prefixes; new custom BINs are auto-favorited
-- **Favorites** — star BINs to pin them at the top of the list
-- **Options Page** — configure compact mode, live BIN lookup, default profile, and custom profile
-- **Billing Profiles** — use generated profiles, built-in US/NL profiles, or a saved custom profile
-- **Build Script** — `npm run zip` creates the release archive
-- **CI** — GitHub Actions runs tests, lint, and zip build on push/PR
-- **History** — last 10 generated cards with one-click restore
+<p align="center">
+  <a href="LICENSE">MIT License</a> · <a href="PRIVACY.md">Privacy</a> · <a href="CHANGELOG.md">Changelog</a>
+</p>
 
-## Install
+## What it does
+
+Autobilling helps you quickly generate test-style card data and fill Stripe card forms during development or QA.
+
+It generates:
+
+- card number with valid Luhn checksum
+- expiry date
+- CVV
+- billing name
+- billing address
+- postal code / city / country
+
+It can then copy the data or autofill supported payment forms.
+
+## Main features
+
+- **Generate card data** — one click creates card + billing details.
+- **Stripe autofill** — fills Stripe Checkout / Stripe Elements forms.
+- **Right-click autofill** — context menu action: `Autofill card`.
+- **Hotkey autofill** — `Ctrl+Shift+F` / `Cmd+Shift+F`.
+- **Quick copy** — click card number, expiry, CVV, or billing fields to copy only that value.
+- **Copy all** — copies card and billing data together.
+- **Custom BINs** — add/delete custom BIN prefixes.
+- **Favorites** — star BINs to keep them at the top.
+- **Live BIN lookup** — optional BIN metadata lookup via binlist.net.
+- **History** — restore recently generated cards.
+- **Billing profiles** — generated profile, built-in US/NL profiles, or custom saved profile.
+- **Options page** — configure defaults and custom profile.
+- **Optimized build** — load the lightweight `dist/` folder, not the repo root.
+
+## Install from source
 
 ### Chrome / Edge / Brave / Opera
-1. Download or clone this repo
-2. Run `npm install && npm run build`
-3. Go to `chrome://extensions`
-4. Enable **Developer mode** (top-right toggle)
-5. Click **Load unpacked** → select the `dist/` folder
-6. Pin the extension for quick access
 
-### Firefox
-1. Download or clone this repo
-2. Go to `about:debugging#/runtime/this-firefox`
-3. Click **Load Temporary Add-on** → select `manifest.json`
+1. Clone or download this repository.
+2. Install dependencies and build the extension:
 
-## Usage
+   ```bash
+   npm install
+   npm run build
+   ```
+
+3. Open `chrome://extensions`.
+4. Enable **Developer mode**.
+5. Click **Load unpacked**.
+6. Select the `dist/` folder.
+7. Pin Autobilling in the browser toolbar.
+
+Important: load `dist/`, not the repository root. The root contains development files like `node_modules/`, which can slow extension startup.
+
+### Firefox temporary install
+
+1. Run:
+
+   ```bash
+   npm install
+   npm run build
+   ```
+
+2. Open `about:debugging#/runtime/this-firefox`.
+3. Click **Load Temporary Add-on**.
+4. Select `dist/manifest.json`.
+
+## How to use
 
 | Action | How |
-|--------|-----|
-| Generate a new card | Click **Generate** |
-| Autofill active Stripe form | Click **Fill Stripe Form** or press `Ctrl+Shift+F` |
-| Autofill via right-click | Right-click any input → **Autofill card** |
-| Copy all card details | Click **Copy** |
-| Copy a single field | Click the card number, expiry, or CVV directly |
-| Toggle compact card view | Click ▼ / ▲ button on the card |
-| Add a custom BIN | Type digits → **Add** |
-| Star a BIN | Click ☆ next to the dropdown |
-| View/restore history | Click **History** |
-| Toggle BIN validation | Check/uncheck *Validate BIN* |
+| --- | --- |
+| Generate new data | Click **Generate** |
+| Autofill form | Click **Fill Stripe Form** |
+| Autofill with hotkey | Press `Ctrl+Shift+F` / `Cmd+Shift+F` |
+| Autofill with right click | Right-click page/input → **Autofill card** |
+| Copy all data | Click **Copy all** |
+| Copy one field | Click card number, expiry, CVV, name, address, city, or country |
+| Add custom BIN | Enter prefix → **Add** |
+| Delete custom BIN | Select custom BIN → **Delete** |
+| Favorite BIN | Click the star next to BIN select |
+| Use billing profile | Select profile in the Billing section |
+| Open settings | Click **Settings** in the popup header |
 
-## Files
+## Settings
 
-| File | Purpose |
-|------|---------|
-| `manifest.json` | Extension manifest (MV3, Chrome + Firefox) |
-| `popup.html` | Popup UI |
-| `bins.js` | Built-in BIN list and metadata |
-| `countries.js` | Country dropdown data |
-| `namePools.js` | Billing profile pools |
-| `generator.js` | Luhn card generation and shared core helpers |
-| `clipboard.js` | Clipboard helper used by popup fields |
-| `popup.js` | Popup UI logic: favorites, history, custom BINs, UI state |
-| `options.html` / `options.js` | Extension options page |
-| `content.js` | Page-injected autofill engine (Stripe iframe + HTML) |
-| `background.js` | Service worker: hotkey, context menu, BIN API proxy |
-| `icons/` | Extension icons (16, 48, 128px) |
+Open **Settings** from the popup to configure:
+
+- compact card view by default
+- live BIN lookup on/off
+- default billing profile
+- custom billing profile fields
+- history clearing
+
+## Privacy
+
+Autobilling stores generated data and settings locally in browser extension storage.
+
+The only external request is optional BIN lookup:
+
+- service: `lookup.binlist.net`
+- sent value: BIN prefix only, for example `515462`
+
+Full card numbers, CVV, billing names, addresses, and history are not sent to the author.
+
+See [PRIVACY.md](PRIVACY.md) for details.
 
 ## Development
 
@@ -73,25 +121,41 @@ Auto-fill Stripe bank card forms with Luhn-valid generated cards. Works with any
 npm install
 npm test
 npm run lint
+npm run build
 npm run zip
 ```
 
-`npm run build` creates a clean `dist/` folder for loading in Chrome. It also bundles popup scripts into one `popup.bundle.js`, so popup opening does less file I/O.
+Commands:
 
-Do not load the repo root after `npm install`, because `node_modules/` slows extension loading.
+- `npm test` — runs Luhn/core/manifest/build tests
+- `npm run lint` — runs ESLint
+- `npm run build` — creates optimized `dist/`
+- `npm run zip` — creates `autobilling.zip` from `dist/`
 
-`npm run zip` creates `autobilling.zip` from `dist/` for sharing or GitHub Releases.
+## Project structure
 
-## Privacy
-
-See [PRIVACY.md](PRIVACY.md). The extension stores data locally. The only external request is optional BIN prefix lookup via binlist.net.
+| Path | Purpose |
+| --- | --- |
+| `manifest.json` | Extension manifest |
+| `popup.html` / `popup.js` | Popup UI and interactions |
+| `options.html` / `options.js` | Settings page |
+| `background.js` | Service worker: context menu, hotkey, BIN proxy |
+| `content.js` | On-demand autofill script injected into pages |
+| `generator.js` | Luhn generation and shared helpers |
+| `bins.js` | Built-in BIN data |
+| `countries.js` | Country list |
+| `namePools.js` | Billing name/address pools |
+| `clipboard.js` | Clipboard helper |
+| `icons/` | Extension icons |
+| `scripts/` | Build/zip scripts |
+| `tests/` | Node tests |
 
 ## Credits
 
 - [adxptived](https://github.com/adxptived) — author
 - BIN logic based on [CreditsCardTools](https://github.com/NjProVk/CreditsCardTools)
-- BIN data from [binlist.net](https://binlist.net)
+- BIN metadata from [binlist.net](https://binlist.net)
 
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE).

@@ -16,6 +16,7 @@ const copyFiles = [
   'PRIVACY.md',
   'CHANGELOG.md',
   'LICENSE',
+  'icon.png',
 ];
 
 fs.rmSync(dist, { recursive: true, force: true });

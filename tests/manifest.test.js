@@ -17,6 +17,7 @@ assert.ok(!manifest.content_scripts, 'content.js should be injected on demand, n
 assert.deepStrictEqual(manifest.host_permissions, ['https://lookup.binlist.net/*']);
 
 for (const icon of Object.values(manifest.icons || {})) exists(icon);
+for (const icon of Object.values((manifest.action && manifest.action.default_icon) || {})) exists(icon);
 for (const script of manifest.content_scripts || []) {
   for (const file of script.js || []) exists(file);
 }

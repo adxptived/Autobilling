@@ -1,6 +1,9 @@
 # Build output
 /dist/
 
+# Keep the source extension icon
+!icon.png
+
 # Dependencies
 /node_modules/
 
