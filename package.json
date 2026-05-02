@@ -1,0 +1,11 @@
+{
+  "name": "card-generator-extension",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Browser extension for Luhn-valid card generation and Stripe autofill",
+  "scripts": {
+    "test": "node tests/luhn.test.js"
+  },
+  "author": "adxptived",
+  "license": "MIT"
+}

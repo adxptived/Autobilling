@@ -163,6 +163,7 @@ select:focus, input:focus { outline: none; border-color: #e94560; }
   min-height: 16px;
 }
 .status.error { color: #e94560; }
+.hint { font-size: 10px; color: #484f58; text-align: center; margin: 2px 0 6px; }
 
 /* === Checkbox inline === */
 .check-inline {
@@ -263,10 +264,12 @@ select:focus, input:focus { outline: none; border-color: #e94560; }
 <button class="btn" id="btnAutofill">Fill Stripe Form (Ctrl+Shift+F)</button>
 
 <div class="status" id="status"></div>
+<div class="hint">Tip: click card fields to copy them separately</div>
 <div class="footer">
   <a href="https://github.com/adxptived" target="_blank">adxptived</a> &middot; <a href="https://github.com/NjProVk/CreditsCardTools" target="_blank">CreditsCardTools</a> &middot; Luhn-valid
 </div>
 
+<script src="generator.js"></script>
 <script src="popup.js"></script>
 </body>
 </html>

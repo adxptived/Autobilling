@@ -51,10 +51,21 @@ Auto-fill Stripe bank card forms with Luhn-valid generated cards. Works with any
 |------|---------|
 | `manifest.json` | Extension manifest (MV3, Chrome + Firefox) |
 | `popup.html` | Popup UI |
-| `popup.js` | Popup logic: generation, favorites, history, UI state |
+| `popup.js` | Popup UI logic: favorites, history, UI state |
+| `generator.js` | Luhn card generation and billing profile generation |
 | `content.js` | Page-injected autofill engine (Stripe iframe + HTML) |
 | `background.js` | Service worker: hotkey, context menu, BIN API proxy |
 | `icons/` | Extension icons (16, 48, 128px) |
+
+## Testing
+
+```bash
+npm test
+```
+
+## Privacy
+
+See [PRIVACY.md](PRIVACY.md). The extension stores data locally. The only external request is optional BIN prefix lookup via binlist.net.
 
 ## Credits
 

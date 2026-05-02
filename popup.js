@@ -149,104 +149,27 @@ function findByPrefix(prefix) {
   return -1;
 }
 
-// ============ LUHN GENERATION ============
+// ============ GENERATION ============
 
-function rd() { return Math.floor(Math.random() * 10); }
-
-function luhnChecksum(digits) {
-  var sum = digits.slice().reverse().reduce(function (acc, d, i) {
-    if (i % 2 === 0) {
-      var doubled = d * 2;
-      return acc + (doubled > 9 ? doubled - 9 : doubled);
+function lookupLiveBin(card) {
+  if (!state.validateBin || card.binInfo) return;
+  chrome.runtime.sendMessage({ action: 'lookupBin', prefix: card.binPrefix }, function (resp) {
+    if (resp && resp.info && state.card && state.card.number === card.number) {
+      state.card.binInfo = resp.info;
+      render();
+      saveState();
     }
-    return acc + d;
-  }, 0);
-  return (10 - (sum % 10)) % 10;
-}
-
-function generateCardNumber(prefix, length) {
-  length = length || 16;
-  var prefixDigits = String(prefix).replace(/\D/g, '').split('').map(Number);
-  var remaining = length - prefixDigits.length - 1;
-  var mid = Array.from({ length: remaining }, function () { return rd(); });
-  var partial = prefixDigits.concat(mid);
-  var check = luhnChecksum(partial);
-  return partial.concat([check]).join('');
-}
-
-function generateCard() {
-  var bin = BINS[state.binIdx] || BINS[0];
-  var number = generateCardNumber(bin.prefix, bin.length);
-
-  var expMonth = state.expMonth;
-  var expYear = state.expYear;
-  var nowYear = new Date().getFullYear() % 100;
-
-  if (expMonth === 'random') {
-    expMonth = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
-  }
-  if (expYear === 'random') {
-    var r = nowYear + 1 + Math.floor(Math.random() * 7);
-    expYear = String(r).padStart(2, '0');
-  }
-
-  var binInfo = null;
-  if (state.validateBin) {
-    binInfo = BIN_DB[bin.prefix] || null;
-  }
-
-  var card = {
-    number: number,
-    formatted: number.replace(/(\d{4})(?=\d)/g, '$1 '),
-    brand: bin.brand,
-    binPrefix: bin.prefix,
-    binInfo: binInfo,
-    expMonth: expMonth,
-    expYear: expYear,
-    expYearFull: '20' + expYear,
-    cvv: String(Math.floor(Math.random() * 900) + 100),
-  };
-
-  // Live BIN lookup if not in static DB
-  if (state.validateBin && !binInfo) {
-    chrome.runtime.sendMessage({ action: 'lookupBin', prefix: bin.prefix }, function (resp) {
-      if (resp && resp.info) {
-        card.binInfo = resp.info;
-        if (state.card && state.card.number === card.number) {
-          state.card.binInfo = resp.info;
-          render();
-          saveState();
-        }
-      }
-    });
-  }
-
-  return card;
-}
-
-function generatePerson() {
-  var country = COUNTRIES[state.countryIdx] || COUNTRIES[0];
-  var pool = NAME_POOLS[country.code] || DEFAULT_POOL;
-  return {
-    firstName: pool.first[Math.floor(Math.random() * pool.first.length)],
-    lastName: pool.last[Math.floor(Math.random() * pool.last.length)],
-    fullName: '',
-    address1: pool.streets[Math.floor(Math.random() * pool.streets.length)] + ' ' + (Math.floor(Math.random() * 200) + 1),
-    address2: '',
-    postalCode: pool.zip(),
-    city: pool.cities[Math.floor(Math.random() * pool.cities.length)],
-    country: country.code,
-    countryName: country.name,
-  };
+  });
 }
 
 function generateAll() {
   var card = generateCard();
   var person = generatePerson();
-  person.fullName = person.firstName + ' ' + person.lastName;
 
   state.card = card;
   state.person = person;
+
+  lookupLiveBin(card);
 
   // Add to history
   addHistory(card, person);
