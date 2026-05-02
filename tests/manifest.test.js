@@ -11,6 +11,10 @@ function exists(file) {
 
 exists(manifest.action.default_popup);
 exists(manifest.background.service_worker);
+exists('content.js');
+
+assert.ok(!manifest.content_scripts, 'content.js should be injected on demand, not auto-loaded');
+assert.deepStrictEqual(manifest.host_permissions, ['https://lookup.binlist.net/*']);
 
 for (const icon of Object.values(manifest.icons || {})) exists(icon);
 for (const script of manifest.content_scripts || []) {

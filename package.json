@@ -4,7 +4,7 @@
   "private": true,
   "description": "Browser extension for Luhn-valid card generation and Stripe autofill",
   "scripts": {
-    "test": "node tests/luhn.test.js && node tests/core.test.js && node tests/manifest.test.js",
+    "test": "node tests/luhn.test.js && node tests/core.test.js && node tests/manifest.test.js && node tests/build.test.js",
     "lint": "eslint .",
     "format": "prettier --write .",
     "build": "node scripts/build.js",

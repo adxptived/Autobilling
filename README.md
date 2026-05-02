@@ -76,7 +76,9 @@ npm run lint
 npm run zip
 ```
 
-`npm run build` creates a clean `dist/` folder for loading in Chrome. Do not load the repo root after `npm install`, because `node_modules/` slows extension loading.
+`npm run build` creates a clean `dist/` folder for loading in Chrome. It also bundles popup scripts into one `popup.bundle.js`, so popup opening does less file I/O.
+
+Do not load the repo root after `npm install`, because `node_modules/` slows extension loading.
 
 `npm run zip` creates `autobilling.zip` from `dist/` for sharing or GitHub Releases.
 

@@ -2,6 +2,9 @@
 
 ## 1.3.0
 
+- Optimized loading by removing automatic content script injection; content script is injected on demand
+- Optimized dist popup loading by bundling popup scripts into one `popup.bundle.js`
+- Added build test to verify dist bundle and on-demand content script setup
 - Added `npm run build` for clean `dist/` extension folder
 - Added `npm run zip` build script
 - Added manifest file existence test

@@ -6,8 +6,6 @@
   "author": "adxptived",
   "permissions": ["activeTab", "storage", "scripting", "contextMenus"],
   "host_permissions": [
-    "https://*.stripe.com/*",
-    "https://checkout.stripe.com/*",
     "https://lookup.binlist.net/*"
   ],
   "icons": {
@@ -35,16 +33,6 @@
       "description": "Autofill current Stripe form"
     }
   },
-  "content_scripts": [
-    {
-      "matches": [
-        "https://checkout.stripe.com/*",
-        "https://*.stripe.com/*"
-      ],
-      "js": ["content.js"],
-      "run_at": "document_end"
-    }
-  ],
   "browser_specific_settings": {
     "gecko": {
       "id": "autobilling@extension",
