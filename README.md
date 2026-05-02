@@ -59,13 +59,21 @@ Or use npm:
 npm run setup
 ```
 
-This installs dependencies, builds `dist/`, and opens `chrome://extensions`.
+This installs dependencies, builds `dist/`, and opens the extensions page in your default browser.
 
-Then in Chrome:
+If it does not open automatically, use your browser page:
 
-1. Enable **Developer mode**.
-2. Click **Load unpacked**.
-3. Select the `dist/` folder.
+- Chrome: `chrome://extensions`
+- Edge: `edge://extensions`
+- Brave: `brave://extensions`
+- Opera: `opera://extensions`
+- Firefox: `about:debugging#/runtime/this-firefox`
+
+Then:
+
+1. Enable **Developer mode** if needed.
+2. Click **Load unpacked** / **Load Temporary Add-on**.
+3. Select the `dist/` folder (`dist/manifest.json` for Firefox temporary install).
 4. Pin Autobilling in the browser toolbar.
 
 ### Manual install — Chrome / Edge / Brave / Opera
@@ -145,6 +153,7 @@ npm install
 npm test
 npm run lint
 npm run build
+npm run open:extensions
 npm run open:chrome
 npm run setup
 npm run zip
@@ -155,7 +164,8 @@ Commands:
 - `npm test` — runs Luhn/core/manifest/build tests
 - `npm run lint` — runs ESLint
 - `npm run build` — creates optimized `dist/`
-- `npm run open:chrome` — opens the browser extensions page and prints the `dist/` path
+- `npm run open:extensions` — opens the default browser extension page and prints the `dist/` path
+- `npm run open:chrome` — backwards-compatible alias for `open:extensions`
 - `npm run setup` — installs dependencies, builds `dist/`, and opens the browser extensions page
 - `npm run zip` — creates `autobilling.zip` from `dist/`
 

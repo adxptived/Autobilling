@@ -9,8 +9,9 @@
     "format": "prettier --config config/.prettierrc --write src scripts tests *.md package.json",
     "build": "node scripts/build.js",
     "zip": "npm run build && node scripts/zip.js",
+    "open:extensions": "node scripts/open-extensions.js",
     "open:chrome": "node scripts/open-chrome-extensions.js",
-    "setup": "npm install && npm run build && npm run open:chrome"
+    "setup": "npm install && npm run build && npm run open:extensions"
   },
   "devDependencies": {
     "eslint": "^9.0.0",

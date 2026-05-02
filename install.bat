@@ -31,14 +31,20 @@ if errorlevel 1 (
   exit /b 1
 )
 
-echo Opening Chrome extensions page...
-call npm run open:chrome
+echo Opening browser extensions page...
+call npm run open:extensions
 
 echo.
-echo In Chrome:
-echo 1. Enable Developer mode
-echo 2. Click Load unpacked
-echo 3. Select this folder:
+echo In your browser:
+echo 1. Open extensions page if it did not open automatically
+echo    Chrome: chrome://extensions
+echo    Edge: edge://extensions
+echo    Brave: brave://extensions
+echo    Opera: opera://extensions
+echo    Firefox: about:debugging#/runtime/this-firefox
+echo 2. Enable Developer mode if needed
+echo 3. Click Load unpacked / Load Temporary Add-on
+echo 4. Select this folder:
 echo %cd%\dist
 echo.
 pause
