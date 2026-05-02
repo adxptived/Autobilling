@@ -273,15 +273,21 @@ function render() {
   }
 }
 
-function applyCompact() {
+function applyCompact(skipAnimation) {
   var card = document.getElementById('cardVisual');
   var btn = document.getElementById('btnCompactToggle');
+  if (skipAnimation) card.classList.add('no-animate');
   if (state.compactView) {
     card.classList.add('compact');
     btn.innerHTML = '&#9650;';
   } else {
     card.classList.remove('compact');
     btn.innerHTML = '&#9660;';
+  }
+  if (skipAnimation) {
+    requestAnimationFrame(function () {
+      card.classList.remove('no-animate');
+    });
   }
 }
 
@@ -547,7 +553,7 @@ function loadState() {
 
       updateFavStar();
       updateDeleteBinButton();
-      applyCompact();
+      applyCompact(true);
 
       if (data.card) state.card = data.card;
       if (data.person) state.person = data.person;
