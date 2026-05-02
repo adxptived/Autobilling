@@ -7,7 +7,8 @@
     "test": "node tests/luhn.test.js && node tests/core.test.js && node tests/manifest.test.js",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "zip": "node scripts/zip.js"
+    "build": "node scripts/build.js",
+    "zip": "npm run build && node scripts/zip.js"
   },
   "devDependencies": {
     "eslint": "^9.0.0",

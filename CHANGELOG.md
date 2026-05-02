@@ -2,6 +2,7 @@
 
 ## 1.3.0
 
+- Added `npm run build` for clean `dist/` extension folder
 - Added `npm run zip` build script
 - Added manifest file existence test
 - Added GitHub Actions CI for test, lint, and zip build

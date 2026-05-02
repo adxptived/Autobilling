@@ -24,10 +24,11 @@ Auto-fill Stripe bank card forms with Luhn-valid generated cards. Works with any
 
 ### Chrome / Edge / Brave / Opera
 1. Download or clone this repo
-2. Go to `chrome://extensions`
-3. Enable **Developer mode** (top-right toggle)
-4. Click **Load unpacked** → select the extension folder
-5. Pin the extension for quick access
+2. Run `npm install && npm run build`
+3. Go to `chrome://extensions`
+4. Enable **Developer mode** (top-right toggle)
+5. Click **Load unpacked** → select the `dist/` folder
+6. Pin the extension for quick access
 
 ### Firefox
 1. Download or clone this repo
@@ -75,7 +76,9 @@ npm run lint
 npm run zip
 ```
 
-`npm run zip` creates `autobilling.zip` for sharing or GitHub Releases.
+`npm run build` creates a clean `dist/` folder for loading in Chrome. Do not load the repo root after `npm install`, because `node_modules/` slows extension loading.
+
+`npm run zip` creates `autobilling.zip` from `dist/` for sharing or GitHub Releases.
 
 ## Privacy
 
