@@ -15,7 +15,13 @@ exists(manifest.background.service_worker);
 exists('content.js');
 
 assert.ok(!manifest.content_scripts, 'content.js should be injected on demand, not auto-loaded');
-assert.deepStrictEqual(manifest.host_permissions, ['https://lookup.binlist.net/*']);
+assert.ok(!manifest.host_permissions, 'BIN lookup host access must be optional');
+assert.deepStrictEqual(manifest.optional_host_permissions, ['https://lookup.binlist.net/*']);
+assert.strictEqual(manifest.browser_specific_settings.gecko.strict_min_version, '142.0');
+assert.deepStrictEqual(
+  manifest.browser_specific_settings.gecko.data_collection_permissions,
+  { required: ['none'] },
+);
 
 for (const icon of Object.values(manifest.icons || {})) exists(icon);
 for (const icon of Object.values((manifest.action && manifest.action.default_icon) || {})) exists(icon);

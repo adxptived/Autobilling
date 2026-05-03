@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { detectBin, resolveExpiry, addHistoryEntry } = require('../src/generator');
+const { detectBin, resolveExpiry, addHistoryEntry, pruneHistory } = require('../src/generator');
 
 const bins = [
   { prefix: '400000' },
@@ -26,5 +26,12 @@ history = addHistoryEntry(history, entryA2, 10);
 assert.strictEqual(history.length, 2);
 assert.strictEqual(history[0].ts, 3);
 assert.strictEqual(history[1].ts, 2);
+
+history = pruneHistory([
+  { card: { formatted: '4000 0000 0000 0002' }, ts: Date.parse('2026-01-01T00:00:00Z') },
+  { card: { formatted: '5154 6200 0000 0008' }, ts: Date.parse('2026-01-01T00:20:00Z') },
+], 15, Date.parse('2026-01-01T00:30:00Z'));
+assert.strictEqual(history.length, 1);
+assert.strictEqual(history[0].card.formatted, '5154 6200 0000 0008');
 
 console.log('Core tests passed');
