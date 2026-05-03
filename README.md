@@ -45,9 +45,11 @@ You are responsible for how you use this extension. Do not use it for fraud, una
 - **Favorites** — star BINs to keep them at the top.
 - **Live BIN lookup** — optional BIN metadata lookup via binlist.net.
 - **History** — restore recently generated cards.
+- **Privacy controls** — session-only generated data and automatic history expiry.
+- **Autofill diagnostics** — reports which supported fields were filled or missed.
 - **Billing profiles** — generated profile, built-in US/NL profiles, or custom saved profile.
 - **Options page** — configure defaults and custom profile.
-- **Optimized build** — load the lightweight `dist/` folder, not the repo root.
+- **Optimized builds** — load `dist/` for Chromium browsers or `dist-firefox/` for Firefox.
 
 ## Install from source
 
@@ -65,7 +67,7 @@ Or use npm:
 npm run setup
 ```
 
-This installs dependencies, builds `dist/`, and opens the extensions page in your default browser.
+This installs dependencies, builds `dist/` and `dist-firefox/`, and opens the extensions page in your default browser.
 
 If it does not open automatically, use your browser page:
 
@@ -79,7 +81,7 @@ Then:
 
 1. Enable **Developer mode** if needed.
 2. Click **Load unpacked** / **Load Temporary Add-on**.
-3. Select the `dist/` folder (`dist/manifest.json` for Firefox temporary install).
+3. Select `dist/` for Chrome/Edge/Brave/Opera, or `dist-firefox/manifest.json` for Firefox temporary install.
 4. Pin Autobilling in the browser toolbar.
 
 ### Manual install — Chrome / Edge / Brave / Opera
@@ -102,6 +104,8 @@ Important: load `dist/`, not the repository root. The root contains development 
 
 ### Firefox temporary install
 
+Requires Firefox 142 or newer.
+
 1. Run:
 
    ```bash
@@ -111,7 +115,7 @@ Important: load `dist/`, not the repository root. The root contains development 
 
 2. Open `about:debugging#/runtime/this-firefox`.
 3. Click **Load Temporary Add-on**.
-4. Select `dist/manifest.json`.
+4. Select `dist-firefox/manifest.json`.
 
 ## How to use
 
@@ -134,16 +138,18 @@ Important: load `dist/`, not the repository root. The root contains development 
 Open **Settings** from the popup to configure:
 
 - compact card view by default
-- live BIN lookup on/off
+- live BIN lookup on/off; enabling it requests optional access to `lookup.binlist.net`
+- session-only generated card/profile/history storage
+- automatic history expiry after 15 minutes, 1 hour, 24 hours, or manual clearing only
 - default billing profile
 - custom billing profile fields
 - history clearing
 
 ## Privacy
 
-Autobilling stores generated data and settings locally in browser extension storage.
+Autobilling stores settings locally in browser extension storage. Generated card/profile/history data is stored locally by default, or in session-only storage when that setting is enabled.
 
-The only external request is optional BIN lookup:
+The only external request is optional BIN lookup. The permission for this host is optional and is requested only when live BIN lookup is enabled:
 
 - service: `lookup.binlist.net`
 - sent value: BIN prefix only, for example `515462`
@@ -158,35 +164,46 @@ See [PRIVACY.md](PRIVACY.md) for details.
 npm install
 npm test
 npm run lint
+npm run lint:firefox
 npm run build
+npm run validate:extensions
 npm run open:extensions
 npm run open:chrome
 npm run setup
 npm run zip
+npm run zip:chromium
+npm run zip:firefox
 ```
 
 Commands:
 
-- `npm test` — runs Luhn/core/manifest/build tests
+- `npm test` — runs Luhn/core/manifest/build/tooling/diagnostics tests
 - `npm run lint` — runs ESLint
-- `npm run build` — creates optimized `dist/`
-- `npm run open:extensions` — opens the default browser extension page and prints the `dist/` path
+- `npm run lint:firefox` — builds and runs Mozilla `web-ext lint` against `dist-firefox/`
+- `npm run build` — creates optimized `dist/` for Chromium and `dist-firefox/` for Firefox
+- `npm run validate:extensions` — validates Chromium/Firefox build manifests/assets and runs Firefox `web-ext lint`
+- `npm run open:extensions` — opens the default browser extension page and prints Chromium/Firefox load paths
 - `npm run open:chrome` — backwards-compatible alias for `open:extensions`
-- `npm run setup` — installs dependencies, builds `dist/`, and opens the browser extensions page
-- `npm run zip` — creates `autobilling.zip` from `dist/`
+- `npm run setup` — installs dependencies, builds Chromium/Firefox output folders, and opens the browser extensions page
+- `npm run zip` — creates both `autobilling-chromium.zip` and `autobilling-firefox.zip`
+- `npm run zip:chromium` — creates `autobilling-chromium.zip` from `dist/`
+- `npm run zip:firefox` — creates `autobilling-firefox.zip` from `dist-firefox/`
 
 ## Project structure
 
 | Path | Purpose |
 | --- | --- |
 | `src/` | Extension source files loaded into `dist/` |
-| `src/manifest.json` | Extension manifest |
+| `src/manifest.json` | Chromium extension manifest; the build script rewrites background config for Firefox |
 | `src/popup.html` / `src/popup.js` | Popup UI and interactions |
 | `src/options.html` / `src/options.js` | Settings page |
+| `src/extensionStorage.js` | Settings plus local/session sensitive-data storage helpers |
+| `src/permissions.js` | Optional BIN lookup permission helpers |
+| `src/autofillDiagnostics.js` | Autofill field summary helpers |
 | `src/background.js` | Service worker: context menu, hotkey, BIN proxy |
 | `src/content.js` | On-demand autofill script injected into pages |
 | `assets/icon.png` | Source icon used in README and build |
-| `scripts/` | Build/zip scripts |
+| `scripts/` | Build/zip/validation scripts |
 | `tests/` | Node tests |
 
 ## Credits
