@@ -1,5 +1,6 @@
 # Build output
 /dist/
+/dist-firefox/
 
 # Keep the source extension icon
 !icon.png

@@ -41,10 +41,12 @@ echo    Chrome: chrome://extensions
 echo    Edge: edge://extensions
 echo    Brave: brave://extensions
 echo    Opera: opera://extensions
-echo    Firefox: about:debugging#/runtime/this-firefox
+echo    Firefox 142+: about:debugging#/runtime/this-firefox
 echo 2. Enable Developer mode if needed
 echo 3. Click Load unpacked / Load Temporary Add-on
-echo 4. Select this folder:
+echo 4. Select this folder for Chrome/Edge/Brave/Opera:
 echo %cd%\dist
+echo    Or select this manifest for Firefox:
+echo %cd%\dist-firefox\manifest.json
 echo.
 pause

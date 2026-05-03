@@ -4,18 +4,23 @@
   "private": true,
   "description": "Browser extension for Luhn-valid card generation and Stripe autofill",
   "scripts": {
-    "test": "node tests/luhn.test.js && node tests/core.test.js && node tests/manifest.test.js && node tests/build.test.js",
+    "test": "node tests/luhn.test.js && node tests/core.test.js && node tests/manifest.test.js && node tests/build.test.js && node tests/tooling.test.js && node tests/autofill-diagnostics.test.js",
     "lint": "eslint -c config/eslint.config.js src scripts tests",
     "format": "prettier --config config/.prettierrc --write src scripts tests *.md package.json",
     "build": "node scripts/build.js",
-    "zip": "npm run build && node scripts/zip.js",
+    "lint:firefox": "npm run build && web-ext lint --source-dir dist-firefox --warnings-as-errors",
+    "validate:extensions": "npm run build && node scripts/validate-extensions.js && web-ext lint --source-dir dist-firefox --warnings-as-errors",
+    "zip": "npm run build && node scripts/zip.js all",
+    "zip:chromium": "npm run build && node scripts/zip.js chromium",
+    "zip:firefox": "npm run build && node scripts/zip.js firefox",
     "open:extensions": "node scripts/open-extensions.js",
     "open:chrome": "node scripts/open-chrome-extensions.js",
     "setup": "npm install && npm run build && npm run open:extensions"
   },
   "devDependencies": {
     "eslint": "^9.0.0",
-    "prettier": "^3.0.0"
+    "prettier": "^3.0.0",
+    "web-ext": "^10.1.0"
   },
   "author": "adxptived",
   "license": "MIT"
