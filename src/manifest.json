@@ -5,7 +5,7 @@
   "description": "Auto-fill bank card forms with generated valid cards. Stripe support.",
   "author": "adxptived",
   "permissions": ["activeTab", "storage", "scripting", "contextMenus"],
-  "host_permissions": [
+  "optional_host_permissions": [
     "https://lookup.binlist.net/*"
   ],
   "icons": {
@@ -43,7 +43,10 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "autobilling@extension",
-      "strict_min_version": "109.0"
+      "strict_min_version": "142.0",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
     }
   }
 }

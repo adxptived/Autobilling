@@ -361,6 +361,12 @@ input:focus {
   gap: 7px;
   align-items: center;
 }
+#selBin {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .bin-add-row {
   display: grid;
   grid-template-columns: 1fr 48px 58px;
@@ -521,6 +527,14 @@ input:focus {
   </div>
 </div>
 
+<div class="action-stack">
+  <button class="btn btn-primary" id="btnAutofill">Fill Stripe Form</button>
+  <div class="btn-row">
+    <button class="btn" id="btnGenerate">Generate</button>
+    <button class="btn" id="btnCopy">Copy all</button>
+  </div>
+</div>
+
 <div class="section">
   <div class="section-title">Configuration</div>
 
@@ -570,14 +584,6 @@ input:focus {
   <div id="historyList"><div class="history-empty">No cards yet</div></div>
 </div>
 
-<div class="action-stack">
-  <button class="btn btn-primary" id="btnAutofill">Fill Stripe Form</button>
-  <div class="btn-row">
-    <button class="btn" id="btnGenerate">Generate</button>
-    <button class="btn" id="btnCopy">Copy all</button>
-  </div>
-</div>
-
 <div class="status" id="status"></div>
 <div class="footer">
   <a href="https://github.com/adxptived" target="_blank">adxptived</a> &middot; <a href="https://github.com/NjProVk/CreditsCardTools" target="_blank">CreditsCardTools</a> &middot; Luhn-valid
@@ -588,6 +594,9 @@ input:focus {
 <script src="namePools.js"></script>
 <script src="generator.js"></script>
 <script src="clipboard.js"></script>
+<script src="extensionStorage.js"></script>
+<script src="permissions.js"></script>
+<script src="autofillDiagnostics.js"></script>
 <script src="popup.js"></script>
 </div>
 </body>

@@ -390,11 +390,13 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
   if (msg.action === 'autofill') {
     // Use pre-generated card from storage
     chrome.storage.local.get(['card', 'person'], function (data) {
-      if (!data.card || !data.person) {
+      var card = msg.card || data.card;
+      var person = msg.person || data.person;
+      if (!card || !person) {
         sendResponse({ success: false, error: 'No card stored. Click Generate first.' });
         return;
       }
-      autofill(data.card, data.person).then(function (result) {
+      autofill(card, person).then(function (result) {
         sendResponse({ success: true, card: result.card, person: result.person, filled: result.filled });
       }).catch(function (err) {
         sendResponse({ success: false, error: err.message });

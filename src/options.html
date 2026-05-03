@@ -39,6 +39,13 @@ button.danger:hover { background: rgba(233,69,96,0.08); }
     <div class="section-title">Preferences</div>
     <label><input type="checkbox" id="chkDefaultCompact"> Compact card view by default</label>
     <label><input type="checkbox" id="chkValidateBin"> Live BIN lookup</label>
+    <label><input type="checkbox" id="chkSessionOnly"> Session-only generated data</label>
+    <select id="selHistoryTtl">
+      <option value="0">Keep history until cleared</option>
+      <option value="15">Clear history entries after 15 minutes</option>
+      <option value="60">Clear history entries after 1 hour</option>
+      <option value="1440">Clear history entries after 24 hours</option>
+    </select>
   </div>
 
   <div class="section">
@@ -73,6 +80,8 @@ button.danger:hover { background: rgba(233,69,96,0.08); }
   <button class="primary" id="btnSave">Save settings</button>
   <div class="status" id="status"></div>
 
+<script src="extensionStorage.js"></script>
+<script src="permissions.js"></script>
 <script src="options.js"></script>
 </body>
 </html>

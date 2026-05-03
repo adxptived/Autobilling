@@ -61,6 +61,14 @@ function addHistoryEntry(history, entry, max) {
   return history.length > max ? history.slice(0, max) : history;
 }
 
+function pruneHistory(history, ttlMinutes, nowTs) {
+  if (!ttlMinutes) return history || [];
+  var cutoff = (nowTs || Date.now()) - (ttlMinutes * 60000);
+  return (history || []).filter(function (entry) {
+    return entry.ts >= cutoff;
+  });
+}
+
 function generateCard() {
   var bin = BINS[state.binIdx] || BINS[0];
   var number = generateCardNumber(bin.prefix, bin.length);
@@ -110,5 +118,6 @@ if (typeof module !== 'undefined') {
     detectBin: detectBin,
     resolveExpiry: resolveExpiry,
     addHistoryEntry: addHistoryEntry,
+    pruneHistory: pruneHistory,
   };
 }

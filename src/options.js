@@ -30,10 +30,12 @@ function fillCustomProfile(profile) {
   document.getElementById('profileCountryName').value = profile.countryName || '';
 }
 
-chrome.storage.local.get(['defaultCompact', 'validateBin', 'selectedProfile', 'savedProfiles'], function (data) {
+chrome.storage.local.get(['defaultCompact', 'validateBin', 'selectedProfile', 'savedProfiles', 'sessionOnly', 'historyTtlMinutes'], function (data) {
   document.getElementById('chkDefaultCompact').checked = !!data.defaultCompact;
   document.getElementById('chkValidateBin').checked = data.validateBin !== false;
   document.getElementById('selProfile').value = data.selectedProfile || 'generated';
+  document.getElementById('chkSessionOnly').checked = !!data.sessionOnly;
+  document.getElementById('selHistoryTtl').value = String(data.historyTtlMinutes || 0);
   fillCustomProfile(data.savedProfiles && data.savedProfiles.custom);
 });
 
@@ -41,14 +43,31 @@ document.getElementById('btnSave').addEventListener('click', function () {
   var defaultCompact = document.getElementById('chkDefaultCompact').checked;
   var validateBin = document.getElementById('chkValidateBin').checked;
   var selectedProfile = document.getElementById('selProfile').value;
-  chrome.storage.local.set({
-    defaultCompact: defaultCompact,
-    compactView: defaultCompact,
-    validateBin: validateBin,
-    selectedProfile: selectedProfile,
-  }, function () {
-    setStatus('Saved');
-  });
+  var sessionOnly = document.getElementById('chkSessionOnly').checked;
+  var historyTtlMinutes = parseInt(document.getElementById('selHistoryTtl').value, 10) || 0;
+
+  function save(granted) {
+    chrome.storage.local.set({
+      defaultCompact: defaultCompact,
+      compactView: defaultCompact,
+      validateBin: granted,
+      selectedProfile: selectedProfile,
+      sessionOnly: sessionOnly,
+      historyTtlMinutes: historyTtlMinutes,
+    }, function () {
+      if (sessionOnly) {
+        clearLocalSensitive(function () { setStatus(granted ? 'Saved' : 'Saved without live BIN lookup'); });
+      } else {
+        setStatus(granted ? 'Saved' : 'Saved without live BIN lookup');
+      }
+    });
+  }
+
+  if (validateBin) {
+    requestBinLookupPermission(save);
+  } else {
+    removeBinLookupPermission(function () { save(false); });
+  }
 });
 
 document.getElementById('btnSaveProfile').addEventListener('click', function () {
@@ -68,7 +87,7 @@ document.getElementById('btnSaveProfile').addEventListener('click', function () 
 });
 
 document.getElementById('btnClearHistory').addEventListener('click', function () {
-  chrome.storage.local.set({ history: [] }, function () {
+  clearStoredHistory(function () {
     setStatus('History cleared');
   });
 });

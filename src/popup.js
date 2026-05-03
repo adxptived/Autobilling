@@ -14,6 +14,8 @@ var state = {
   validateBin: true,
   compactView: false,
   defaultCompact: false,
+  sessionOnly: false,
+  historyTtlMinutes: 0,
   selectedProfile: 'generated',
   savedProfiles: {
     custom: null,
@@ -29,10 +31,7 @@ var state = {
 
 function binLabel(bin) {
   var br = bin.brand === 'Mastercard' ? 'MC' : bin.brand === 'Visa' ? 'VISA' : bin.brand;
-  var pre = bin.prefix;
-  if (pre.length <= 6) return br + ' ' + pre;
-  if (pre.length <= 9) return br + ' ' + pre.slice(0, 6) + '...' + pre.slice(-3);
-  return br + ' ' + pre.slice(0, 6) + '...' + pre.slice(-4);
+  return br + ' ' + bin.prefix;
 }
 
 function findByPrefix(prefix) {
@@ -41,15 +40,52 @@ function findByPrefix(prefix) {
 
 // ============ GENERATION ============
 
-function lookupLiveBin(card) {
+function lookupLiveBin(card, requestPermission) {
   if (!state.validateBin || card.binInfo) return;
-  chrome.runtime.sendMessage({ action: 'lookupBin', prefix: card.binPrefix }, function (resp) {
-    if (resp && resp.info && state.card && state.card.number === card.number) {
-      state.card.binInfo = resp.info;
-      render();
-      saveState();
+
+  function runLookup() {
+    chrome.runtime.sendMessage({ action: 'lookupBin', prefix: card.binPrefix }, function (resp) {
+      if (resp && resp.info && state.card && state.card.number === card.number) {
+        state.card.binInfo = resp.info;
+        render();
+        saveState();
+      }
+      if (resp && resp.error && requestPermission) setStatus('Live BIN lookup failed: ' + resp.error, true);
+    });
+  }
+
+  hasBinLookupPermission(function (hasAccess) {
+    if (hasAccess) {
+      runLookup();
+      return;
     }
+    if (!requestPermission) return;
+    requestBinLookupPermission(function (granted) {
+      state.validateBin = !!granted;
+      document.getElementById('chkValidateBin').checked = state.validateBin;
+      if (granted) runLookup();
+      else {
+        render();
+        saveState();
+        setStatus('Live BIN lookup permission denied', true);
+      }
+    });
   });
+}
+
+function generateAll(options) {
+  options = options || {};
+  var card = generateCard();
+  var person = profilePerson(state.selectedProfile);
+
+  state.card = card;
+  state.person = person;
+
+  lookupLiveBin(card, !!options.requestBinPermission);
+
+  addHistory(card, person);
+  render();
+  saveState();
 }
 
 function profilePerson(profile) {
@@ -85,21 +121,6 @@ function profilePerson(profile) {
   return generatePerson();
 }
 
-function generateAll() {
-  var card = generateCard();
-  var person = profilePerson(state.selectedProfile);
-
-  state.card = card;
-  state.person = person;
-
-  lookupLiveBin(card);
-
-  // Add to history
-  addHistory(card, person);
-  render();
-  saveState();
-}
-
 // ============ HISTORY ============
 
 function addHistory(card, person) {
@@ -123,7 +144,7 @@ function addHistory(card, person) {
     ts: Date.now(),
   };
 
-  state.history = addHistoryEntry(state.history, entry, 10);
+  state.history = pruneHistory(addHistoryEntry(state.history, entry, 10), state.historyTtlMinutes);
 }
 
 function restoreHistory(idx) {
@@ -197,39 +218,47 @@ function toggleHistory() {
 
 function renderHistory() {
   var container = document.getElementById('historyList');
+  container.textContent = '';
   if (!state.history.length) {
-    container.innerHTML = '<div class="history-empty">No cards yet</div>';
+    var empty = document.createElement('div');
+    empty.className = 'history-empty';
+    empty.textContent = 'No cards yet';
+    container.appendChild(empty);
     return;
   }
-  var html = '';
   for (var i = 0; i < state.history.length; i++) {
     var h = state.history[i];
     var ago = Math.floor((Date.now() - h.ts) / 60000);
     var agoStr = ago < 1 ? 'now' : ago < 60 ? ago + 'm ago' : Math.floor(ago / 60) + 'h ago';
-    html += '<div class="history-item" data-idx="' + i + '">' +
-      '<div><div class="history-card">' + h.card.brand + ' ' + h.card.formatted.slice(-4) + '</div>' +
-      '<div class="history-meta">' + h.person.countryName + ' &middot; ' + agoStr + '</div></div>' +
-      '<div class="history-actions">' +
-        '<button class="btn-sm ghost history-delete" data-idx="' + i + '">X</button>' +
-      '</div>' +
-    '</div>';
-  }
-  container.innerHTML = html;
+    var item = document.createElement('div');
+    item.className = 'history-item';
+    var text = document.createElement('div');
+    var cardText = document.createElement('div');
+    cardText.className = 'history-card';
+    cardText.textContent = h.card.brand + ' ' + h.card.formatted.slice(-4);
+    var meta = document.createElement('div');
+    meta.className = 'history-meta';
+    meta.textContent = h.person.countryName + ' · ' + agoStr;
+    var actions = document.createElement('div');
+    actions.className = 'history-actions';
+    var del = document.createElement('button');
+    del.className = 'btn-sm ghost history-delete';
+    del.textContent = 'X';
 
-  // Click handler for history items
-  var items = container.querySelectorAll('.history-item');
-  for (var j = 0; j < items.length; j++) {
-    (function (idx) {
-      items[j].addEventListener('click', function () { restoreHistory(idx); });
-    })(parseInt(items[j].getAttribute('data-idx')));
-  }
+    // Click handler for history items
+    (function (idx, itemEl, delEl) {
+      itemEl.addEventListener('click', function () { restoreHistory(idx); });
 
-  // Delete buttons
-  var dels = container.querySelectorAll('.history-delete');
-  for (var k = 0; k < dels.length; k++) {
-    (function (idx) {
-      dels[k].addEventListener('click', function (e) { deleteHistory(idx, e); });
-    })(parseInt(dels[k].getAttribute('data-idx')));
+      // Delete buttons
+      delEl.addEventListener('click', function (e) { deleteHistory(idx, e); });
+    })(i, item, del);
+
+    text.appendChild(cardText);
+    text.appendChild(meta);
+    actions.appendChild(del);
+    item.appendChild(text);
+    item.appendChild(actions);
+    container.appendChild(item);
   }
 }
 
@@ -279,10 +308,10 @@ function applyCompact(skipAnimation) {
   card.classList.add('no-animate');
   if (state.compactView) {
     card.classList.add('compact');
-    btn.innerHTML = '&#9650;';
+    btn.textContent = '▲';
   } else {
     card.classList.remove('compact');
-    btn.innerHTML = '&#9660;';
+    btn.textContent = '▼';
   }
   if (skipAnimation) {
     requestAnimationFrame(function () {
@@ -370,7 +399,7 @@ function updateFavStar() {
   var btn = document.getElementById('btnToggleFav');
   var bin = BINS[state.binIdx];
   var isFav = bin && state.favBins.indexOf(bin.prefix) >= 0;
-  btn.innerHTML = isFav ? '&#9733;' : '&#9734;';
+  btn.textContent = isFav ? '★' : '☆';
   btn.style.color = isFav ? '#e94560' : '#8b949e';
 }
 
@@ -509,41 +538,28 @@ function doDeleteCustomBin() {
 // ============ PERSISTENCE ============
 
 function saveState() {
-  chrome.storage.local.set({
-    binIdx: state.binIdx,
-    countryIdx: state.countryIdx,
-    expMonth: state.expMonth,
-    expYear: state.expYear,
-    validateBin: state.validateBin,
-    compactView: state.compactView,
-    defaultCompact: state.defaultCompact,
-    selectedProfile: state.selectedProfile,
-    savedProfiles: state.savedProfiles,
-    favBins: state.favBins,
-    customBins: state.customBins,
-    card: state.card,
-    person: state.person,
-    history: state.history,
-  });
+  saveExtensionState(state);
 }
 
 function loadState() {
-  chrome.storage.local.get(
-    ['binIdx', 'countryIdx', 'expMonth', 'expYear', 'validateBin', 'compactView', 'defaultCompact', 'selectedProfile', 'savedProfiles', 'favBins', 'customBins', 'card', 'person', 'history'],
-    function (data) {
-      if (data.binIdx !== undefined) state.binIdx = data.binIdx;
-      if (data.countryIdx !== undefined) state.countryIdx = data.countryIdx;
-      if (data.expMonth) state.expMonth = data.expMonth;
-      if (data.expYear) state.expYear = data.expYear;
-      if (data.validateBin !== undefined) state.validateBin = data.validateBin;
-      if (data.defaultCompact !== undefined) state.defaultCompact = data.defaultCompact;
-      if (data.compactView !== undefined) state.compactView = data.compactView;
-      else state.compactView = state.defaultCompact;
-      if (data.selectedProfile) state.selectedProfile = data.selectedProfile;
-      if (data.savedProfiles) state.savedProfiles = data.savedProfiles;
-      if (data.favBins) state.favBins = data.favBins;
-      if (data.customBins) state.customBins = data.customBins;
-      if (data.history) state.history = data.history;
+  loadExtensionSettings(function (data) {
+    if (data.binIdx !== undefined) state.binIdx = data.binIdx;
+    if (data.countryIdx !== undefined) state.countryIdx = data.countryIdx;
+    if (data.expMonth) state.expMonth = data.expMonth;
+    if (data.expYear) state.expYear = data.expYear;
+    if (data.validateBin !== undefined) state.validateBin = data.validateBin;
+    if (data.defaultCompact !== undefined) state.defaultCompact = data.defaultCompact;
+    if (data.compactView !== undefined) state.compactView = data.compactView;
+    else state.compactView = state.defaultCompact;
+    if (data.sessionOnly !== undefined) state.sessionOnly = data.sessionOnly;
+    if (data.historyTtlMinutes !== undefined) state.historyTtlMinutes = data.historyTtlMinutes;
+    if (data.selectedProfile) state.selectedProfile = data.selectedProfile;
+    if (data.savedProfiles) state.savedProfiles = data.savedProfiles;
+    if (data.favBins) state.favBins = data.favBins;
+    if (data.customBins) state.customBins = data.customBins;
+
+    loadSensitiveState(state.sessionOnly, function (sensitiveData) {
+      if (sensitiveData.history) state.history = pruneHistory(sensitiveData.history, state.historyTtlMinutes);
 
       buildBins();
 
@@ -559,14 +575,15 @@ function loadState() {
       updateDeleteBinButton();
       applyCompact(true);
 
-      if (data.card) state.card = data.card;
-      if (data.person) state.person = data.person;
+      if (sensitiveData.card) state.card = sensitiveData.card;
+      if (sensitiveData.person) state.person = sensitiveData.person;
       if (!state.card) generateAll();
       else {
         render();
+        saveState();
       }
-    }
-  );
+    });
+  });
 }
 
 // ============ ACTIONS ============
@@ -585,8 +602,8 @@ function doAutofill() {
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     if (!tabs || !tabs[0]) { setStatus('No active tab', true); return; }
     var tab = tabs[0];
-    chrome.storage.local.set({ card: state.card, person: state.person }, function () {
-      chrome.tabs.sendMessage(tab.id, { action: 'autofill' }, function (resp) {
+    saveSensitiveState(state, function () {
+      chrome.tabs.sendMessage(tab.id, { action: 'autofill', card: state.card, person: state.person }, function (resp) {
         if (chrome.runtime.lastError) {
           chrome.scripting.executeScript({
             target: { tabId: tab.id },
@@ -596,20 +613,18 @@ function doAutofill() {
               setStatus('Cannot access page', true);
             } else {
               setTimeout(function () {
-                chrome.tabs.sendMessage(tab.id, { action: 'autofill' }, function (r2) {
+                chrome.tabs.sendMessage(tab.id, { action: 'autofill', card: state.card, person: state.person }, function (r2) {
                   if (chrome.runtime.lastError) {
                     setStatus('Fill attempted (injected)', false);
-                  } else if (r2 && r2.success) {
-                    setStatus('Filled! ' + r2.card.formatted + ' — ' + (r2.filled || []).join(', '));
+                  } else if (r2) {
+                    setStatus(formatAutofillStatus(r2), !r2.success);
                   }
                 });
               }, 400);
             }
           });
-        } else if (resp && resp.success) {
-          setStatus('Filled! ' + resp.card.formatted + ' — ' + (resp.filled || []).join(', '));
-        } else if (resp && resp.error) {
-          setStatus(resp.error, true);
+        } else if (resp) {
+          setStatus(formatAutofillStatus(resp), !resp.success);
         } else {
           setStatus('Fill completed', false);
         }
@@ -655,7 +670,9 @@ function copyCard() {
 
 // ============ INIT ============
 
-document.getElementById('btnGenerate').addEventListener('click', generateAll);
+document.getElementById('btnGenerate').addEventListener('click', function () {
+  generateAll({ requestBinPermission: true });
+});
 document.getElementById('btnOptions').addEventListener('click', openOptions);
 document.getElementById('btnSaveProfile').addEventListener('click', saveCustomProfile);
 document.getElementById('btnAutofill').addEventListener('click', doAutofill);
@@ -718,8 +735,19 @@ document.getElementById('selProfile').addEventListener('change', function () {
 });
 
 document.getElementById('chkValidateBin').addEventListener('change', function () {
-  state.validateBin = this.checked;
-  generateAll();
+  var checkbox = this;
+  if (checkbox.checked) {
+    requestBinLookupPermission(function (granted) {
+      state.validateBin = !!granted;
+      checkbox.checked = state.validateBin;
+      generateAll({ requestBinPermission: false });
+      if (!granted) setStatus('Live BIN lookup permission denied', true);
+    });
+  } else {
+    state.validateBin = false;
+    removeBinLookupPermission();
+    generateAll();
+  }
 });
 
 document.getElementById('chkDefaultCompact').addEventListener('change', function () {

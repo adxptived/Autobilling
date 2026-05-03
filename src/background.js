@@ -1,6 +1,8 @@
 // Service worker — bridge, hotkey, context menu, BIN proxy
 // Handles Ctrl+Shift+F hotkey and right-click context menu for instant autofill
 
+try { importScripts('extensionStorage.js', 'autofillDiagnostics.js'); } catch (e) {}
+
 // ============ Context Menu ============
 
 chrome.runtime.onInstalled.addListener(function () {
@@ -32,31 +34,34 @@ chrome.commands.onCommand.addListener(function (command) {
 // ============ Shared autofill logic ============
 
 function doAutofill(tab) {
-  chrome.storage.local.get(['card', 'person'], function (data) {
+  getAutofillData(function (data) {
     if (!data.card || !data.person) {
       console.log('[Autobilling] No card stored. Open popup and generate first.');
       return;
     }
 
-    chrome.storage.local.set({ card: data.card, person: data.person }, function () {
-      chrome.tabs.sendMessage(tab.id, { action: 'autofill' }, function (resp) {
-        if (chrome.runtime.lastError) {
-          chrome.scripting.executeScript({
-            target: { tabId: tab.id },
-            files: ['content.js'],
-          }, function () {
-            if (chrome.runtime.lastError) {
-              console.log('[Autobilling] Cannot inject:', chrome.runtime.lastError.message);
-              return;
-            }
-            setTimeout(function () {
-              chrome.tabs.sendMessage(tab.id, { action: 'autofill' });
-            }, 400);
-          });
-        } else if (resp && resp.success) {
-          console.log('[Autobilling] Filled:', resp.card.formatted);
-        }
-      });
+    chrome.tabs.sendMessage(tab.id, { action: 'autofill', card: data.card, person: data.person }, function (resp) {
+      if (chrome.runtime.lastError) {
+        chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          files: ['content.js'],
+        }, function () {
+          if (chrome.runtime.lastError) {
+            console.log('[Autobilling] Cannot inject:', chrome.runtime.lastError.message);
+            return;
+          }
+          setTimeout(function () {
+            chrome.tabs.sendMessage(tab.id, { action: 'autofill', card: data.card, person: data.person }, function (r2) {
+              if (chrome.runtime.lastError) return;
+              console.log('[Autobilling]', formatAutofillStatus(r2));
+            });
+          }, 400);
+        });
+      } else if (resp && resp.success) {
+        console.log('[Autobilling]', formatAutofillStatus(resp));
+      } else if (resp && resp.error) {
+        console.log('[Autobilling]', resp.error);
+      }
     });
   });
 }
