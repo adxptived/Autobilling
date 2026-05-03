@@ -16,8 +16,9 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run lint
+      - run: npm run validate:extensions
       - run: npm run zip
       - uses: actions/upload-artifact@v4
         with:
           name: autobilling-extension
-          path: autobilling.zip
+          path: autobilling-*.zip
