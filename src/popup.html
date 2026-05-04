@@ -291,6 +291,17 @@ button, select, input { font: inherit; }
   align-items: center;
   font-size: 11px;
 }
+.copy-stack {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+.copy-stack .btn-sm {
+  flex: 1;
+  min-height: 28px;
+  padding: 4px 6px;
+  font-size: 10px;
+}
 .person-compact .row-label {
   color: var(--dim);
   font-size: 9px;
@@ -484,7 +495,7 @@ input:focus {
 <div class="header">
   <div>
     <div class="brand-title">Autobilling</div>
-    <div class="brand-subtitle">Luhn card generator + Stripe autofill</div>
+    <div class="brand-subtitle">Luhn card generator + Universal autofill</div>
   </div>
   <button class="header-pill" id="btnOptions" title="Open settings">Settings</button>
 </div>
@@ -513,8 +524,16 @@ input:focus {
   <div class="person-compact">
     <span class="row-label">Name</span><span class="val copyable" id="personName" title="Click to copy name">---</span>
     <span class="row-label">Addr</span><span class="val copyable" id="personAddr" title="Click to copy address">---</span>
-    <span class="row-label">City</span><span class="val copyable" id="personZipCity" title="Click to copy city and ZIP">---</span>
+    <span class="row-label">City</span><span class="val copyable" id="personCity" title="Click to copy city">---</span>
+    <span class="row-label">ZIP</span><span class="val copyable" id="personZip" title="Click to copy ZIP only">---</span>
     <span class="row-label">Country</span><span class="val copyable" id="personCountry" title="Click to copy country">---</span>
+  </div>
+  <div class="copy-stack">
+    <button class="btn-sm ghost" id="btnCopyName" title="Copy full name">Name</button>
+    <button class="btn-sm ghost" id="btnCopyAddr" title="Copy address">Addr</button>
+    <button class="btn-sm ghost" id="btnCopyCity" title="Copy city">City</button>
+    <button class="btn-sm ghost" id="btnCopyZip" title="Copy ZIP only">ZIP</button>
+    <button class="btn-sm ghost" id="btnCopyCountry" title="Copy country">Ctry</button>
   </div>
   <div class="profile-row">
     <select id="selProfile">
@@ -528,7 +547,7 @@ input:focus {
 </div>
 
 <div class="action-stack">
-  <button class="btn btn-primary" id="btnAutofill">Fill Stripe Form</button>
+  <button class="btn btn-primary" id="btnAutofill">Autofill Form</button>
   <div class="btn-row">
     <button class="btn" id="btnGenerate">Generate</button>
     <button class="btn" id="btnCopy">Copy all</button>

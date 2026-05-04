@@ -288,7 +288,8 @@ function render() {
   if (state.person) {
     document.getElementById('personName').textContent = state.person.fullName;
     document.getElementById('personAddr').textContent = state.person.address1;
-    document.getElementById('personZipCity').textContent = state.person.postalCode + ' ' + state.person.city;
+    document.getElementById('personCity').textContent = state.person.city;
+    document.getElementById('personZip').textContent = state.person.postalCode;
     document.getElementById('personCountry').textContent = state.person.countryName;
   }
 
@@ -720,14 +721,29 @@ document.querySelector('.person-compact').addEventListener('click', function (e)
     text = state.person ? state.person.fullName : '';
   } else if (el.id === 'personAddr') {
     text = state.person ? state.person.address1 : '';
-  } else if (el.id === 'personZipCity') {
-    text = state.person ? state.person.postalCode + ' ' + state.person.city : '';
+  } else if (el.id === 'personCity') {
+    text = state.person ? state.person.city : '';
+  } else if (el.id === 'personZip') {
+    text = state.person ? state.person.postalCode : '';
   } else if (el.id === 'personCountry') {
     text = state.person ? state.person.countryName : '';
   }
 
   copyText(text);
 });
+
+// Quick-copy buttons
+function bindCopyBtn(id, getter) {
+  document.getElementById(id).addEventListener('click', function () {
+    if (!state.person) return;
+    copyText(getter(state.person));
+  });
+}
+bindCopyBtn('btnCopyName', function (p) { return p.fullName; });
+bindCopyBtn('btnCopyAddr', function (p) { return p.address1; });
+bindCopyBtn('btnCopyCity', function (p) { return p.city; });
+bindCopyBtn('btnCopyZip', function (p) { return p.postalCode; });
+bindCopyBtn('btnCopyCountry', function (p) { return p.countryName; });
 
 document.getElementById('selProfile').addEventListener('change', function () {
   state.selectedProfile = this.value;
@@ -768,10 +784,14 @@ buildExpiry();
 loadState();
 
 chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-  if (tabs && tabs[0] && tabs[0].url && tabs[0].url.indexOf('stripe.com') > -1) {
-    var btn = document.getElementById('btnAutofill');
-    btn.style.background = '#e94560';
-    btn.style.borderColor = '#e94560';
-    btn.style.color = '#fff';
+  if (tabs && tabs[0] && tabs[0].url) {
+    var url = tabs[0].url.toLowerCase();
+    var isCheckout = /checkout|payment|subscribe|billing|order|cart|pay\./i.test(url);
+    if (isCheckout) {
+      var btn = document.getElementById('btnAutofill');
+      btn.style.background = '#e94560';
+      btn.style.borderColor = '#e94560';
+      btn.style.color = '#fff';
+    }
   }
 });
