@@ -40,12 +40,18 @@ function doAutofill(tab) {
       return;
     }
 
-    chrome.tabs.sendMessage(tab.id, { action: 'autofill', card: data.card, person: data.person }, function (resp) {
-      if (chrome.runtime.lastError) {
-        console.log('[Autobilling] Content script not loaded:', chrome.runtime.lastError.message);
-        return;
-      }
-      console.log('[Autobilling]', formatAutofillStatus(resp));
+    // Inject into all frames including dynamically-created Stripe iframes
+    chrome.scripting.executeScript({
+      target: { tabId: tab.id, allFrames: true },
+      files: ['content.js'],
+    }, function () {
+      chrome.tabs.sendMessage(tab.id, { action: 'autofill', card: data.card, person: data.person }, function (resp) {
+        if (chrome.runtime.lastError) {
+          console.log('[Autobilling] Fill attempted');
+          return;
+        }
+        console.log('[Autobilling]', formatAutofillStatus(resp));
+      });
     });
   });
 }

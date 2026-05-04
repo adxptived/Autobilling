@@ -624,14 +624,21 @@ function doAutofill() {
     if (!tabs || !tabs[0]) { setStatus('No active tab', true); return; }
     var tab = tabs[0];
     saveSensitiveState(state, function () {
-      chrome.tabs.sendMessage(tab.id, { action: 'autofill', card: state.card, person: state.person }, function (resp) {
-        if (chrome.runtime.lastError) {
-          setStatus('Content script not ready. Reload the page.', true);
-        } else if (resp) {
-          setStatus(formatAutofillStatus(resp), !resp.success);
-        } else {
-          setStatus('Fill completed', false);
-        }
+      // Inject into all frames including dynamically-created Stripe iframes
+      chrome.scripting.executeScript({
+        target: { tabId: tab.id, allFrames: true },
+        files: ['content.js'],
+      }, function () {
+        // Ignore injection errors — content.js may already be loaded via content_scripts
+        chrome.tabs.sendMessage(tab.id, { action: 'autofill', card: state.card, person: state.person }, function (resp) {
+          if (chrome.runtime.lastError) {
+            setStatus('Fill attempted', false);
+          } else if (resp) {
+            setStatus(formatAutofillStatus(resp), !resp.success);
+          } else {
+            setStatus('Fill completed', false);
+          }
+        });
       });
     });
   });
