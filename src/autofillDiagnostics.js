@@ -4,9 +4,13 @@ var AUTOFILL_FIELDS = [
   { keys: ['cvv'], label: 'CVV' },
   { keys: ['cardholderName', 'name'], label: 'cardholder name' },
   { keys: ['address1'], label: 'address line 1' },
+  { keys: ['address2'], label: 'address line 2' },
   { keys: ['postal'], label: 'postal code' },
   { keys: ['city'], label: 'city' },
+  { keys: ['state'], label: 'state/province' },
   { keys: ['country'], label: 'country' },
+  { keys: ['email'], label: 'email' },
+  { keys: ['phone'], label: 'phone' },
 ];
 
 function buildAutofillDiagnostics(filled) {

@@ -3,11 +3,14 @@ const { buildAutofillDiagnostics, formatAutofillStatus } = require('../src/autof
 
 const diagnostics = buildAutofillDiagnostics(['cardNumber', 'expiry', 'cvv', 'postal']);
 assert.deepStrictEqual(diagnostics.filled, ['card number', 'expiry', 'CVV', 'postal code']);
-assert.deepStrictEqual(diagnostics.missing, ['cardholder name', 'address line 1', 'city', 'country']);
+assert.deepStrictEqual(diagnostics.missing, [
+  'cardholder name', 'address line 1', 'address line 2',
+  'city', 'state/province', 'country', 'email', 'phone',
+]);
 
 assert.strictEqual(
   formatAutofillStatus({ success: true, filled: ['cardNumber', 'cvv'] }),
-  'Filled 2/8: card number, CVV. Missing: expiry, cardholder name, address line 1, postal code, city, country',
+  'Filled 2/12: card number, CVV. Missing: expiry, cardholder name, address line 1, address line 2, postal code, city, state/province, country, email, phone',
 );
 assert.strictEqual(
   formatAutofillStatus({ success: false, error: 'Cannot access page' }),

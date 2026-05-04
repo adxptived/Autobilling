@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<!-- saved from url=(0880)https://js.stripe.com/v3/elements-inner-accessory-target-48c7bef0249130ee67d0ade28f8ce40d.html#__shared_params__[version]=v3&__shared_params__[light_experiment_assignments]=%7B%22token%22%3A%220e6b6814-77ce-4275-9e34-06ffb1eb5150%22%2C%22assignments%22%3A%7B%22link_ewcs_prewarm_experiment_v2%22%3A%22treatment%22%7D%7D&wait=false&rtl=false&publicOptions[mode]=billing&elementsInitSource=stripe.elements&elementId=address-23d15690-b509-42ee-a405-808262f555ab&componentName=address&keyMode=live&apiKey=pk_live_51NtQZ0IQZbkoX3sXHLZfigdFgKw588jbEYSRXsf87twmAz3nYYqybFovq8BYz9fIf7NZfjKpmeTIpT9ajoZ0m9RI00bmcT1xWx&frameMessagingStrategy=direct&accessoryCssUrl=https%3A%2F%2Fjs.stripe.com%2Fv3%2Ffingerprinted%2Fcss%2Felements-inner-address-e860cb60d5021139a1682fcedb11a9dd.css&referrer=https%3A%2F%2Ffeatherless.ai%2Faccount%2Fpayment-methods&controllerId=__privateStripeController8241 -->
+<html dir="ltr" lang="ru"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<!-- prettier-ignore -->
+<script>!function(){"use strict";function e(t){var n=s[t];if(void 0!==n)return n.exports;var r=s[t]={exports:{}};return i[t](r,r.exports,e),r.exports}function t(e,t,n){return t in e?Object.defineProperty(e,t,{value:n,enumerable:!0,configurable:!0,writable:!0}):e[t]=n,e}function n(e,t){var n=Object.keys(e);if(Object.getOwnPropertySymbols){var r=Object.getOwnPropertySymbols(e);t&&(r=r.filter((function(t){return Object.getOwnPropertyDescriptor(e,t).enumerable}))),n.push.apply(n,r)}return n}function r(e){for(var r=1;r<arguments.length;r++){var o=null!=arguments[r]?arguments[r]:{};r%2?n(Object(o),!0).forEach((function(n){t(e,n,o[n])})):Object.getOwnPropertyDescriptors?Object.defineProperties(e,Object.getOwnPropertyDescriptors(o)):n(Object(o)).forEach((function(t){Object.defineProperty(e,t,Object.getOwnPropertyDescriptor(o,t))}))}return e}function o(e,t){(null==t||t>e.length)&&(t=e.length);for(var n=0,r=new Array(t);n<t;n++)r[n]=e[n];return r}function a(){return a=Object.assign?Object.assign.bind():function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var r in n)Object.prototype.hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e},a.apply(this,arguments)}var i={72602:function(e,t,n){function r(e){f.length||(i(),!0),f[f.length]=e}function o(){for(;l<f.length;){var e=l;if(l+=1,f[e].call(),l>1024){for(var t=0,n=f.length-l;t<n;t++)f[t]=f[t+l];f.length-=l,l=0}}f.length=0,l=0,!1}function a(e){return function(){function t(){clearTimeout(n),clearInterval(r),e()}var n=setTimeout(t,0),r=setInterval(t,50)}}e.exports=r;var i,s,c,u,f=[],l=0,p=void 0!==n.g?n.g:self,d=p.MutationObserver||p.WebKitMutationObserver;"function"==typeof d?(s=1,c=new d(o),u=document.createTextNode(""),c.observe(u,{characterData:!0}),i=function(){s=-s,u.data=s}):i=a(o),r.requestFlush=i,r.makeRequestCallFromTimer=a},52689:function(e,t,n){function r(){}function o(e){if("object"!=typeof this)throw new TypeError("Promises must be constructed via new");if("function"!=typeof e)throw new TypeError("Promise constructor's argument is not a function");this._x=0,this._y=0,this._z=null,this._A=null,e!==r&&f(e,this)}function a(e,t){for(;3===e._y;)e=e._z;if(o._B&&o._B(e),0===e._y)return 0===e._x?(e._x=1,void(e._A=t)):1===e._x?(e._x=2,void(e._A=[e._A,t])):void e._A.push(t);!function(e,t){l((function(){var n=1===e._y?t.onFulfilled:t.onRejected;if(null!==n){var r=function(e,t){try{return e(t)}catch(e){return p=e,d}}(n,e._z);r===d?s(t.promise,p):i(t.promise,r)}else 1===e._y?i(t.promise,e._z):s(t.promise,e._z)}))}(e,t)}function i(e,t){if(t===e)return s(e,new TypeError("A promise cannot be resolved with itself."));if(t&&("object"==typeof t||"function"==typeof t)){var n=function(e){try{return e.then}catch(e){return p=e,d}}(t);if(n===d)return s(e,p);if(n===e.then&&t instanceof o)return e._y=3,e._z=t,void c(e);if("function"==typeof n)return void f(n.bind(t),e)}e._y=1,e._z=t,c(e)}function s(e,t){e._y=2,e._z=t,o._C&&o._C(e,t),c(e)}function c(e){if(1===e._x&&(a(e,e._A),e._A=null),2===e._x){for(var t=0;t<e._A.length;t++)a(e,e._A[t]);e._A=null}}function u(e,t,n){this.onFulfilled="function"==typeof e?e:null,this.onRejected="function"==typeof t?t:null,this.promise=n}function f(e,t){var n=!1,r=function(e,t,n){try{e(t,n)}catch(e){return p=e,d}}(e,(function(e){n||(n=!0,i(t,e))}),(function(e){n||(n=!0,s(t,e))}));n||r!==d||(n=!0,s(t,p))}var l=n(72602),p=null,d={};e.exports=o,o._B=null,o._C=null,o._D=r,o.prototype.then=function(e,t){if(this.constructor!==o)return function(e,t,n){return new e.constructor((function(i,s){var c=new o(r);c.then(i,s),a(e,new u(t,n,c))}))}(this,e,t);var n=new o(r);return a(this,new u(e,t,n)),n}},45949:function(e,t,n){function r(e){var t=new c(c._D);return t._y=1,t._z=e,t}function o(e){return{status:"fulfilled",value:e}}function a(e){return{status:"rejected",reason:e}}function i(e){if(e&&("object"==typeof e||"function"==typeof e)){if(e instanceof c&&e.then===c.prototype.then)return e.then(o,a);var t=e.then;if("function"==typeof t)return new c(t.bind(e)).then(o,a)}return o(e)}function s(e){if("function"==typeof AggregateError)return new AggregateError(e,"All promises were rejected");var t=new Error("All promises were rejected");return t.name="AggregateError",t.errors=e,t}var c=n(52689);e.exports=c;var u=r(!0),f=r(!1),l=r(null),p=r(void 0),d=r(0),m=r("");c.resolve=function(e){if(e instanceof c)return e;if(null===e)return l;if(void 0===e)return p;if(!0===e)return u;if(!1===e)return f;if(0===e)return d;if(""===e)return m;if("object"==typeof e||"function"==typeof e)try{var t=e.then;if("function"==typeof t)return new c(t.bind(e))}catch(e){return new c((function(t,n){n(e)}))}return r(e)};var y=function(e){return"function"==typeof Array.from?(y=Array.from,Array.from(e)):(y=function(e){return Array.prototype.slice.call(e)},Array.prototype.slice.call(e))};c.all=function(e){var t=y(e);return new c((function(e,n){function r(a,i){if(i&&("object"==typeof i||"function"==typeof i)){if(i instanceof c&&i.then===c.prototype.then){for(;3===i._y;)i=i._z;return 1===i._y?r(a,i._z):(2===i._y&&n(i._z),void i.then((function(e){r(a,e)}),n))}var s=i.then;if("function"==typeof s)return void new c(s.bind(i)).then((function(e){r(a,e)}),n)}t[a]=i,0==--o&&e(t)}if(0===t.length)return e([]);for(var o=t.length,a=0;a<t.length;a++)r(a,t[a])}))},c.allSettled=function(e){return c.all(y(e).map(i))},c.reject=function(e){return new c((function(t,n){n(e)}))},c.race=function(e){return new c((function(t,n){y(e).forEach((function(e){c.resolve(e).then(t,n)}))}))},c.prototype.catch=function(e){return this.then(null,e)},c.any=function(e){return new c((function(t,n){function r(e){i||(i=!0,t(e))}function o(e){u.push(e),u.length===a.length&&n(s(u))}var a=y(e),i=!1,u=[];0===a.length?n(s(u)):a.forEach((function(e){c.resolve(e).then(r,o)}))}))}},51783:function(e,t,n){var r=n(52689);e.exports=r,r.prototype.finally=function(e){return this.then((function(t){return r.resolve(e()).then((function(){return t}))}),(function(t){return r.resolve(e()).then((function(){throw t}))}))}},61776:function(e,t,n){n.d(t,{K7:function(){return s}});var r,o=n(45949),a=n.n(o),i=(n(51783),window.Promise),s=i&&null!=i&&null!==(r=i.prototype)&&void 0!==r&&r.finally?i:a();a().allSettled}},s={};e.n=function(t){var n=t&&t.__esModule?function(){return t.default}:function(){return t};return e.d(n,{a:n}),n},e.d=function(t,n){for(var r in n)e.o(n,r)&&!e.o(t,r)&&Object.defineProperty(t,r,{enumerable:!0,get:n[r]})},e.g=function(){if("object"==typeof globalThis)return globalThis;try{return this||new Function("return this")()}catch(e){if("object"==typeof window)return window}}(),e.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)};var c,u,f,l=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},p=/^(http(s)?):\/\//,d=function(e){if(!function(e){return p.test(e)}(e))return null;var t;try{t=new URL(e)}catch(n){(t=document.createElement("a")).href=e}var n=t.protocol,r=t.host,o=t.pathname,a=t.hash,i=/:80$/,s=/:443$/;return"http:"===n&&i.test(r)?r=r.replace(i,""):"https:"===n&&s.test(r)&&(r=r.replace(s,"")),{host:r,protocol:n,origin:"".concat(n,"//").concat(r),pathname:o,hash:a}},m=d("https://payments.stripe.com"),y=(m&&m.origin,new Set(["https://checkout.stripe.com","https://checkout.link.com","https://buy.stripe.com","https://book.stripe.com","https://donate.stripe.com","https://js.stripe.com"]),new Set(["https://stripejsdevapp-checkout.corp.stripe.com","https://checkout.stripe.com","https://buy.stripe.com","https://book.stripe.com","https://donate.stripe.com"]),new Set(["https://crypto-standalone-site.corp.stripe.com","https://crypto-standalone-site.qa.corp.stripe.com","https://payments.playground.klarna.com","https://pay.playground.klarna.com","https://login.playground.klarna.com","https://js.playground.klarna.com","https://js.klarna.com","https://payments.klarna.com","https://pay.klarna.com","https://pay.test.klarna.com","https://login.klarna.com"]),function(e,t){var n=d(e),r=d(t);return!(!n||!r)&&n.origin===r.origin}),h=function(e){return function(e){return y(e,"https://js.stripe.com/v3/")}(e)||function(e){var t=d(e),n=t?t.host:"";return"stripe.com"===n||!!n.match(/\.stripe\.(com|me)$/)}(e)||function(e){var t,n=d(e),r=n?n.host:"";return r===((null===(t=d("https://checkout.link.com/"))||void 0===t?void 0:t.host)||"checkout.link.com")||"link.com"===r||!!r.match(/\.link\.(com)$/)}(e)},g=r(r({},{card:"card",cardNumber:"cardNumber",cardExpiry:"cardExpiry",cardCvc:"cardCvc",postalCode:"postalCode",iban:"iban",idealBank:"idealBank",p24Bank:"p24Bank",paymentRequestButton:"paymentRequestButton",auBankAccount:"auBankAccount",fpxBank:"fpxBank",netbankingBank:"netbankingBank",epsBank:"epsBank",affirmMessage:"affirmMessage",afterpayClearpayMessage:"afterpayClearpayMessage",unifiedMessage:"unifiedMessage",paymentMethodMessaging:"paymentMethodMessaging",linkAuthentication:"linkAuthentication",payment:"payment",issuingCardNumberDisplay:"issuingCardNumberDisplay",issuingCardCopyButton:"issuingCardCopyButton",issuingCardCvcDisplay:"issuingCardCvcDisplay",issuingCardExpiryDisplay:"issuingCardExpiryDisplay",issuingCardPinDisplay:"issuingCardPinDisplay",shippingAddress:"shippingAddress",address:"address",expressCheckout:"expressCheckout",payButton:"payButton",currencySelector:"currencySelector",taxId:"taxId",issuingAddToWalletButton:"issuingAddToWalletButton",paymentForm:"paymentForm",link:"link",email:"email",contactDetails:"contactDetails"}),{idealBankSecondary:"idealBankSecondary",p24BankSecondary:"p24BankSecondary",auBankAccountNumber:"auBankAccountNumber",auBsb:"auBsb",fpxBankSecondary:"fpxBankSecondary",netbankingBankSecondary:"netbankingBankSecondary",epsBankSecondary:"epsBankSecondary",affirmMessageModal:"affirmMessageModal",afterpayClearpayMessageModal:"afterpayClearpayMessageModal",paymentMethodMessagingLegacyModal:"paymentMethodMessagingLegacyModal",paymentMethodMessagingModal:"paymentMethodMessagingModal",autocompleteSuggestions:"autocompleteSuggestions",achBankSearchResults:"achBankSearchResults",linkInfoModal:"linkInfoModal",loaderUi:"loaderUi",linkPurchaseProtectionModal:"linkPurchaseProtectionModal",linkModal:"linkModal",easel:"easel"}),v=(g.linkAuthentication,g.payment,g.shippingAddress,g.address,g.expressCheckout,g.payButton,g.currencySelector,g.taxId,g.achBankSearchResults,g.autocompleteSuggestions,g.link,g.card,g.cardNumber,g.cardExpiry,g.cardCvc,g.postalCode,[].concat((c=["US","CA","GB","PR"],function(e){if(Array.isArray(e))return o(e)}(c)||function(e){if("undefined"!=typeof Symbol&&null!=e[Symbol.iterator]||null!=e["@@iterator"])return Array.from(e)}(c)||function(e,t){if(e){if("string"==typeof e)return o(e,t);var n=Object.prototype.toString.call(e).slice(8,-1);return"Object"===n&&e.constructor&&(n=e.constructor.name),"Map"===n||"Set"===n?Array.from(e):"Arguments"===n||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)?o(e,t):void 0}}(c)||function(){throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}()),["IN"]),d("https://js.stripe.com/v3/")),b=v?v.origin:"",w={family:"font-family",src:"src",unicodeRange:"unicode-range",style:"font-style",variant:"font-variant",stretch:"font-stretch",weight:"font-weight",display:"font-display"},_=(Object.keys(w).reduce((function(e,t){return e[w[t]]=t,e}),{}),g.issuingCardCopyButton,g.idealBank,g.p24Bank,g.netbankingBank,g.idealBankSecondary,g.p24BankSecondary,g.netbankingBankSecondary,g.fpxBank,g.fpxBankSecondary,g.epsBank,g.epsBankSecondary,Object.keys({visa:"visa",amex:"amex",discover:"discover",mastercard:"mastercard",jcb:"jcb",diners:"diners",unionpay:"unionpay",elo:"elo",unknown:"unknown"}),{VISA:"visa",MASTERCARD:"mastercard",AMEX:"amex",DISCOVER:"discover",JCB:"jcb",DINERS:"diners",UNIONPAY:"unionpay",ELO:"elo"}),k=(Object.keys(_).map((function(e){return _[e]})),r(r({},_),{},{MAESTRO:"maestro",CARTES_BANCAIRES:"cartes_bancaires",EFTPOS_AU:"eftpos_au",INTERAC:"interac",CONECS_SDX:"conecs_sdx",CONECS_UP:"conecs_up",CONECS_NIT:"conecs_nit"})),S=(Object.keys(k).map((function(e){return k[e]})),e(61776).K7,e(61776).K7,e(61776).K7,e(61776).K7,e(61776).K7,e(61776).K7,e(61776).K7,e(61776).K7,function(e){var t,n;return function(){for(var r=arguments.length,o=new Array(r),a=0;a<r;a++)o[a]=arguments[a];return n&&o.length===n.length&&o.every((function(e,t){return e===n[t]}))?t:(n=o,t=e.apply(void 0,o))}}),A=S((function(e){return e?e.toLowerCase():""})),O=function(e,t){return!!e&&-1!==e.indexOf(t)},C=S((function(e){return O(A(e),"edge/")})),B=function(e){return O(A(e),"edg/")},x=S((function(e){return(O(A(e),"msie")||O(A(e),"trident"))&&/(MSIE ([0-9]{1,}[.0-9]{0,})|Trident\/)/i.test(e)})),M=function(e){return O(e,"SamsungBrowser")},j=function(e,t){return(O(A(e),"iphone")||E(e,t))&&!x(e)},E=function(e,t){return(O(A(e),"ipad")||O(A(e),"macintosh")&&(t>0||"ontouchstart"in window))&&!x(e)},N=S((function(e){return O(A(e),"macintosh")||O(A(e),"iphone")||O(A(e),"ipad")||O(A(e),"ipod")})),I=function(e,t){return N(e)&&O(e,"like")&&(/(iPhone|iPod|iPad).*AppleWebKit((?!.*Safari)|(.*\([^)]*like[^)]*Safari[^)]*\)))/i.test(e)||/(Macintosh).*AppleWebKit((?!.*Safari)|(.*\([^)]*like[^)]*Safari[^)]*\)))/i.test(e)&&E(e,t))},F=S((function(e){return T(e)&&/wv|Version\/\d+\.\d+/.test(e)&&!R(e)})),P=function(e){var t=A(e);return O(t,"fban")||O(t,"fbav")||O(t,"fb_iab")||O(t,"facebook")||O(t,"fbios")||O(e,"FB4A")},R=function(e){return O(A(e),"opera mini")},D=S((function(e){return N(e)&&!z(e)&&/^((?!chrome|android).)*safari/i.test(e)&&!M(e)})),U=function(e,t){return D(e)&&!j(e,t)},T=function(e){return O(A(e),"android")&&!x(e)},z=S((function(e){return O(A(e),"chrome/")})),K=S((function(e){return z(e)&&/Chrome\/(7[4-9]|[8-9]\d+|[1-9]\d{2,})/i.test(e)})),L="undefined"!=typeof window,W=L?window.navigator.maxTouchPoints:0,V=L?window.navigator.userAgent:"",q=(C(V),B(V),C(u=V)&&/Edge\/((1[0-6]\.)|0\.)/i.test(u),x(V),function(e){O(A(e),"msie")&&/MSIE ([0-9]{1,}[.0-9]{0,})/i.test(e)}(V),j(V,W),E(V,W),function(e,t){j(e,t)||T(e)}(V,W),T(V),F(V),function(e){O(A(e),"android 4.")&&!O(A(e),"chrome")&&T(e)}(V),I(V,W),D(V)),$=(function(e,t){var n=j(e,t)&&/OS (1[7-9]|[2-9]\d+|[1-9]\d{2,})/i.test(e);D(e)&&/Version\/(1[7-9]|[2-9]\d+|[1-9]\d{2,})/i.test(e)}(V,W),function(e,t){U(e,t)&&D(e)&&/Version\/18\.[0-2]/i.test(e)}(V,W),U(V,W),function(e){O(A(e),"firefox")}(V),M(V),z(V)),J=(function(e){z(e)&&(K(e)||/Chrome\/(6[6-9]|[7-9]\d+|[1-9]\d{2,})/i.test(e))}(V),K(V),function(e){O(A(e),"applewebkit/")&&!O(A(e),"chrome")&&!C(e)&&x(e)}(V),function(e){O(A(e),"chrome")&&C(e)}(V),function(e){O(A(e),"crios")}(V),function(e){O(A(e),"fxios")}(V),function(e){O(A(e),"edgios")}(V),function(e){O(A(e),"electron")}(V),R(V),function(e){T(e)&&O(A(e),"opr/")}(V),function(e){N(e)&&!z(e)&&/Macintosh.*AppleWebKit(?!.*Safari)/i.test(e)}(V),function(e){O(A(e),"safari line")}(V),function(e){O(A(e),"pinterest/ios")}(V),function(e){N(e)&&(O(A(e),"fban")||O(A(e),"fbav")||O(A(e),"fb_iab")||O(A(e),"facebook")||O(A(e),"fbios")||O(e,"FB"))&&O(e,"MessengerLiteForiOS")}(V),function(e){N(e)&&O(A(e),"instagram")}(V),function(e){T(e)&&O(e,"FB4A")}(V),function(e){O(e,"IABMV/1")}(V),function(e){/OS 18_0/i.test(e)}(V),function(e){O(e,"AdsBot-Google")}(V),S((function(){return q&&"download"in document.createElement("a")})),L&&!!window.navigator.brave&&window.navigator.brave.isBrave,function(){var e=window.navigator&&"standalone"in window.navigator&&window.navigator.standalone;return L&&!!e}),H=(S((function(){return I(V,W)||F(V)||P(V)||J()})),S((function(){return J()||!!window.matchMedia&&window.matchMedia("(display-mode: standalone)").matches})),S((function(e){var t=A(e);return O(t,"windows")?"Windows":O(t,"android")?"Android":O(t,"iphone")||O(t,"ipad")?"iOS":O(t,"mac os")?"MacOS":O(t,"cros")?"ChromeOS":O(t,"linux")?"Linux":"Other"}))),G=(S((function(e){var t=A(e);return M(e)?"SamsungBrowser":O(t,"instagram")?"Instagram":O(t,"firefox")?"Firefox":C(e)||B(e)?"IE Edge":x(e)?"IE":P(e)?"Facebook":O(t,"chrome")?"Chrome":O(t,"safari")?"Safari":"Other"})),H(V),$&&H(V),e(61776).K7,function(e){return e&&"object"==typeof e&&(e.constructor===Array||e.constructor===Object)}),X=function(e){return G(e)?Array.isArray(e)?e.slice(0,e.length):a({},e):e},Y=function e(t){return function(){for(var n=arguments.length,r=new Array(n),o=0;o<n;o++)r[o]=arguments[o];if(Array.isArray(r[0])&&t)return X(r[0]);var a=Array.isArray(r[0])?[]:{};return r.forEach((function(n){n&&Object.keys(n).forEach((function(r){var o=a[r],i=n[r],s=G(o)&&!(t&&Array.isArray(o));"object"==typeof i&&s?a[r]=e(t)(o,X(i)):void 0!==i?a[r]=G(i)?e(t)(i):X(i):void 0!==o&&(a[r]=o)}))})),a}},Q=(Y(!1),Y(!0),new WeakMap,new WeakMap,"a[href], area[href], input:not([disabled]),\n  select:not([disabled]), textarea:not([disabled]), button:not([disabled]),\n  object, embed, *[tabindex], *[contenteditable]"),Z=("".concat(Q,', iframe[name^="__privateStripeFrame"]'),function(e,t){if(e<=0)return[];for(var n=new Array(e),r=0;r<e;r++)n[r]=t;return n}(21,!0).map((function(e,t,n){return t/(n.length-1)})),e(61776).K7,!1),ee=function(e){var t,n=e.targetOrigin,o=e.type,a=n;switch(o){case"sibling":t=function(e){try{return window.parent.frames[e]}catch(e){return null}}(e.targetFrameId);break;case"child":if(!(t=window.frames[e.targetFrameId])){var i=document.querySelector('iframe[name="'.concat(e.targetFrameId,'"]'));i&&(t=i.contentWindow,f&&!Z&&(Z=!0,f("post_message.iframe_fallback_lookup.success")))}break;case"parent":a=a||"*",t=window.parent;break;default:!function(e){throw new Error("".concat(arguments.length>1&&void 0!==arguments[1]?arguments[1]:"absurd",': expected nothing but got "').concat(e,'"'))}(o)}if(a=a||b,t&&"function"==typeof t.postMessage){var s=e.message.delegate?{targetOrigin:a,delegate:e.message.delegate}:a;t.postMessage(JSON.stringify(r(r({},e),{},{__stripeJsV3:!0})),s)}},te=function(e){return"stripe-wrapped-accessory-message"===e.action},ne=/https?:\/\/([^/]*)\/[^:]*/g,re=["Page already has an active payment session.","ResizeObserver loop limit exceeded","ResizeObserver loop completed with undelivered notifications."],oe=function(e){var t,n,r,o,a;if(function(e){return e._isUserError||"string"==typeof e.message&&-1!==re.indexOf(e.message)||"string"==typeof e.message&&/Failed to execute\W*querySelectorAll\W*on\W*Document.*is not a valid selector/.test(e.message)}(e))return null;var i="string"==typeof e.fileName?e.fileName.split("?")[0].split("#")[0]:null,s="string"==typeof e.stack?function(e){var t=e,n=e.match(ne);return n&&n.forEach((function(e){-1===e.indexOf("https://js.stripe.com")&&(t=t.replace(e,"<external url>"))})),t.substring(0,1e3)}(e.stack):null,c=!!i&&-1!==i.indexOf("https://js.stripe.com/v3/"),u=function(e){return function(e){return"Script error."===e.message||"string"==typeof e.fileName&&(0===e.fileName.indexOf("chrome://")||0===e.fileName.indexOf("chrome-extension://"))}(e)?"uncaught_third_party_error":"IntegrationError"===e.name?"integration_error":"fatal.uncaught_error"}(e);return{eventName:u,eventData:{name:"string"==typeof e.name?e.name:null,message:"string"==typeof e.message?e.message:null,fileName:i,lineNumber:"number"==typeof e.lineNumber?e.lineNumber:null,columnNumber:"number"==typeof e.columnNumber?e.columnNumber:null,stack:s,iframe:e.iframe,inPromise:null!==(t=e.inPromise)&&void 0!==t?t:null,element:null!==(n=e.element)&&void 0!==n?n:null,elementHasLoaded:null!==(r=e.elementHasLoaded)&&void 0!==r?r:null,apiMethodName:null!==(o=e.apiMethodName)&&void 0!==o?o:null,isStripeOrigin:c,selectedPaymentForm:null!==(a=e.selectedPaymentForm)&&void 0!==a?a:null}}},ae=function(e,t,n){var o=function(e){try{var t="string"==typeof e?JSON.parse(e):e;return t.__stripeJsV3?t:null}catch(e){return null}}(e);if(o&&"sibling"===o.type&&o.targetFrameId===t.name){var a=o.message;ee({type:"sibling",sourceFrameId:t.name,controllerAppFrameId:n,targetFrameId:n,message:te(a)?a:{action:"stripe-wrapped-accessory-message",payload:r(r({},o),{},{accessoryFrameId:t.name,message:a})}})}},ie=function e(t){var n=t.win,r=t.cssUrl,o=t.onSuccess,a=t.onRetryAttempt,i=t.onFinalFailure,s=t.attempt,c=void 0===s?1:s,u=n.document.createElement("link");u.rel="stylesheet",u.href=r,u.addEventListener("load",(function(){return o(c)})),u.addEventListener("error",(function(){if(u.remove(),c<=5){a(c);var t=150*Math.pow(2,c-1);setTimeout((function(){e({win:n,cssUrl:r,onSuccess:o,onRetryAttempt:a,onFinalFailure:i,attempt:c+1})}),t)}else i()})),n.document.head.appendChild(u)};!function(e){var t,n,o=!1,a=(t=e.location.hash.substring(1).split("?")[0],n={},t.replace(/\+/g," ").split("&").forEach((function(e){var t,r=e.split("="),o=decodeURIComponent(r[0]),a=n,i=0,s=o.split("]["),c=s.length-1;if(/\[/.test(s[0])&&/\]$/.test(s[c])?(s[c]=s[c].replace(/\]$/,""),c=(s=s.shift().split("[").concat(s)).length-1):c=0,!(s.indexOf("__proto__")>=0))if(2===r.length)if(t=decodeURIComponent(r[1]),c)for(;i<=c;i++){if(o=""===s[i]?a.length:s[i],!l(a,o)&&a[o])return;a[o]=i<c?a[o]||(s[i+1]&&isNaN(s[i+1])?{}:[]):t,a=a[o]}else if(Array.isArray(n[o]))n[o].push(t);else if(void 0!==n[o]){if(!l(n,o))return;n[o]=[n[o],t]}else n[o]=t;else o&&(n[o]="")})),n),i=function(t,n,o){ee({type:"parent",sourceFrameId:e.name,controllerAppFrameId:a.controllerId,message:{action:"stripe-frame-event",payload:{event:"accessory-target-report",data:r({event:t,message:n,timestamp:Date.now(),frame_width:e.innerWidth,element:a.componentName},o||{})}}})},s=function(){o||(o=!0,ee({type:"parent",sourceFrameId:e.name,controllerAppFrameId:a.controllerId,message:{action:"stripe-frame-event",payload:{event:"accessory-target-load",data:{}}}}))};if(e.onerror=function(e,t,n,r,s){var c=oe({name:null==s?void 0:s.name,message:e,fileName:t,lineNumber:n,columnNumber:r,stack:null==s?void 0:s.stack,iframe:!0,element:a.componentName,elementHasLoaded:o});return c&&i("accessory_frame.accessory_target_error","Uncaught error in accessory target frame",c.eventData),!1},a.accessoryCssUrl){var c=d(a.accessoryCssUrl);c&&h(c.origin)?(ie({win:e,cssUrl:a.accessoryCssUrl,onSuccess:function(e){e>1&&i("accessory_frame.css_retry_success","CSS loaded after retry",{attempt:e,retries:e-1}),s()},onRetryAttempt:function(e){1===e&&(s(),i("accessory_frame.rendering_without_css","Element rendering unblocked, CSS retries continuing")),i("accessory_frame.css_retry_attempt","CSS load failed, retrying",{attempt:e,maxRetries:5})},onFinalFailure:function(){i("accessory_frame.css_retries_exhausted","Failed to attach CSS to accessory target frame after retries",{retries:5})}}),e.addEventListener("message",(function(t){var n=t.data,r=t.origin;y(b,r)&&(!function(e,t){if("string"==typeof e){var n;try{n=JSON.parse(e)}catch(e){return}if("stripe-forward-to-child-frame"===n.action){var r=n.payload,o=r.targetFrameName,a=r.message,i=r.targetOrigin;if(h(i)){var s=window.frames[o];s&&(t("accessory_frame.forward_message_to_child_frame","Forwarding message to child frame",{targetFrameName:o,targetOrigin:i}),s.postMessage(a,i))}else t("accessory_frame.forward_message_untrusted_origin","Rejecting forward-to-child-frame message with untrusted targetOrigin",{targetFrameName:o,targetOrigin:i})}}}(n,i),ae(n,e,a.controllerId))}))):i("accessory_frame.accessory_target_security_error","Untrusted CSS URL origin detected: ".concat(a.accessoryCssUrl))}else i("accessory_frame.accessory_target_error","accessoryCssUrl is not provided when initializing accessory frame")}(window)}();</script><link rel="stylesheet" href="./elements-inner-address-e860cb60d5021139a1682fcedb11a9dd.css">
+<style></style><style>
+:root {
+  --buttonColorBackground: #85d996;
+  --buttonColorText: #30313d;
+  --p-buttonColorBackgroundHover: #65cf7a;
+  --p-buttonColorBackgroundActive: #50c868;
+  --accessibleColorOnColorPrimary: #30313d;
+  --p-colorPrimaryHover: #55ca6d;
+  --p-colorPrimaryActive: #3cc057;
+  --p-colorPrimaryAlpha20: hsla(132, 53%, 69%, 25%);
+  --p-colorPrimaryAlpha40: hsla(132, 53%, 69%, 40%);
+  --p-colorPrimaryAlpha50: hsla(132, 53%, 69%, 50%);
+  --p-colorPrimaryDisabled: #5d5e60;
+  --p-colorPrimaryDisabledText: #aeaeb0;
+  --accessibleColorOnColorBackground: #ffffff;
+  --p-colorBackgroundDivider: #4b4d5e;
+  --p-colorBackgroundDisabled: #27272b;
+  --p-colorBackgroundDisabledDeemphasize05: #3a3a3f;
+  --p-colorBackgroundDeemphasize03: #3d3e4c;
+  --p-colorBackgroundDeemphasize05: #424353;
+  --p-colorBackgroundDeemphasize10: #4b4d5e;
+  --p-colorBackgroundDeemphasize15: #555668;
+  --p-colorBackgroundDeemphasize20: #5f6073;
+  --p-colorBackgroundLightenAbsolute05: #424354;
+  --p-colorBackgroundContrastAlpha05: rgba(255, 255, 255, 0.08);
+  --p-colorBackgroundContrastAlpha08: rgba(255, 255, 255, 0.12);
+  --p-colorBackgroundContrastAlpha30: rgba(255, 255, 255, 0.4);
+  --colorTextSecondary: #b3b3b3;
+  --colorTextPlaceholder: #9e9e9e;
+  --accessibleColorOnColorSuccess: #fff;
+  --accessibleColorOnColorDanger: #fff;
+  --accessibleColorOnColorWarning: #000;
+  --p-colorPrimaryBannerBackground: #123a1a;
+  --p-colorSuccessBannerBackground: #103d28;
+  --p-colorWarningBannerBackground: #4d2e00;
+  --p-colorDangerBannerBackground: #4c0111;
+  --p-colorPrimaryBannerIconColor: #85d996;
+  --p-colorSuccessBannerIconColor: #33c27f;
+  --p-colorDangerBannerIconColor: #fe87a1;
+  --p-colorWarningBannerIconColor: #ffb74a;
+  --p-colorBackgroundBannerIconColor: #b3b3b3;
+  --p-linkProtectionsBadgeBackground: #fff;
+  --p-linkProtectionsBadgeColor: #1d3944;
+  --fontFamily: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  --fontSmooth: always;
+  --fontVariantLigatures: normal;
+  --fontVariationSettings: normal;
+  --fontLineHeight: 1.45;
+  --fontSizeBase: 1rem;
+  --fontSizeSm: 0.93rem;
+  --fontSizeXs: 0.875rem;
+  --fontSize2Xs: 0.8125rem;
+  --fontSize3Xs: 0.75rem;
+  --fontSizeLg: 1.0625rem;
+  --fontSizeXl: 1.125rem;
+  --fontSize2Xl: 1.25rem;
+  --fontWeightLight: 300;
+  --fontWeightNormal: 400;
+  --fontWeightMedium: 600;
+  --fontWeightBold: bold;
+  --colorPrimary: #85d996;
+  --colorBackground: #30313d;
+  --colorText: #fff;
+  --colorSuccess: #33c27f;
+  --colorDanger: #fe87a1;
+  --colorWarning: #ffb74a;
+  --iconColor: var(--colorTextSecondary);
+  --iconHoverColor: var(--colorText);
+  --iconCheckmarkColor: var(--colorPrimaryText);
+  --iconCardErrorColor: var(--colorDanger);
+  --iconCardCvcColor: var(--iconColor);
+  --iconCardCvcErrorColor: var(--colorDanger);
+  --iconChevronDownColor: var(--iconColor);
+  --iconChevronDownHoverColor: var(--iconHoverColor);
+  --iconCloseColor: var(--iconColor);
+  --iconCloseHoverColor: var(--iconHoverColor);
+  --iconLoadingIndicatorColor: var(--p-colorBackgroundContrastAlpha30);
+  --iconMenuColor: var(--colorPrimary);
+  --iconMenuHoverColor: var(--iconMenuColor);
+  --iconMenuOpenColor: var(--iconMenuColor);
+  --iconPasscodeDeviceColor: var(--iconColor);
+  --iconPasscodeDeviceHoverColor: var(--iconHoverColor);
+  --iconPasscodeDeviceNotificationColor: var(--colorPrimary);
+  --iconRedirectColor: currentColor;
+  --tabIconColor: var(--iconColor);
+  --tabIconHoverColor: #fff;
+  --tabIconSelectedColor: var(--colorPrimaryText);
+  --tabIconMoreColor: var(--iconColor);
+  --tabIconMoreHoverColor: var(--tabIconMoreColor);
+  --spacingUnit: 0.25rem;
+  --gridRowSpacing: var(--p-spacing3);
+  --gridColumnSpacing: var(--p-spacing3);
+  --tabSpacing: var(--p-spacing1);
+  --pickerItemSpacing: var(--p-spacing2);
+  --accordionItemSpacing: var(--p-spacing2);
+  --borderRadius: 5px;
+  --buttonBorderRadius: var(--borderRadius);
+  --tabLogoSelectedColor: light;
+  --focusBoxShadow: 0 0 0 3px var(--p-colorPrimaryAlpha20), 0 1px 1px 0 var(--p-colorBackgroundContrastAlpha08);
+  --focusOutline: 0px;
+  --p-spacedAccordionItemBoxShadow: 0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25);
+  --spacingGridRow: var(--gridRowSpacing);
+  --spacingGridColumn: var(--gridColumnSpacing);
+  --spacingTab: var(--tabSpacing);
+  --spacingPickerItem: var(--pickerItemSpacing);
+  --spacingAccordionItem: var(--accordionItemSpacing);
+  --colorPrimaryText: var(--accessibleColorOnColorPrimary);
+  --colorBackgroundText: var(--accessibleColorOnColorBackground);
+  --colorSuccessText: var(--accessibleColorOnColorSuccess);
+  --colorDangerText: var(--accessibleColorOnColorDanger);
+  --colorWarningText: var(--accessibleColorOnColorWarning);
+  --colorIcon: var(--iconColor);
+  --colorIconHover: var(--iconHoverColor);
+  --colorIconCardError: var(--iconCardErrorColor);
+  --colorIconCardCvc: var(--iconCardCvcColor);
+  --colorIconCardCvcError: var(--iconCardCvcErrorColor);
+  --colorIconCheckmark: var(--iconCheckmarkColor);
+  --colorIconChevronDown: var(--iconChevronDownColor);
+  --colorIconChevronDownHover: var(--iconChevronDownHoverColor);
+  --colorIconClose: var(--iconCloseColor);
+  --colorIconCloseHover: var(--iconCloseHoverColor);
+  --colorIconLoadingIndicator: var(--iconLoadingIndicatorColor);
+  --colorIconMenu: var(--iconMenuColor);
+  --colorIconMenuHover: var(--iconMenuHoverColor);
+  --colorIconMenuOpen: var(--iconMenuOpenColor);
+  --colorIconPasscodeDevice: var(--iconPasscodeDeviceColor);
+  --colorIconPasscodeDeviceHover: var(--iconPasscodeDeviceHoverColor);
+  --colorIconPasscodeDeviceNotification: var(--iconPasscodeDeviceNotificationColor);
+  --colorIconRedirect: var(--iconRedirectColor);
+  --colorIconTab: var(--tabIconColor);
+  --colorIconTabHover: var(--tabIconHoverColor);
+  --colorIconTabSelected: var(--tabIconSelectedColor);
+  --colorIconTabMore: var(--tabIconMoreColor);
+  --colorIconTabMoreHover: var(--tabIconMoreHoverColor);
+  --colorLogo: var(--logoColor);
+  --colorLogoTab: var(--tabLogoColor);
+  --colorLogoTabSelected: var(--tabLogoSelectedColor);
+  --colorLogoBlock: var(--blockLogoColor);
+  --p-spacingXs: 1px;
+  --p-spacingSm: 2px;
+  --p-spacing1: 0.25rem;
+  --p-spacing2: 0.5rem;
+  --p-spacing3: 0.75rem;
+  --p-spacing4: 1rem;
+  --p-spacing5: 1.25rem;
+  --p-spacing6: 1.5rem;
+  --p-spacing7: 1.75rem;
+  --p-spacing8: 2rem;
+  --p-spacing9: 2.25rem;
+  --p-spacing10: 2.5rem;
+  --p-inputSpacingX: var(--p-spacing3);
+  --p-inputSpacingY: var(--p-spacing3);
+  --logoColor: dark;
+  --p-logoLightDisplay: none;
+  --p-logoDarkDisplay: block;
+  --tabLogoColor: dark;
+  --p-logoTabLightDisplay: none;
+  --p-logoTabDarkDisplay: block;
+  --p-logoTabSelectedLightDisplay: block;
+  --p-logoTabSelectedDarkDisplay: none;
+  --blockLogoColor: dark;
+  --p-logoBlockLightDisplay: none;
+  --p-logoBlockDarkDisplay: block;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+  
+
+.Action {
+  padding: var(--p-spacing1) calc(var(--p-spacing1) + var(--p-spacingSm));
+  background-color: transparent;
+  font-size: var(--fontSizeXs);
+  font-weight: var(--fontWeightMedium);
+  color: var(--colorPrimary);
+  border-radius: min(5px, var(--borderRadius), var(--buttonBorderRadius));
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.Action:hover {
+  background-color: var(--p-colorBackgroundContrastAlpha05);
+}
+
+.Action--tertiary {
+  color: var(--colorText);
+}
+
+.Action--danger {
+  color: var(--colorDanger);
+}
+
+.Action:disabled {
+  color: var(--p-colorPrimaryDisabledText);
+}
+
+.Block {
+  padding: var(--p-spacing3);
+  border-radius: var(--borderRadius);
+  background-color: var(--colorBackground);
+  border: 1px solid var(--p-colorBackgroundDeemphasize05);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25);
+}
+
+.Button {
+  padding: var(--p-spacing3);
+  background-color: var(--buttonColorBackground);
+  font-weight: var(--fontWeightMedium);
+  color: var(--buttonColorText);
+  border-radius: var(--buttonBorderRadius);
+  transition: background 0.15s ease, color 0.15s ease, border 0.15s ease, box-shadow .15s ease;
+}
+
+.Button:hover {
+  background-color: var(--p-buttonColorBackgroundHover);
+}
+
+.Button:active {
+  background-color: var(--p-buttonColorBackgroundActive);
+}
+
+.Button:disabled {
+  background-color: var(--p-colorPrimaryDisabled);
+  color: var(--p-colorPrimaryDisabledText);
+}
+
+.CheckboxInput {
+  background-color: var(--colorBackground);
+  border-radius: min(5px, var(--borderRadius));
+  transition: background 0.15s ease, border 0.15s ease, box-shadow 0.15s ease;
+  border: 1px solid var(--p-colorBackgroundDeemphasize05);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25);
+}
+
+.CheckboxInput--checked {
+  background-color: var(--colorPrimary);
+  border-color: var(--colorPrimary);
+}
+
+.Dropdown {
+  border-radius: var(--borderRadius);
+  border: 1px solid var(--p-colorBackgroundDeemphasize10);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5), 0px 10px 24px rgba(0, 0, 0, 0.25);
+}
+
+.DropdownItem {
+  background-color: var(--colorBackground);
+  padding: var(--p-spacing2) var(--p-spacing3);
+}
+
+.Error {
+  margin-top: var(--p-spacing1);
+  color: var(--colorDanger);
+  font-size: var(--fontSizeSm);
+}
+
+.Icon {
+  transition: fill 0.1s ease;
+}
+
+.Input, .p-FauxInput {
+  padding: var(--p-inputSpacingY) var(--p-inputSpacingX);
+  background-color: var(--colorBackground);
+  border-radius: var(--borderRadius);
+  transition: background 0.15s ease, border 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
+  border: 1px solid var(--p-colorBackgroundDeemphasize05);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25);
+}
+
+.Input--invalid {
+  color: var(--colorDanger);
+  border-color: var(--colorDanger);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25), 0 0 0 1px var(--colorDanger);
+}
+
+.Input::placeholder, .p-Input--placeholder {
+  color: var(--colorTextPlaceholder);
+}
+
+.Input:disabled, .p-Input--disabled {
+  background-color: var(--p-colorBackgroundDisabled);
+  color: var(--colorTextPlaceholder);
+  border-color: var(--p-colorBackgroundDisabledDeemphasize05);
+  box-shadow: none;
+}
+
+.InputCloseIcon {
+  border-radius: min(5px, var(--borderRadius));
+  transition: box-shadow .15s ease;
+}
+
+.CodeInput {
+  border-radius: min(5px, var(--borderRadius));
+}
+
+.Label {
+  margin-bottom: var(--p-spacing1);
+  font-size: var(--fontSizeSm);
+  transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.Label--resting {
+  font-size: var(--fontSizeBase);
+}
+
+.Label--floating {
+  font-size: var(--fontSizeXs);
+  padding-bottom: max(var(--p-spacingSm), var(--p-spacing1));
+  opacity: 0.8;
+}
+
+.Menu {
+  padding: 0.375rem;
+}
+
+.MenuAction {
+  background-color: var(--p-colorBackgroundContrastAlpha05);
+  font-size: var(--fontSizeXs);
+  font-weight: var(--fontWeightMedium);
+  color: var(--colorPrimary);
+  border-radius: min(8px, var(--borderRadius), var(--buttonBorderRadius));
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.MenuAction--danger {
+  color: var(--colorDanger);
+}
+
+.MenuAction:hover {
+  background-color: var(--p-colorBackgroundContrastAlpha08);
+}
+
+.MenuIcon {
+  border-radius: min(8px, var(--borderRadius));
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.MenuIcon:hover {
+  background-color: var(--p-colorBackgroundContrastAlpha05);
+}
+
+.PasscodeShowIcon {
+  outline-offset: -2px;
+  border-radius: min(5px, var(--borderRadius));
+  transition: box-shadow .15s ease;
+}
+
+.PasscodeCloseIcon {
+  outline-offset: -2px;
+  border-radius: min(5px, var(--borderRadius));
+  transition: box-shadow .15s ease;
+}
+
+.PickerItem {
+  padding: var(--p-spacing3);
+  background-color: var(--colorBackground);
+  border-radius: var(--borderRadius);
+  transition: background 0.15s ease, box-shadow 0.15s ease, border 0.15s ease, color 0.15s ease;
+  border: 1px solid var(--p-colorBackgroundDeemphasize05);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25);
+}
+
+.PickerItem--new {
+  font-size: var(--fontSizeBase);
+  font-weight: var(--fontWeightMedium);
+  color: var(--colorPrimary);
+}
+
+.RedirectText {
+  color: var(--colorTextSecondary);
+}
+
+.Link {
+  color: var(--colorPrimary);
+  border-radius: min(5px, var(--borderRadius));
+  transition: box-shadow .15s ease;
+}
+
+.Link:focus-visible {
+  outline: var(--focusOutline);
+  box-shadow: var(--focusBoxShadow);
+}
+
+.Link:hover {
+  text-decoration: underline;
+}
+
+.RadioIcon {
+  width: 1.2em;
+}
+
+.RadioIconOuter {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 9.375;
+}
+
+.RadioIconInner {
+  r: 21.875px;
+  fill-opacity: 0;
+}
+
+.RadioIconInner--checked {
+  fill-opacity: 1;
+}
+
+.SecondaryLink {
+  color: var(--colorTextSecondary);
+  border-radius: min(5px, var(--borderRadius));
+  transition: box-shadow .15s ease;
+}
+
+.SecondaryLink:hover {
+  text-decoration: underline;
+}
+
+.Switch {
+  background-color: var(--p-colorBackgroundDeemphasize10);
+  border: 1px solid var(--p-colorBackgroundDeemphasize10);
+  transition: border 0.3s ease, background 0.2s ease, box-shadow 0.3s ease;
+}
+
+.Switch--checked {
+  background-color: var(--colorSuccess);
+  border-color: var(--colorSuccess);
+}
+
+.SwitchControl {
+  fill: #fff;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.12), 0px 1px 1px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease;
+}
+
+.Tab {
+  padding: var(--p-spacing3);
+  background-color: var(--colorBackground);
+  border-radius: var(--borderRadius);
+  font-size: var(--fontSizeXs);
+  font-weight: var(--fontWeightMedium);
+  color: var(--colorTextSecondary);
+  transition: background .15s ease, border .15s ease, box-shadow .15s ease;
+  border: 1px solid var(--p-colorBackgroundDeemphasize05);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25);
+}
+
+.Tab--selected {
+  border-color: var(--colorText);
+  color: var(--colorPrimaryText);
+  background-color: var(--colorPrimary);
+  border: 1px solid var(--colorPrimary);
+}
+
+.TabLabel {
+  padding-top: var(--p-spacing1);
+  transition: color .1s ease;
+}
+
+.TermsText {
+  color: var(--colorTextSecondary);
+}
+
+.TermsLink {
+  color: var(--colorTextSecondary);
+  text-decoration: underline;
+  border-radius: min(5px, var(--borderRadius));
+  transition: box-shadow .15s ease;
+}
+
+.AccordionItem {
+  background-color: var(--colorBackground);
+  border: 1px solid var(--p-colorBackgroundDeemphasize05);
+  border-radius: var(--borderRadius);
+  color: var(--colorTextSecondary);
+  font-size: var(--fontSizeXs);
+  font-weight: var(--fontWeightMedium);
+  padding: var(--p-spacing4);
+}
+
+.AccordionItem--selected {
+  color: var(--colorPrimary);
+}
+
+.ToggleItem {
+  background-color: var(--colorBackground);
+  border: 1px solid var(--p-colorBackgroundDeemphasize05);
+  border-radius: var(--borderRadius);
+  padding: var(--p-spacing3);
+  transition: background .15s ease, border .15s ease, box-shadow .15s ease;
+}
+
+.Action:focus-visible {
+  outline: var(--focusOutline);
+  box-shadow: var(--focusBoxShadow), 0 0 0 1px var(--colorPrimary);
+}
+
+.Button:focus-visible {
+  outline: var(--focusOutline);
+  box-shadow: var(--focusBoxShadow);
+}
+
+.CheckboxInput:focus, .p-CheckboxInput--focused {
+  outline: var(--focusOutline);
+  border-color: var(--colorPrimary);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25), var(--focusBoxShadow);
+}
+
+.DropdownItem--highlight {
+  background-color: var(--p-colorBackgroundDeemphasize03);
+}
+
+.Input:focus, .p-Input--focused {
+  outline: var(--focusOutline);
+  border-color: var(--colorPrimary);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25), var(--focusBoxShadow);
+}
+
+.InputCloseIcon:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--p-colorPrimaryAlpha40);
+}
+
+.MenuAction:focus-visible {
+  outline: var(--focusOutline);
+  box-shadow: var(--focusBoxShadow);
+}
+
+.MenuIcon:focus-visible {
+  outline: var(--focusOutline);
+  box-shadow: var(--focusBoxShadow), 0 0 0 1px var(--colorPrimary);
+}
+
+.PasscodeShowIcon:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--p-colorPrimaryAlpha40);
+}
+
+.PasscodeCloseIcon:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--p-colorPrimaryAlpha40);
+}
+
+.PickerItem:focus-visible {
+  outline: var(--focusOutline);
+  border-color: var(--colorPrimary);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25), var(--focusBoxShadow);
+}
+
+.PickerItem:hover, .p-PickerItem--hovered {
+  background-color: var(--p-colorBackgroundDeemphasize03);
+}
+
+.PickerItem:hover:focus-visible {
+  outline: var(--focusOutline);
+  background-color: var(--p-colorBackgroundDeemphasize03);
+  border-color: var(--p-colorPrimaryAlpha40);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25), var(--focusBoxShadow);
+}
+
+.PickerItem--selected {
+  background-color: var(--colorBackground);
+  border-color: var(--p-colorBackgroundDeemphasize05);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25);
+}
+
+.PickerItem--selected:focus-visible {
+  background-color: var(--colorBackground);
+  border-color: var(--p-colorBackgroundDeemphasize05);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25);
+}
+
+.PickerItem--selected:hover, .p-PickerItem--selectedHovered {
+  background-color: var(--colorBackground);
+  border-color: var(--p-colorBackgroundDeemphasize05);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25);
+}
+
+.PickerItem--highlight {
+  background-color: var(--colorBackground);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25), 0 0 0 2px var(--colorPrimary);
+}
+
+.PickerItem--highlight:hover, .p-PickerItem--highlightHovered {
+  background-color: var(--colorBackground);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25), 0 0 0 2px var(--colorPrimary);
+}
+
+.PickerItem--highlight:hover, .p-PickerItem--highlightHovered {
+  background-color: var(--p-colorBackgroundDeemphasize03);
+}
+
+.PickerItem--highlight:focus-visible {
+  outline: var(--focusOutline);
+  border-color: var(--p-colorPrimaryAlpha40);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25), 0 0 0 1px var(--colorPrimary), var(--focusBoxShadow);
+}
+
+.PickerItem--highlight:hover:focus-visible {
+  outline: var(--focusOutline);
+  border-color: var(--p-colorPrimaryAlpha40);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25), 0 0 0 1px var(--colorPrimary), var(--focusBoxShadow);
+}
+
+.PickerItem--disabled {
+  background-color: var(--p-colorBackgroundDisabled);
+  border-color: var(--p-colorBackgroundDisabledDeemphasize05);
+  color: var(--colorTextPlaceholder);
+}
+
+.PickerItem--disabled:hover, .p-PickerItem--disabledHovered {
+  background-color: var(--p-colorBackgroundDisabled);
+  border-color: var(--p-colorBackgroundDisabledDeemphasize05);
+  color: var(--colorTextPlaceholder);
+}
+
+.SecondaryLink:focus-visible {
+  outline: var(--focusOutline);
+  box-shadow: var(--focusBoxShadow);
+}
+
+.Switch:focus-visible {
+  outline: var(--focusOutline);
+  box-shadow: var(--focusBoxShadow);
+}
+
+.Tab:hover {
+  color: var(--colorText);
+}
+
+.Tab:focus {
+  outline: var(--focusOutline);
+  border-color: var(--colorPrimary);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25), var(--focusBoxShadow);
+}
+
+.Tab--selected:hover {
+  color: var(--colorPrimaryText);
+}
+
+.TermsLink:focus-visible {
+  outline: var(--focusOutline);
+  box-shadow: var(--focusBoxShadow);
+}
+
+.AccordionItem:hover, .p-AccordionItem--hovered {
+  color: var(--colorText);
+}
+
+.AccordionItem:focus-visible, .p-AccordionItem--focused {
+  outline: var(--focusOutline);
+  border-color: var(--colorPrimary);
+  box-shadow: var(--focusBoxShadow);
+}
+
+.AccordionItem--selected:hover, .p-AccordionItem--selectedHovered {
+  color: var(--colorPrimary);
+}
+
+.ToggleItem:focus, .p-ToggleItem--focused {
+  outline: var(--focusOutline);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25), var(--focusBoxShadow);
+  border-color: var(--colorPrimary);
+}
+
+.ToggleItem:hover {
+  background-color: var(--p-colorBackgroundDeemphasize03);
+  border-color: var(--p-colorBackgroundDeemphasize15);
+}
+
+.ToggleItem:hover:focus, .p-ToggleItem--focused:hover {
+  border-color: var(--p-colorPrimaryAlpha40);
+}
+
+.ToggleItem--selected {
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25), 0 0 0 2px var(--colorPrimary);
+}
+
+.ToggleItem--selected:focus, .p-ToggleItem--selectedFocused {
+  border-color: var(--p-colorPrimaryAlpha40);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25), 0 0 0 1px var(--colorPrimary), var(--focusBoxShadow);
+}
+
+.ToggleItem--selected:hover {
+  background-color: var(--colorBackground);
+}</style><style>
+:root {
+  --c-inputPaddingTop: 12px;
+  --c-inputPaddingRight: 12px;
+  --c-inputPaddingBottom: 12px;
+  --c-inputPaddingLeft: 12px;
+  --c-inputBorderTopWidth: 1.11111px;
+  --c-inputBorderRightWidth: 1.11111px;
+  --c-inputBorderBottomWidth: 1.11111px;
+  --c-inputBorderLeftWidth: 1.11111px;
+  --c-inputColorScheme: dark;
+  --c-inputDividerWidth: 1px;
+  --c-inputDividerBackgroundColor: rgb(66, 67, 83);
+  --c-inputBorderTopLeftRadius: 5px;
+  --c-inputBorderTopRightRadius: 5px;
+  --c-inputBorderBottomRightRadius: 5px;
+  --c-inputBorderBottomLeftRadius: 5px;
+  --c-inputFontSize: 16px;
+  --c-inputFontColor: rgb(255, 255, 255);
+  --c-inputHeight: 44.6181px;
+  --c-inputSelectOptionBackgroundColor: rgb(48, 49, 61);
+  --c-inputSelectOptionTextColor: rgb(255, 255, 255);
+  --c-inputBoxShadow: rgba(0, 0, 0, 0.5) 0px 2px 4px 0px, rgba(0, 0, 0, 0.25) 0px 1px 6px 0px;
+  --c-blockPaddingTop: 12px;
+  --c-blockPaddingRight: 12px;
+  --c-blockPaddingBottom: 12px;
+  --c-blockPaddingLeft: 12px;
+  --c-blockBackgroundColor: rgb(48, 49, 61);
+  --c-blockDividerWidth: 1px;
+  --c-blockDividerBackgroundColor: rgb(66, 67, 83);
+  --c-dropdownDividerWidth: 1px;
+  --c-dropdownDividerBackgroundColor: rgb(75, 77, 94);
+  --c-dropdownItemBackgroundColor: rgb(48, 49, 61);
+  --c-pickerItemPaddingTop: 12px;
+  --c-pickerItemPaddingRight: 12px;
+  --c-pickerItemPaddingBottom: 12px;
+  --c-pickerItemPaddingLeft: 12px;
+  --c-pickerItemBorderBottomWidth: 1.11111px;
+  --c-pickerItemBackgroundColor: rgb(48, 49, 61);
+  --c-pickerItemHoveredBackgroundColor: rgb(61, 62, 76);
+  --c-pickerItemFocusedBackgroundColor: rgb(48, 49, 61);
+  --c-pickerItemSelectedBackgroundColor: rgb(48, 49, 61);
+  --c-pickerItemSelectedHoveredBackgroundColor: rgb(48, 49, 61);
+  --c-pickerItemHighlightBackgroundColor: rgb(48, 49, 61);
+  --c-pickerItemHighlightHoveredBackgroundColor: rgb(61, 62, 76);
+  --c-pickerItemHighlightFocusedBackgroundColor: rgb(48, 49, 61);
+  --c-pickerItemDisabledBackgroundColor: rgb(39, 39, 43);
+  --c-pickerItemDisabledHoveredBackgroundColor: rgb(39, 39, 43);
+  --c-pickerItemDisabledFocusedBackgroundColor: rgb(39, 39, 43);
+  --c-pickerItemTransitionDelay: 0s, 0s, 0s, 0s;
+  --c-pickerItemTransitionDuration: 0.15s, 0.15s, 0.15s, 0.15s;
+  --c-pickerItemTransitionProperty: background, box-shadow, border, color;
+  --c-pickerItemTransitionTimingFunction: ease, ease, ease, ease;
+  --c-actionPaddingTop: 4px;
+  --c-actionPaddingRight: 6px;
+  --c-actionPaddingBottom: 4px;
+  --c-actionPaddingLeft: 6px;
+  --c-labelRestingFontSize: 16px;
+  --c-labelFloatingHeight: 20.0694px;
+  --c-labelFloatingTransform: translateY(13px) scale(0.8888888888888888);
+  --c-labelRestingTransform: translateY(23px) scale(1);
+  --c-inputFloatingPaddingTop: 32px;
+  --c-inputFloatingMarginLeft: 13px;
+  --c-inputFloatingMarginRight: 13px;
+  --c-acItemPaddingTop: 16px;
+  --c-acItemPaddingRight: 16px;
+  --c-acItemPaddingBottom: 16px;
+  --c-acItemPaddingLeft: 16px;
+  --c-acItemBorderTopWidth: 1.11111px;
+  --c-acItemBorderRightWidth: 1.11111px;
+  --c-acItemBorderBottomWidth: 1.11111px;
+  --c-acItemBorderLeftWidth: 1.11111px;
+  --c-acItemBorderWidth: 1.11111px;
+  --c-acItemBorderColor: rgb(66, 67, 83);
+  --c-acItemBorderStyle: solid;
+  --c-acItemBorderRadius: 5px;
+  --c-acItemBorderTopLeftRadius: 5px;
+  --c-acItemBorderTopRightRadius: 5px;
+  --c-acItemBorderBottomRightRadius: 5px;
+  --c-acItemBorderBottomLeftRadius: 5px;
+  --c-acItemBackgroundColor: rgb(48, 49, 61);
+  --c-acItemColor: rgb(179, 179, 179);
+  --c-acBoxShadow: none;
+  --c-acOutline: rgb(179, 179, 179) none 3.33333px;
+  --c-acItemFont: 600 14px / 16.1px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  --c-acItemHoveredBackgroundColor: rgb(48, 49, 61);
+  --c-acItemHoveredColor: rgb(255, 255, 255);
+  --c-acItemHoveredOutline: rgb(255, 255, 255) none 3.33333px;
+  --c-acItemHoveredBorderColor: rgb(66, 67, 83);
+  --c-acItemFocusedBackgroundColor: rgb(48, 49, 61);
+  --c-acItemFocusedColor: rgb(179, 179, 179);
+  --c-acItemFocusedOutline: rgb(179, 179, 179) none 0px;
+  --c-acItemFocusedBoxShadow: rgba(134, 218, 151, 0.25) 0px 0px 0px 3px, rgba(255, 255, 255, 0.12) 0px 1px 1px 0px;
+  --c-acItemFocusedBorderColor: rgb(133, 217, 150);
+  --c-acItemSelectedBackgroundColor: rgb(48, 49, 61);
+  --c-acItemSelectedColor: rgb(133, 217, 150);
+  --c-acItemSelectedBorderColor: rgb(66, 67, 83);
+  --c-acItemSelectedHoveredBackgroundColor: rgb(48, 49, 61);
+  --c-acItemSelectedHoveredBorderColor: rgb(66, 67, 83);
+  --c-acItemSelectedHoveredColor: rgb(133, 217, 150);
+  --c-acItemSelectedBorderTopLeftRadius: 5px;
+  --c-acItemSelectedBorderTopRightRadius: 5px;
+  --c-acItemSelectedBorderBottomRightRadius: 5px;
+  --c-acItemSelectedBorderBottomLeftRadius: 5px;
+  --c-acSelectedZIndex: auto;
+  --c-acHoveredZIndex: auto;
+  --c-acSelectedHoveredZIndex: auto;
+  --c-acGroupedBoxShadow: var(--p-spacedAccordionItemBoxShadow);
+  --c-radioIconOuterStrokeWidth: 18.75;
+  --c-radioIconOuterCheckedStrokeWidth: 18.75;
+  --c-toggleItemFontSize: 16px;
+  --p-pickerItemBackgroundColorDeemphasize03: rgb(61, 62, 76);
+  --p-pickerItemBackgroundColorDeemphasize05: rgb(66, 67, 83);
+}
+  
+
+.Input:-webkit-autofill:not(.p-Input--delayAutofillStyles) {
+  -webkit-text-fill-color: rgb(255, 255, 255);
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 2px 4px 0px, rgba(0, 0, 0, 0.25) 0px 1px 6px 0px,0 0 0 100px rgb(48, 49, 61) inset !important;
+  transition: none !important;
+}
+
+.Input:-webkit-autofill:hover:not(.p-Input--delayAutofillStyles) {
+  -webkit-text-fill-color: rgb(255, 255, 255);
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 2px 4px 0px, rgba(0, 0, 0, 0.25) 0px 1px 6px 0px,0 0 0 100px rgb(48, 49, 61) inset !important;
+}
+
+.Input:-webkit-autofill:focus:not(.p-Input--delayAutofillStyles) {
+  -webkit-text-fill-color: rgb(255, 255, 255);
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 2px 4px 0px, rgba(0, 0, 0, 0.25) 0px 1px 6px 0px, rgba(134, 218, 151, 0.25) 0px 0px 0px 3px, rgba(255, 255, 255, 0.12) 0px 1px 1px 0px,0 0 0 100px rgb(48, 49, 61) inset !important;
+}
+
+.Input[data-com-onepassword-filled]:not(.p-Input--delayAutofillStyles) {
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 2px 4px 0px, rgba(0, 0, 0, 0.25) 0px 1px 6px 0px,0 0 0 100px rgb(48, 49, 61) inset !important;
+  transition: none !important;
+}
+
+.Input[data-com-onepassword-filled]:hover:not(.p-Input--delayAutofillStyles) {
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 2px 4px 0px, rgba(0, 0, 0, 0.25) 0px 1px 6px 0px,0 0 0 100px rgb(48, 49, 61) inset !important;
+}
+
+.Input[data-com-onepassword-filled]:focus:not(.p-Input--delayAutofillStyles) {
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 2px 4px 0px, rgba(0, 0, 0, 0.25) 0px 1px 6px 0px, rgba(134, 218, 151, 0.25) 0px 0px 0px 3px, rgba(255, 255, 255, 0.12) 0px 1px 1px 0px,0 0 0 100px rgb(48, 49, 61) inset !important;
+}</style></head><body><div id="root"><div class="p-HeightObserverProvider"><div class="p-HeightObserverProvider-container"><div class="p-AddressElement de7zKgf4__p-Root p-Locale-ru p-Animatable p-LTR"><form><div class=""><div class="AnimateSinglePresence"><div class="AnimateSinglePresenceItem"><div class=""><div class="p-Grid"><div class="p-GridCell p-GridCell--12 p-FieldsetCell"><div data-field="name" class="p-Field"><label class="p-FieldLabel Label Label--empty" for="billingAddress-nameInput">Имя, фамилия<span class="FadeWrapper"></span></label><div><input type="text" id="billingAddress-nameInput" name="name" autocomplete="billing name" placeholder="" aria-invalid="false" aria-required="true" class="p-Input-input p-Fieldset-input Input Input--empty" value=""></div><div class="AnimateSinglePresence"></div></div></div><div class="p-GridCell p-GridCell--12 p-FieldsetCell"><div data-field="country" class="p-Field"><label class="p-FieldLabel Label" for="billingAddress-countryInput">Страна или регион<span class="FadeWrapper"></span></label><div><div class="p-Select"><select id="billingAddress-countryInput" name="country" autocomplete="billing country" placeholder="US" aria-invalid="false" aria-required="false" class="Input p-Select-select p-Fieldset-input"><option disabled="" value="">Выбрать</option><option value="AU">Австралия</option><option value="AT">Австрия</option><option value="AZ">Азербайджан</option><option value="AX">Аландские о-ва</option><option value="AL">Албания</option><option value="DZ">Алжир</option><option value="AI">Ангилья</option><option value="AO">Ангола</option><option value="AD">Андорра</option><option value="AQ">Антарктида</option><option value="AG">Антигуа и Барбуда</option><option value="AR">Аргентина</option><option value="AM">Армения</option><option value="AW">Аруба</option><option value="AF">Афганистан</option><option value="BS">Багамы</option><option value="BD">Бангладеш</option><option value="BB">Барбадос</option><option value="BH">Бахрейн</option><option value="BY">Беларусь</option><option value="BZ">Белиз</option><option value="BE">Бельгия</option><option value="BJ">Бенин</option><option value="BM">Бермудские о-ва</option><option value="BG">Болгария</option><option value="BO">Боливия</option><option value="BQ">Бонэйр, Синт-Эстатиус и Саба</option><option value="BA">Босния и Герцеговина</option><option value="BW">Ботсвана</option><option value="BR">Бразилия</option><option value="IO">Британская территория в Индийском океане</option><option value="BN">Бруней</option><option value="BF">Буркина-Фасо</option><option value="BI">Бурунди</option><option value="BT">Бутан</option><option value="VU">Вануату</option><option value="VA">Ватикан</option><option value="GB">Великобритания</option><option value="HU">Венгрия</option><option value="VE">Венесуэла</option><option value="VG">Виргинские о-ва (Великобритания)</option><option value="TL">Восточный Тимор</option><option value="VN">Вьетнам</option><option value="GA">Габон</option><option value="HT">Гаити</option><option value="GY">Гайана</option><option value="GM">Гамбия</option><option value="GH">Гана</option><option value="GP">Гваделупа</option><option value="GT">Гватемала</option><option value="GN">Гвинея</option><option value="GW">Гвинея-Бисау</option><option value="DE">Германия</option><option value="GG">Гернси</option><option value="GI">Гибралтар</option><option value="HN">Гондурас</option><option value="HK">Гонконг (САР)</option><option value="GD">Гренада</option><option value="GL">Гренландия</option><option value="GR">Греция</option><option value="GE">Грузия</option><option value="GU">Гуам</option><option value="DK">Дания</option><option value="JE">Джерси</option><option value="DJ">Джибути</option><option value="DM">Доминика</option><option value="DO">Доминиканская Республика</option><option value="EG">Египет</option><option value="ZM">Замбия</option><option value="EH">Западная Сахара</option><option value="ZW">Зимбабве</option><option value="IL">Израиль</option><option value="IN">Индия</option><option value="ID">Индонезия</option><option value="JO">Иордания</option><option value="IQ">Ирак</option><option value="IE">Ирландия</option><option value="IS">Исландия</option><option value="ES">Испания</option><option value="IT">Италия</option><option value="YE">Йемен</option><option value="CV">Кабо-Верде</option><option value="KZ">Казахстан</option><option value="KH">Камбоджа</option><option value="CM">Камерун</option><option value="CA">Канада</option><option value="QA">Катар</option><option value="KE">Кения</option><option value="CY">Кипр</option><option value="KG">Киргизия</option><option value="KI">Кирибати</option><option value="CN">Китай</option><option value="CO">Колумбия</option><option value="KM">Коморы</option><option value="CG">Конго - Браззавиль</option><option value="CD">Конго - Киншаса</option><option value="XK">Косово</option><option value="CR">Коста-Рика</option><option value="CI">Кот-д’Ивуар</option><option value="KW">Кувейт</option><option value="CW">Кюрасао</option><option value="LA">Лаос</option><option value="LV">Латвия</option><option value="LS">Лесото</option><option value="LR">Либерия</option><option value="LB">Ливан</option><option value="LY">Ливия</option><option value="LT">Литва</option><option value="LI">Лихтенштейн</option><option value="LU">Люксембург</option><option value="MU">Маврикий</option><option value="MR">Мавритания</option><option value="MG">Мадагаскар</option><option value="YT">Майотта</option><option value="MO">Макао (САР)</option><option value="MW">Малави</option><option value="MY">Малайзия</option><option value="ML">Мали</option><option value="MV">Мальдивы</option><option value="MT">Мальта</option><option value="MA">Марокко</option><option value="MQ">Мартиника</option><option value="MX">Мексика</option><option value="MZ">Мозамбик</option><option value="MD">Молдова</option><option value="MC">Монако</option><option value="MN">Монголия</option><option value="MS">Монтсеррат</option><option value="MM">Мьянма (Бирма)</option><option value="NA">Намибия</option><option value="NR">Науру</option><option value="NP">Непал</option><option value="NE">Нигер</option><option value="NG">Нигерия</option><option value="NL">Нидерланды</option><option value="NI">Никарагуа</option><option value="NU">Ниуэ</option><option value="NZ">Новая Зеландия</option><option value="NC">Новая Каледония</option><option value="NO">Норвегия</option><option value="BV">о-в Буве</option><option value="AC">о-в Вознесения</option><option value="IM">о-в Мэн</option><option value="SH">о-в Св. Елены</option><option value="KY">о-ва Кайман</option><option value="CK">о-ва Кука</option><option value="PN">о-ва Питкэрн</option><option value="AE">ОАЭ</option><option value="OM">Оман</option><option value="PK">Пакистан</option><option value="PS">Палестинские территории</option><option value="PA">Панама</option><option value="PG">Папуа — Новая Гвинея</option><option value="PY">Парагвай</option><option value="PE">Перу</option><option value="PL">Польша</option><option value="PT">Португалия</option><option value="PR">Пуэрто-Рико</option><option value="KR">Республика Корея</option><option value="RE">Реюньон</option><option value="RU">Россия</option><option value="RW">Руанда</option><option value="RO">Румыния</option><option value="SV">Сальвадор</option><option value="WS">Самоа</option><option value="SM">Сан-Марино</option><option value="ST">Сан-Томе и Принсипи</option><option value="SA">Саудовская Аравия</option><option value="MK">Северная Македония</option><option value="SC">Сейшельские о-ва</option><option value="BL">Сен-Бартелеми</option><option value="MF">Сен-Мартен</option><option value="PM">Сен-Пьер и Микелон</option><option value="SN">Сенегал</option><option value="VC">Сент-Винсент и Гренадины</option><option value="KN">Сент-Китс и Невис</option><option value="LC">Сент-Люсия</option><option value="RS">Сербия</option><option value="SG">Сингапур</option><option value="SX">Синт-Мартен</option><option value="SK">Словакия</option><option value="SI">Словения</option><option value="US">Соединенные Штаты</option><option value="SB">Соломоновы о-ва</option><option value="SO">Сомали</option><option value="SD">Судан</option><option value="SR">Суринам</option><option value="SL">Сьерра-Леоне</option><option value="TJ">Таджикистан</option><option value="TH">Таиланд</option><option value="TW">Тайвань</option><option value="TZ">Танзания</option><option value="TC">Тёркс и Кайкос</option><option value="TG">Того</option><option value="TK">Токелау</option><option value="TO">Тонга</option><option value="TT">Тринидад и Тобаго</option><option value="TA">Тристан-да-Кунья</option><option value="TV">Тувалу</option><option value="TN">Тунис</option><option value="TM">Туркменистан</option><option value="TR">Турция</option><option value="UG">Уганда</option><option value="UZ">Узбекистан</option><option value="UA">Украина</option><option value="WF">Уоллис и Футуна</option><option value="UY">Уругвай</option><option value="FO">Фарерские о-ва</option><option value="FJ">Фиджи</option><option value="PH">Филиппины</option><option value="FI">Финляндия</option><option value="FK">Фолклендские о-ва</option><option value="FR">Франция</option><option value="GF">Французская Гвиана</option><option value="PF">Французская Полинезия</option><option value="TF">Французские Южные территории</option><option value="HR">Хорватия</option><option value="CF">Центрально-Африканская Республика</option><option value="TD">Чад</option><option value="ME">Черногория</option><option value="CZ">Чехия</option><option value="CL">Чили</option><option value="CH">Швейцария</option><option value="SE">Швеция</option><option value="SJ">Шпицберген и Ян-Майен</option><option value="LK">Шри-Ланка</option><option value="EC">Эквадор</option><option value="GQ">Экваториальная Гвинея</option><option value="ER">Эритрея</option><option value="SZ">Эсватини</option><option value="EE">Эстония</option><option value="ET">Эфиопия</option><option value="GS">Южная Георгия и Южные Сандвичевы о-ва</option><option value="ZA">Южно-Африканская Республика</option><option value="SS">Южный Судан</option><option value="JM">Ямайка</option><option value="JP">Япония</option></select><div class="p-InputIcon c-InputPadding c-InputFontSize c-InputFontColor c-InputTransparentBorder"><svg viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg" focusable="false" role="presentation" style="width: 0.8em; height: 0.8em;"><path d="M10.193 3.97a.75.75 0 0 1 1.062 1.062L6.53 9.756a.75.75 0 0 1-1.06 0L.745 5.032A.75.75 0 0 1 1.807 3.97L6 8.163l4.193-4.193z" fill="var(--colorIconChevronDown)" fill-rule="evenodd"></path></svg></div></div></div><div class="AnimateSinglePresence"></div></div></div></div><div class="p-Grid u-mt-grid"><div class="p-GridCell p-GridCell--12 p-FieldsetCell"><div><div data-field="addressLine1" class="p-Field"><label class="p-FieldLabel Label Label--empty" for="billingAddress-addressLine1Input">Адрес<span class="FadeWrapper"></span></label><div><div><input type="text" id="billingAddress-addressLine1Input" name="addressLine1" autocomplete="billing address-line1" placeholder="" aria-invalid="false" aria-required="true" role="combobox" aria-activedescendant="" aria-autocomplete="list" aria-controls="autocomplete-search" aria-expanded="false" class="p-Input-input p-Fieldset-input Input Input--empty" value=""></div></div><div class="AnimateSinglePresence"></div></div></div></div><div class="p-GridCell p-GridCell--12 p-GridCell--sm12 p-FieldsetCell SyeQFrbY__p-AddressForm-fields p-AddressForm-fields RL8iMvee__p-AddressForm-fields--hidden" aria-hidden="true"><div data-field="addressLine2" class="p-Field"><label class="p-FieldLabel Label Label--empty" for="billingAddress-addressLine2Input">Адрес (строка 2)<span class="FadeWrapper"></span></label><div><input type="text" id="billingAddress-addressLine2Input" name="addressLine2" autocomplete="billing address-line2" placeholder="Номер квартиры (комнаты и т.п.) (необязательно)" aria-invalid="false" aria-required="false" tabindex="-1" class="p-Input-input p-Fieldset-input Input Input--empty" value=""></div><div class="AnimateSinglePresence"></div></div></div><div class="p-GridCell p-GridCell--12 p-GridCell--sm12 p-FieldsetCell SyeQFrbY__p-AddressForm-fields p-AddressForm-fields RL8iMvee__p-AddressForm-fields--hidden" aria-hidden="true"><div data-field="postalCode" class="p-Field"><label class="p-FieldLabel Label Label--empty" for="billingAddress-postalCodeInput">Почтовый индекс<span class="FadeWrapper"></span></label><div><input type="text" inputmode="text" id="billingAddress-postalCodeInput" name="postalCode" autocomplete="billing postal-code" placeholder="" aria-invalid="false" aria-required="true" tabindex="-1" class="p-Input-input p-Fieldset-input Input Input--empty" value=""></div><div class="AnimateSinglePresence"></div></div></div><div class="p-GridCell p-GridCell--12 p-GridCell--sm12 p-FieldsetCell SyeQFrbY__p-AddressForm-fields p-AddressForm-fields RL8iMvee__p-AddressForm-fields--hidden" aria-hidden="true"><div data-field="locality" class="p-Field"><label class="p-FieldLabel Label Label--empty" for="billingAddress-localityInput">Город<span class="FadeWrapper"></span></label><div><input type="text" id="billingAddress-localityInput" name="locality" autocomplete="billing address-level2" placeholder="" aria-invalid="false" aria-required="true" tabindex="-1" class="p-Input-input p-Fieldset-input Input Input--empty" value=""></div><div class="AnimateSinglePresence"></div></div></div></div></div><div class="AnimateSinglePresence"></div><div class="FadeWrapper"><div class="Fade"><div class="Fade-item"></div></div></div></div></div></div><button tabindex="-1" aria-hidden="true" name="hidden" type="submit" style="opacity: 0; pointer-events: none; height: 2px; width: 2px; position: absolute; top: -2px;"></button></form></div></div><div class="p-HeightObserverProvider-clone" aria-hidden="true"></div></div></div></body></html>
