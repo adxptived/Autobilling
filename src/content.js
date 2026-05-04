@@ -156,10 +156,65 @@ function fillIframeInput(iframe, value) {
   return fillCrossOriginIframe(iframe, value);
 }
 
+// ============ SCORE HELPERS ============
+
+function fieldScore(inp, patterns, prefixes, suffixes) {
+  var id = (inp.id || '').toLowerCase();
+  var name = (inp.name || '').toLowerCase();
+  var attr = (inp.getAttribute('autocomplete') || '').toLowerCase();
+  var ph = (inp.placeholder || '').toLowerCase();
+  var aria = (inp.getAttribute('aria-label') || '').toLowerCase();
+  var dataRole = (inp.getAttribute('data-role') || '').toLowerCase();
+  var label = '';
+
+  try {
+    if (inp.labels && inp.labels.length) label = inp.labels[0].textContent || '';
+    var labelledBy = inp.getAttribute('aria-labelledby');
+    if (!label && labelledBy) {
+      var lbl = document.getElementById(labelledBy);
+      if (lbl) label = (lbl.textContent || '').toLowerCase();
+    }
+    if (!label && id) {
+      var lblEl = document.querySelector('label[for="' + CSS.escape(id) + '"]');
+      if (lblEl) label = (lblEl.textContent || '').toLowerCase();
+    }
+  } catch (e) {}
+
+  var combined = id + ' ' + name + ' ' + attr + ' ' + ph + ' ' + label + ' ' + aria + ' ' + dataRole;
+
+  for (var i = 0; i < patterns.length; i++) {
+    if (patterns[i].test(combined)) return 1;
+  }
+
+  for (var i = 0; i < prefixes.length; i++) {
+    for (var j = 0; j < suffixes.length; j++) {
+      var full = prefixes[i] + suffixes[j];
+      if (combined.indexOf(full) > -1) return 1;
+    }
+  }
+
+  return 0;
+}
+
+function bestInput(selectors, patterns, prefixes, suffixes, excludeSet) {
+  var all = queryAll(selectors);
+  var best = null;
+  var bestScore = 0;
+  for (var i = 0; i < all.length; i++) {
+    var inp = all[i];
+    if (inp.type === 'hidden' || (excludeSet && excludeSet.has(inp))) continue;
+    var score = fieldScore(inp, patterns, prefixes, suffixes);
+    if (score > bestScore) {
+      bestScore = score;
+      best = inp;
+    }
+  }
+  return { el: best, score: bestScore };
+}
+
 // ============ MAIN AUTOFILL ============
 
 async function autofill(preCard, prePerson) {
-  // Validate input data
   var cardErr = validateCardData(preCard);
   if (cardErr) throw new Error('Card: ' + cardErr);
   var personErr = validatePersonData(prePerson);
@@ -168,25 +223,24 @@ async function autofill(preCard, prePerson) {
   var card = preCard;
   var person = prePerson;
   var filled = [];
+  var used = new Set();
 
   console.log('[Autobilling] Card:', card.formatted, '(' + card.brand + ') |', person.fullName);
 
-  // === STEP 1: Detect and fill Stripe iframes ===
+  // === STEP 1: Stripe iframes ===
   var allFrames = document.querySelectorAll('iframe');
   var stripeIframes = [];
 
   for (var i = 0; i < allFrames.length; i++) {
     var f = allFrames[i];
-    var name = (f.name || '').toLowerCase();
+    var frameName = (f.name || '').toLowerCase();
     var src = (f.src || '').toLowerCase();
     var title = (f.title || '').toLowerCase();
 
-    // Strict Stripe frame detection
-    if (name.indexOf('__privatestripeframe') !== 0 &&
+    if (frameName.indexOf('__privatestripeframe') !== 0 &&
         src.indexOf('stripe.com') === -1 &&
         src.indexOf('js.stripe') === -1) continue;
 
-    // Skip non-card frames
     if (src.indexOf('controller') > -1) continue;
     if (src.indexOf('m-outer') > -1 || src.indexOf('metrics') > -1) continue;
     if (src.indexOf('address-autocomplete') > -1) continue;
@@ -219,164 +273,218 @@ async function autofill(preCard, prePerson) {
     await sleep(120);
   }
 
-  // === STEP 2: Standard HTML inputs (non-iframe, all fields) ===
-  var allInputs = queryAll('input:not([type="hidden"]), [role="textbox"][contenteditable]');
-  for (var i = 0; i < allInputs.length; i++) {
-    var inp = allInputs[i];
-    var id = (inp.id || '').toLowerCase();
-    var name = (inp.name || '').toLowerCase();
-    var auto = (inp.getAttribute('autocomplete') || '').toLowerCase();
-    var ph = (inp.placeholder || '').toLowerCase();
-    var aria = (inp.getAttribute('aria-label') || '').toLowerCase();
-    var label = '';
+  // === Unified field map: patterns / prefixes + suffixes ===
+  var fields = [
+    {
+      key: 'cardNumber',
+      patterns: [
+        /\bcc-number\b/, /\bcard.?number\b/, /\bcc_number\b/, /\bnumber\b.*\bcard\b/, /\bcardnum\b/,
+      ],
+      prefixes: ['card', 'cc', 'credit'],
+      suffixes: ['number', 'num', 'nubmer'],
+      value: card.number,
+    },
+    {
+      key: 'expiry',
+      patterns: [
+        /\bcc-exp\b/, /\bexpir\b/, /\bexp.?date\b/, /\bvalidity\b/, /\bmm\b.*\byy\b/, /\bcd_expirymo\b/,
+      ],
+      prefixes: ['exp', 'expiry', 'cc_exp', 'card_'],
+      suffixes: ['expiry', 'exp', 'date', 'month_year'],
+      value: card.expMonth + card.expYear,
+    },
+    {
+      key: 'cvv',
+      patterns: [
+        /\bcc-csc\b/, /\bcsc\b/, /\bcvv\b/, /\bcvc\b/, /\bsecurity.?code\b/,
+      ],
+      prefixes: ['card', 'cc', 'cvv', 'cvc', 'security', 'csc'],
+      suffixes: ['cvv', 'cvc', 'cvc2', 'cvn', 'code', 'csc'],
+      value: card.cvv,
+    },
+    {
+      key: 'cardholderName',
+      patterns: [
+        /\bcc-name\b/, /\bcard.?holder\b/, /\bcard.?name\b/, /\bname.?on.?card\b/, /\bnamenam\b/,
+      ],
+      prefixes: ['card', 'cc', 'credit', 'cardholder', 'holder'],
+      suffixes: ['holder', 'name', 'holdername', 'nam'],
+      value: person.fullName,
+    },
+    {
+      key: 'name',
+      patterns: [
+        /\bname\b/, /\bfull.?name\b/, /\bfirst_name\b/, /\blast_name\b/,
+      ],
+      prefixes: ['billing', 'account', 'shipping', 'contact'],
+      suffixes: ['name', 'fullname'],
+      value: person.fullName,
+    },
+    {
+      key: 'address1',
+      patterns: [
+        /\baddress-line1\b/, /\bstreet.?address\b/, /\baddress1\b/, /\baddress_1\b/, /\baddr1\b/, /\bline1\b/,
+      ],
+      prefixes: ['address', 'addr', 'billing', 'shipping', 'street'],
+      suffixes: ['address1', 'address_1', 'addr1', 'line1', 'street', 'line_one'],
+      value: person.address1,
+    },
+    {
+      key: 'address2',
+      patterns: [
+        /\baddress-line2\b/, /\baddress2\b/, /\baddress_2\b/, /\baddr2\b/, /\bline2\b/,
+      ],
+      prefixes: ['address', 'addr', 'billing', 'shipping'],
+      suffixes: ['address2', 'address_2', 'addr2', 'line2', 'street2', 'line_two'],
+      value: person.address2,
+    },
+    {
+      key: 'postal',
+      patterns: [
+        /\bpostal-code\b/, /\bzip.?code\b/, /\bpostcode\b/, /\bzipcode\b/, /\bbe_postal\b/, /\bpc\b/,
+      ],
+      prefixes: ['postal', 'zip', 'be_postal', 'postcode', 'pin'],
+      suffixes: ['code', 'zip', 'postal', 'pincode', 'postalcode', 'index'],
+      value: person.postalCode,
+    },
+    {
+      key: 'city',
+      patterns: [
+        /\baddress-level2\b/, /\bcity\b/, /\btown\b/,
+      ],
+      prefixes: ['city', 'town', 'billing', 'shipping'],
+      suffixes: ['city', 'town'],
+      value: person.city,
+    },
+    {
+      key: 'country',
+      patterns: [
+        /\bcountry\b/, /\bcountry-name\b/, /\bcountry_code\b/,
+      ],
+      prefixes: ['country', 'nation', 'billing', 'shipping'],
+      suffixes: ['country', 'countrycode', 'country_code', 'countryname'],
+      value: person.country,
+    },
+    {
+      key: 'state',
+      patterns: [
+        /\baddress-level1\b/, /\bstate\b/, /\bprovince\b/, /\bregion\b/, /\bcounty\b/,
+      ],
+      prefixes: ['state', 'province', 'region', 'county', 'billing', 'shipping'],
+      suffixes: ['state', 'province', 'region', 'county'],
+      value: person.state || '',
+    },
+    {
+      key: 'phone',
+      patterns: [
+        /\btel\b/, /\bphone\b/, /\bmobile\b/, /\bcell\b/,
+      ],
+      prefixes: ['phone', 'mobile', 'cell', 'telephone'],
+      suffixes: ['phone', 'mobile', 'cell', 'tel', 'cellphone', 'telephone'],
+      value: person.phone || '',
+    },
+    {
+      key: 'email',
+      patterns: [
+        /\bemail\b/, /\bemailaddress\b/, /\be-mail\b/,
+      ],
+      prefixes: ['email', 'e_mail', 'mail'],
+      suffixes: ['email', 'mail', 'address'],
+      value: person.email || '',
+    },
+  ];
 
-    try {
-      if (inp.labels && inp.labels.length) label = inp.labels[0].textContent || '';
-      var labelledBy = inp.getAttribute('aria-labelledby');
-      if (!label && labelledBy) {
-        var lbl = document.getElementById(labelledBy);
-        if (lbl) label = lbl.textContent || '';
+  // === STEP 2: Universal field matching ===
+  for (var f = 0; f < fields.length; f++) {
+    var field = fields[f];
+    if (filled.indexOf(field.key) > -1) continue;
+    var r = bestInput('input:not([type="hidden"]), select, textarea', field.patterns, field.prefixes, field.suffixes, used);
+    if (r.el && r.score > 0) {
+      if (field.key === 'country' && r.el.tagName === 'SELECT') {
+        fillSelect(r.el, person.country);
+      } else {
+        fillInput(r.el, field.value);
       }
-      if (!label && id) {
-        var lblEl = document.querySelector('label[for="' + CSS.escape(id) + '"]');
-        if (lblEl) label = lblEl.textContent || '';
-      }
-    } catch (e) {}
-
-    label = label.toLowerCase();
-    var combined = (id + ' ' + name + ' ' + auto + ' ' + ph + ' ' + label + ' ' + aria).toLowerCase();
-
-    if (/\bcc-number\b/.test(auto) || /\b(cardnumber|cc-number|ccnumber|card.number|card_num)\b/i.test(combined)) {
-      fillInput(inp, card.number);
-      if (filled.indexOf('cardNumber') === -1) filled.push('cardNumber');
-    } else if (/\bcc-exp\b/.test(auto) || /\b(expir|exp.?date|expiry|cc-exp|validity|mm.*yy)\b/i.test(combined)) {
-      fillInput(inp, card.expMonth + '/' + card.expYear);
-      if (filled.indexOf('expiry') === -1) filled.push('expiry');
-    } else if (/\bcc-csc\b/.test(auto) || /\b(cvv|cvc|cvc2|cvn|security.code|cc-csc)\b/i.test(combined)) {
-      fillInput(inp, card.cvv);
-      if (filled.indexOf('cvv') === -1) filled.push('cvv');
-    } else if (/\bcc-name\b/.test(auto) || /\b(card.?holder|card.?name|name.?on.?card)\b/i.test(combined)) {
-      fillInput(inp, person.fullName);
-      if (filled.indexOf('cardholderName') === -1) filled.push('cardholderName');
+      filled.push(field.key);
+      used.add(r.el);
     }
   }
 
-  // === STEP 3: Billing address fields (Stripe Checkout selectors) ===
-
-  // Full name
-  var nameField = queryFirst([
-    '#billingName',
-    'input[name="billingName"]',
-    'input[autocomplete="cc-name"]',
-    'input[autocomplete="name"]',
-    'input[data-elements-stable-field-name="billingName"]',
-  ]);
-  if (nameField) { fillInput(nameField, person.fullName); filled.push('name'); }
-
-  // Address line 1
-  var addr1 = queryFirst([
-    'input[autocomplete="address-line1"]',
-    'input[name="addressLine1"]',
-    'input[data-elements-stable-field-name="addressLine1"]',
-    '#billingAddressLine1',
-    'input[autocomplete="street-address"]',
-  ]);
-  if (addr1) { fillInput(addr1, person.address1); filled.push('address1'); }
-
-  // Address line 2
-  var addr2 = queryFirst([
-    'input[autocomplete="address-line2"]',
-    'input[name="addressLine2"]',
-    'input[data-elements-stable-field-name="addressLine2"]',
-    '#billingAddressLine2',
-  ]);
-  if (addr2) fillInput(addr2, person.address2);
-
-  // Postal code
-  var postal = queryFirst([
-    'input[autocomplete="postal-code"]',
-    'input[autocomplete="zip-code"]',
-    'input[name="postalCode"]',
-    'input[data-elements-stable-field-name="postalCode"]',
-    '#billingPostalCode',
-  ]);
-  if (postal) { fillInput(postal, person.postalCode); filled.push('postal'); }
-
-  // City
-  var cityF = queryFirst([
-    'input[autocomplete="address-level2"]',
-    'input[name="city"]',
-    'input[data-elements-stable-field-name="city"]',
-    '#billingCity',
-  ]);
-  if (cityF) { fillInput(cityF, person.city); filled.push('city'); }
-
-  // Country (both select and input variants)
-  var countryInput = queryFirst([
-    'input[autocomplete="country"]',
-    'input[autocomplete="country-name"]',
-    'input[name="country"]',
-    'input[data-elements-stable-field-name="country"]',
-    '#billingCountry',
-    'select[autocomplete="country"]',
-    'select[name="country"]',
-    'select[data-elements-stable-field-name="country"]',
-  ]);
-  if (countryInput) {
-    if (countryInput.tagName === 'SELECT') {
-      fillSelect(countryInput, person.country);
-    } else {
-      fillInput(countryInput, person.countryName);
-    }
-    filled.push('country');
-  }
-
-  // === STEP 4: aria-label search (multilingual fallback) ===
-  var ariaInputs = queryAll('input:not([type="hidden"])');
-  for (var i = 0; i < ariaInputs.length; i++) {
-    var aInp = ariaInputs[i];
-    var aLabel = (aInp.getAttribute('aria-label') || '').toLowerCase();
-    if (!aLabel) continue;
-
-    // Only fill fields we haven't already filled
-    var aVal = aInp.value || '';
-    var aAlready = aVal.length > 0;
-
-    if (!aAlready && (aLabel.indexOf('card number') > -1 || aLabel.indexOf('номер карты') > -1)) {
-      fillInput(aInp, card.number);
-    } else if (!aAlready && (aLabel.indexOf('expir') > -1 || aLabel.indexOf('мм / гг') > -1 || aLabel.indexOf('mm / yy') > -1)) {
-      fillInput(aInp, card.expMonth + ' / ' + card.expYear);
-    } else if (!aAlready && (aLabel.indexOf('cvv') > -1 || aLabel.indexOf('cvc') > -1 || aLabel.indexOf('код') > -1)) {
-      fillInput(aInp, card.cvv);
-    } else if (!aAlready && (aLabel.indexOf('имя') > -1 && (aLabel.indexOf('владельц') > -1 || aLabel.indexOf('карт') > -1))) {
-      fillInput(aInp, person.fullName);
-    } else if (!aAlready && aLabel.indexOf('адрес') > -1 && aLabel.indexOf('строка 1') > -1) {
-      fillInput(aInp, person.address1);
-    } else if (!aAlready && aLabel.indexOf('адрес') > -1 && aLabel.indexOf('строка 2') > -1) {
-      fillInput(aInp, person.address2);
-    } else if (!aAlready && (aLabel.indexOf('почтов') > -1 || aLabel.indexOf('postal') > -1 || aLabel.indexOf('индекс') > -1)) {
-      fillInput(aInp, person.postalCode);
-    } else if (!aAlready && (aLabel.indexOf('город') > -1 || (aLabel.indexOf('city') > -1 && aLabel.indexOf('address') === -1))) {
-      fillInput(aInp, person.city);
-    } else if (!aAlready && (aLabel.indexOf('стран') > -1 || aLabel.indexOf('countr') > -1)) {
-      fillInput(aInp, person.countryName);
-    }
-  }
-
-  // === STEP 5: autocomplete fallback for remaining fields ===
-  var autoInputs = queryAll('input[autocomplete]:not([type="hidden"])');
+  // === STEP 3: Fallback by autocomplete ===
+  var autoInputs = queryAll('input[autocomplete]:not([type="hidden"]), select[autocomplete], textarea[autocomplete]');
   for (var i = 0; i < autoInputs.length; i++) {
     var ai = autoInputs[i];
-    if (ai.value && ai.value.length > 0) continue;
-    var autoAttr = (ai.getAttribute('autocomplete') || '').toLowerCase();
-    if (autoAttr === 'country' || autoAttr === 'country-name') {
-      fillInput(ai, person.countryName);
-    } else if (autoAttr === 'postal-code' || autoAttr === 'zip-code') {
-      fillInput(ai, person.postalCode);
-    } else if (autoAttr === 'address-line1' || autoAttr === 'street-address') {
-      fillInput(ai, person.address1);
-    } else if (autoAttr === 'address-level2' || autoAttr === 'city') {
-      fillInput(ai, person.city);
+    if (used.has(ai) || (ai.value && ai.value.length > 0)) continue;
+    var attr = (ai.getAttribute('autocomplete') || '').toLowerCase();
+    if (attr === 'cc-number') {
+      fillInput(ai, card.number); filled.push('cardNumber'); used.add(ai);
+    } else if (attr === 'cc-exp') {
+      fillInput(ai, card.expMonth + card.expYear); filled.push('expiry'); used.add(ai);
+    } else if (attr === 'cc-exp-month') {
+      fillInput(ai, card.expMonth); used.add(ai);
+    } else if (attr === 'cc-exp-year') {
+      fillInput(ai, '20' + card.expYear); used.add(ai);
+    } else if (attr === 'cc-csc') {
+      fillInput(ai, card.cvv); filled.push('cvv'); used.add(ai);
+    } else if (attr === 'cc-name') {
+      fillInput(ai, person.fullName); filled.push('cardholderName'); used.add(ai);
+    } else if (attr === 'name') {
+      fillInput(ai, person.fullName); filled.push('name'); used.add(ai);
+    } else if (attr === 'address-line1' || attr === 'street-address') {
+      fillInput(ai, person.address1); filled.push('address1'); used.add(ai);
+    } else if (attr === 'address-line2') {
+      fillInput(ai, person.address2); used.add(ai);
+    } else if (attr === 'postal-code' || attr === 'zip-code') {
+      fillInput(ai, person.postalCode); filled.push('postal'); used.add(ai);
+    } else if (attr === 'address-level2' || attr === 'city') {
+      fillInput(ai, person.city); filled.push('city'); used.add(ai);
+    } else if (attr === 'address-level1' || attr === 'state' || attr === 'region') {
+      fillInput(ai, person.state || ''); filled.push('state'); used.add(ai);
+    } else if (attr === 'country' || attr === 'country-name') {
+      if (ai.tagName === 'SELECT') fillSelect(ai, person.country);
+      else fillInput(ai, person.countryName);
+      filled.push('country'); used.add(ai);
+    } else if (attr === 'email') {
+      fillInput(ai, person.email || ''); filled.push('email'); used.add(ai);
+    } else if (attr === 'tel') {
+      fillInput(ai, person.phone || ''); filled.push('phone'); used.add(ai);
+    }
+  }
+
+  // === STEP 4: aria-label + multilingual fallback ===
+  var ariaInputs = queryAll('input:not([type="hidden"])');
+  for (var i = 0; i < ariaInputs.length; i++) {
+    var ai = ariaInputs[i];
+    if (used.has(ai)) continue;
+    var aLabel = (ai.getAttribute('aria-label') || '').toLowerCase();
+    if (!aLabel) continue;
+    var aVal = ai.value || '';
+    if (aVal.length > 0) continue;
+
+    if (aLabel.indexOf('card number') > -1 || aLabel.indexOf('номер карты') > -1) {
+      fillInput(ai, card.number); used.add(ai);
+    } else if (aLabel.indexOf('expir') > -1 ||aLabel.indexOf('мм / гг') > -1 || aLabel.indexOf('mm / yy') > -1 || aLabel.indexOf('valid') > -1) {
+      fillInput(ai, card.expMonth + ' / ' + card.expYear); used.add(ai);
+    } else if (aLabel.indexOf('cvv') > -1 || aLabel.indexOf('cvc') > -1 || aLabel.indexOf('код') > -1 || aLabel.indexOf('security code') > -1) {
+      fillInput(ai, card.cvv); used.add(ai);
+    } else if ((aLabel.indexOf('имя') > -1 && (aLabel.indexOf('владельц') > -1 || aLabel.indexOf('карт') > -1)) || aLabel.indexOf('name on card') > -1) {
+      fillInput(ai, person.fullName); used.add(ai);
+    } else if (aLabel.indexOf('email') > -1) {
+      fillInput(ai, person.email || ''); used.add(ai);
+    } else if (aLabel.indexOf('phone') > -1) {
+      fillInput(ai, person.phone || ''); used.add(ai);
+    } else if (aLabel.indexOf('адрес') > -1 && aLabel.indexOf('строка 1') > -1) {
+      fillInput(ai, person.address1); used.add(ai);
+    } else if (aLabel.indexOf('адрес') > -1 && aLabel.indexOf('строка 2') > -1) {
+      fillInput(ai, person.address2); used.add(ai);
+    } else if (aLabel.indexOf('почтов') > -1 || aLabel.indexOf('postal') > -1 || aLabel.indexOf('zip') > -1) {
+      fillInput(ai, person.postalCode); used.add(ai);
+    } else if (aLabel.indexOf('город') > -1 || (aLabel.indexOf('city') > -1 && aLabel.indexOf('address') === -1)) {
+      fillInput(ai, person.city); used.add(ai);
+    } else if (aLabel.indexOf('област') > -1 || aLabel.indexOf('state') > -1 || aLabel.indexOf('province') > -1) {
+      fillInput(ai, person.state || ''); used.add(ai);
+    } else if (aLabel.indexOf('стран') > -1 || aLabel.indexOf('countr') > -1) {
+      fillInput(ai, person.countryName); used.add(ai);
     }
   }
 
