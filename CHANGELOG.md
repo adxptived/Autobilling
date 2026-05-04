@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.4.0
+
+- Auto-load content script via `content_scripts` with `all_frames: true` for reliable Stripe iframe detection
+- Added optional phone & email generation (toggle in popup/options)
+- Added phone & email autofill for Stripe Elements and HTML forms
+- Added Stripe Elements field names: locality, postalCode, administrative
+- Normalized underscores in field scoring for more accurate autofill matching
+- ExecuteScript `allFrames` for dynamically-created Stripe iframes
+
 ## 1.3.0
 
 - Added responsibility notice to README

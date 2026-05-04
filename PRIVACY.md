@@ -27,7 +27,7 @@ Full generated card numbers, CVV, names, addresses, history, and custom settings
 
 ## Page access
 
-Autobilling injects `content.js` into Stripe pages to fill payment forms. The extension does not read unrelated page content for analytics or tracking.
+Autobilling auto-loads `content.js` into all pages (all frames) via `content_scripts` to reliably detect and fill Stripe payment forms. The extension does not read unrelated page content for analytics or tracking.
 
 ## Contact
 

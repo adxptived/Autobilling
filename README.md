@@ -24,6 +24,7 @@ It generates:
 - billing name
 - billing address
 - postal code / city / country
+- phone number and email (optional)
 
 It can then copy the data or autofill supported payment forms.
 
@@ -36,10 +37,11 @@ You are responsible for how you use this extension. Do not use it for fraud, una
 ## Main features
 
 - **Generate card data** — one click creates card + billing details.
-- **Stripe autofill** — fills Stripe Checkout / Stripe Elements forms.
+- **Optional phone/email** — toggle phone and email generation per profile.
+- **Stripe autofill** — fills Stripe Checkout / Stripe Elements forms, including dynamic iframes.
 - **Right-click autofill** — context menu action: `Autofill card`.
 - **Hotkey autofill** — `Ctrl+Shift+F` / `Cmd+Shift+F`.
-- **Quick copy** — click card number, expiry, CVV, or billing fields to copy only that value.
+- **Quick copy** — click card number, expiry, CVV, phone, email, or billing fields to copy only that value.
 - **Copy all** — copies card and billing data together.
 - **Custom BINs** — add/delete custom BIN prefixes.
 - **Favorites** — star BINs to keep them at the top.
@@ -126,7 +128,7 @@ Requires Firefox 142 or newer.
 | Autofill with hotkey | Press `Ctrl+Shift+F` / `Cmd+Shift+F` |
 | Autofill with right click | Right-click page/input → **Autofill card** |
 | Copy all data | Click **Copy all** |
-| Copy one field | Click card number, expiry, CVV, name, address, city, or country |
+| Copy one field | Click card number, expiry, CVV, name, phone, email, address, city, or country |
 | Add custom BIN | Enter prefix → **Add** |
 | Delete custom BIN | Select custom BIN → **Delete** |
 | Favorite BIN | Click the star next to BIN select |
@@ -140,6 +142,7 @@ Open **Settings** from the popup to configure:
 - compact card view by default
 - live BIN lookup on/off; enabling it requests optional access to `lookup.binlist.net`
 - session-only generated card/profile/history storage
+- phone and email generation toggles
 - automatic history expiry after 15 minutes, 1 hour, 24 hours, or manual clearing only
 - default billing profile
 - custom billing profile fields
@@ -201,7 +204,7 @@ Commands:
 | `src/permissions.js` | Optional BIN lookup permission helpers |
 | `src/autofillDiagnostics.js` | Autofill field summary helpers |
 | `src/background.js` | Service worker: context menu, hotkey, BIN proxy |
-| `src/content.js` | On-demand autofill script injected into pages |
+| `src/content.js` | Autofill script auto-loaded into all frames via content_scripts |
 | `assets/icon.png` | Source icon used in README and build |
 | `scripts/` | Build/zip/validation scripts |
 | `tests/` | Node tests |
