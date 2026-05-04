@@ -40,28 +40,34 @@ function doAutofill(tab) {
       return;
     }
 
-    chrome.tabs.sendMessage(tab.id, { action: 'autofill', card: data.card, person: data.person }, function (resp) {
+    // Inject content script into ALL frames (incl. cross-origin Stripe iframes)
+    chrome.scripting.executeScript({
+      target: { tabId: tab.id, allFrames: true },
+      files: ['content.js'],
+    }, function () {
       if (chrome.runtime.lastError) {
+        console.log('[Autobilling] Inject error:', chrome.runtime.lastError.message);
+        // Fallback: try top-frame only
         chrome.scripting.executeScript({
           target: { tabId: tab.id },
           files: ['content.js'],
         }, function () {
-          if (chrome.runtime.lastError) {
-            console.log('[Autobilling] Cannot inject:', chrome.runtime.lastError.message);
-            return;
-          }
           setTimeout(function () {
-            chrome.tabs.sendMessage(tab.id, { action: 'autofill', card: data.card, person: data.person }, function (r2) {
+            chrome.tabs.sendMessage(tab.id, { action: 'autofill', card: data.card, person: data.person }, function (r) {
               if (chrome.runtime.lastError) return;
-              console.log('[Autobilling]', formatAutofillStatus(r2));
+              console.log('[Autobilling]', formatAutofillStatus(r));
             });
-          }, 400);
+          }, 200);
         });
-      } else if (resp && resp.success) {
-        console.log('[Autobilling]', formatAutofillStatus(resp));
-      } else if (resp && resp.error) {
-        console.log('[Autobilling]', resp.error);
+        return;
       }
+      // Broadcast autofill to all frames
+      setTimeout(function () {
+        chrome.tabs.sendMessage(tab.id, { action: 'autofill', card: data.card, person: data.person }, function (r) {
+          if (chrome.runtime.lastError) return;
+          console.log('[Autobilling]', formatAutofillStatus(r));
+        });
+      }, 200);
     });
   });
 }
