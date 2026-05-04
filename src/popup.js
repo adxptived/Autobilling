@@ -289,17 +289,14 @@ function render() {
     document.getElementById('cardNetwork').textContent =
       state.card.brand === 'Mastercard' ? 'MC' : state.card.brand === 'Visa' ? 'VISA' : state.card.brand.toUpperCase();
 
-    var binEl = document.getElementById('binInfo');
+    var cardVisual = document.getElementById('cardVisual');
     if (state.card.binInfo && state.validateBin) {
       var bi = state.card.binInfo;
-      binEl.textContent = bi.bank + ' (' + bi.countryName + ') \u2014 ' + bi.type + ' ' + bi.category;
-      binEl.className = 'bin-bar valid';
+      cardVisual.title = bi.bank + ' (' + bi.countryName + ') \u2014 ' + bi.type + ' ' + bi.category;
     } else if (state.validateBin) {
-      binEl.textContent = 'Custom BIN \u2014 not in database';
-      binEl.className = 'bin-bar warn';
+      cardVisual.title = 'Custom BIN \u2014 not in database';
     } else {
-      binEl.textContent = 'BIN validation off';
-      binEl.className = 'bin-bar';
+      cardVisual.title = '';
     }
   }
   if (state.person) {
