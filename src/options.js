@@ -15,6 +15,9 @@ function readCustomProfile() {
     address2: '',
     postalCode: document.getElementById('profileZip').value.trim(),
     city: document.getElementById('profileCity').value.trim(),
+    state: document.getElementById('profileState').value.trim(),
+    phone: document.getElementById('profilePhone').value.trim(),
+    email: document.getElementById('profileEmail').value.trim(),
     country: document.getElementById('profileCountry').value.trim().toUpperCase(),
     countryName: document.getElementById('profileCountryName').value.trim(),
   };
@@ -26,6 +29,9 @@ function fillCustomProfile(profile) {
   document.getElementById('profileAddr').value = profile.address1 || '';
   document.getElementById('profileZip').value = profile.postalCode || '';
   document.getElementById('profileCity').value = profile.city || '';
+  document.getElementById('profileState').value = profile.state || '';
+  document.getElementById('profilePhone').value = profile.phone || '';
+  document.getElementById('profileEmail').value = profile.email || '';
   document.getElementById('profileCountry').value = profile.country || '';
   document.getElementById('profileCountryName').value = profile.countryName || '';
 }

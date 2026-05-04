@@ -3,85 +3,316 @@
 <head>
 <meta charset="UTF-8">
 <style>
-* { box-sizing: border-box; }
+:root {
+  --bg: #070b12;
+  --panel: rgba(22, 27, 34, 0.82);
+  --panel-2: rgba(13, 17, 23, 0.74);
+  --border: rgba(139, 148, 158, 0.16);
+  --border-strong: rgba(139, 148, 158, 0.26);
+  --text: #d6deea;
+  --muted: #7d8590;
+  --dim: #545d68;
+  --accent: #ef476f;
+  --accent-2: #7c3aed;
+  --green: #3fb950;
+  --yellow: #d29922;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body {
+  width: 420px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: #070b12;
+}
 body {
-  width: 380px; padding: 16px; margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: #0d1117; color: #c9d1d9; font-size: 13px;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 12px;
+  color: var(--text);
 }
-h1 { font-size: 18px; margin: 0 0 4px; color: #f0f6fc; }
-.sub { color: #6e7681; font-size: 11px; margin-bottom: 14px; }
-.section { background: #161b22; border: 1px solid #21262d; border-radius: 12px; padding: 12px; margin-bottom: 10px; }
-.section-title { color: #8b949e; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
-label { display: flex; align-items: center; gap: 8px; margin: 8px 0; color: #c9d1d9; }
-input, select {
-  width: 100%; height: 34px; margin-bottom: 8px; padding: 7px 9px;
-  border: 1px solid #30363d; border-radius: 9px; background: #0d1117; color: #c9d1d9;
+.app-shell {
+  width: 420px;
+  max-height: 600px;
+  padding: 14px;
+  overflow-y: auto;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(124, 58, 237, 0.22), transparent 32%),
+    radial-gradient(circle at 90% 12%, rgba(239, 71, 111, 0.18), transparent 30%),
+    linear-gradient(180deg, #0d1117 0%, var(--bg) 100%);
 }
-input[type="checkbox"] { width: auto; height: auto; margin: 0; accent-color: #e94560; }
+button, select, input { font: inherit; }
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track {
+  background: linear-gradient(180deg, rgba(13, 17, 23, 0.55), rgba(7, 11, 18, 0.92));
+  border-left: 1px solid rgba(139, 148, 158, 0.08);
+}
+::-webkit-scrollbar-thumb {
+  min-height: 42px;
+  background: linear-gradient(180deg, #334155, #1f2937);
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background-clip: padding-box;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #475569, #334155);
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-corner { background: transparent; }
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.brand-title {
+  font-size: 17px;
+  font-weight: 850;
+  letter-spacing: -0.3px;
+  color: #f8fafc;
+}
+.brand-subtitle {
+  margin-top: 2px;
+  font-size: 10px;
+  color: var(--muted);
+}
+.header-pill {
+  padding: 7px 10px;
+  border: 1px solid rgba(239, 71, 111, 0.35);
+  border-radius: 999px;
+  background: rgba(239, 71, 111, 0.08);
+  color: #ff9aaa;
+  font-size: 10px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 0 22px rgba(239, 71, 111, 0.08);
+}
+.header-pill:hover { background: rgba(239, 71, 111, 0.16); color: #fff; }
+
+.section {
+  position: relative;
+  padding: 12px;
+  margin-bottom: 10px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(22, 27, 34, 0.9), rgba(13, 17, 23, 0.75));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 10px 24px rgba(0, 0, 0, 0.14);
+}
+.section-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  color: #9ba3af;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+.section-title::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  margin-right: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 14px rgba(239, 71, 111, 0.55);
+}
+
+.settings-checks {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 1px;
+}
+.check-inline {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 30px;
+  padding: 6px 8px;
+  border: 1px solid rgba(139, 148, 158, 0.12);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.025);
+  color: #9ba3af;
+  font-size: 11px;
+  cursor: pointer;
+}
+.check-inline:hover { border-color: rgba(239, 71, 111, 0.28); }
+.check-inline input[type="checkbox"] { width: auto; accent-color: var(--accent); }
+
+.label {
+  display: block;
+  margin-bottom: 5px;
+  color: #8b949e;
+  font-size: 10px;
+  font-weight: 750;
+}
+select,
+input[type="text"],
+input[type="number"] {
+  width: 100%;
+  height: 34px;
+  padding: 7px 9px;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  background: rgba(7, 11, 18, 0.74);
+  color: var(--text);
+  font-size: 11px;
+  transition: border 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+}
+select:hover,
+input:hover { border-color: rgba(239, 71, 111, 0.36); }
+select:focus,
+input:focus {
+  outline: none;
+  border-color: rgba(239, 71, 111, 0.75);
+  box-shadow: 0 0 0 3px rgba(239, 71, 111, 0.12);
+  background: rgba(7, 11, 18, 0.92);
+}
+
+.row { display: flex; gap: 9px; margin-bottom: 9px; }
+.row:last-child { margin-bottom: 0; }
+.row > * { flex: 1; min-width: 0; }
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-button {
-  width: 100%; min-height: 34px; border: 1px solid #30363d; border-radius: 9px;
-  background: #21262d; color: #c9d1d9; font-weight: 700; cursor: pointer; margin-top: 4px;
+
+.btn,
+.btn-sm {
+  border: 1px solid var(--border-strong);
+  cursor: pointer;
+  font-weight: 800;
+  color: var(--text);
+  background: linear-gradient(180deg, rgba(48, 54, 61, 0.88), rgba(33, 38, 45, 0.9));
+  transition: transform 0.12s ease, border 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
 }
-button:hover { background: #30363d; }
-button.primary { background: #e94560; color: #fff; border-color: #e94560; }
-button.danger { color: #e94560; border-color: rgba(233,69,96,0.45); background: transparent; }
-button.danger:hover { background: rgba(233,69,96,0.08); }
-.status { min-height: 16px; color: #3fb950; text-align: center; font-size: 11px; margin-top: 8px; }
+.btn:hover,
+.btn-sm:hover { border-color: rgba(239, 71, 111, 0.36); background: rgba(48, 54, 61, 0.95); }
+.btn:active,
+.btn-sm:active { transform: translateY(1px); }
+.btn {
+  display: block;
+  width: 100%;
+  min-height: 38px;
+  padding: 9px 10px;
+  margin-bottom: 7px;
+  border-radius: 12px;
+  font-size: 13px;
+}
+.btn-primary {
+  border-color: rgba(239, 71, 111, 0.9);
+  color: #fff;
+  background: linear-gradient(135deg, #ef476f, #d6336c 58%, #9d174d);
+  box-shadow: 0 12px 26px rgba(239, 71, 111, 0.22);
+}
+.btn-primary:hover { background: linear-gradient(135deg, #ff5c7c, #e23a70 58%, #b21f58); }
+.btn-sm {
+  min-height: 32px;
+  padding: 6px 9px;
+  border-radius: 10px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.btn-sm.primary { border-color: rgba(63, 185, 80, 0.5); color: #fff; background: linear-gradient(180deg, #2ea043, #238636); }
+.btn-sm.primary:hover { background: linear-gradient(180deg, #3fb950, #238636); }
+.btn-sm.danger { border-color: rgba(239, 71, 111, 0.5); color: #ff7b91; background: rgba(239, 71, 111, 0.06); }
+.btn-sm.danger:hover { color: #fff; background: rgba(239, 71, 111, 0.24); }
+
+.status {
+  display: none;
+  margin: 4px 0 2px;
+  color: #7ee787;
+  font-size: 11px;
+  text-align: center;
+}
+.status:not(:empty) { display: block; }
+.status.error { color: #ff7b91; }
+
+.footer {
+  margin-top: 4px;
+  color: var(--dim);
+  font-size: 10px;
+  line-height: 1.4;
+  text-align: center;
+}
+.footer a { color: #9ba3af; text-decoration: none; }
+.footer a:hover { color: var(--accent); }
 </style>
 </head>
 <body>
-  <h1>Autobilling Options</h1>
-  <div class="sub">Global extension preferences and billing profiles</div>
+<div class="app-shell">
 
-  <div class="section">
-    <div class="section-title">Preferences</div>
-    <label><input type="checkbox" id="chkDefaultCompact"> Compact card view by default</label>
-    <label><input type="checkbox" id="chkValidateBin"> Live BIN lookup</label>
-    <label><input type="checkbox" id="chkSessionOnly"> Session-only generated data</label>
+<div class="header">
+  <div>
+    <div class="brand-title">Settings</div>
+    <div class="brand-subtitle">Autobilling preferences and profiles</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Preferences</div>
+  <div class="settings-checks">
+    <label class="check-inline"><input type="checkbox" id="chkDefaultCompact"> Compact card</label>
+    <label class="check-inline"><input type="checkbox" id="chkValidateBin"> Live BIN info</label>
+    <label class="check-inline"><input type="checkbox" id="chkSessionOnly"> Session only</label>
+  </div>
+  <div style="margin-top:8px;">
+    <span class="label">History retention</span>
     <select id="selHistoryTtl">
-      <option value="0">Keep history until cleared</option>
-      <option value="15">Clear history entries after 15 minutes</option>
-      <option value="60">Clear history entries after 1 hour</option>
-      <option value="1440">Clear history entries after 24 hours</option>
+      <option value="0">Keep until cleared</option>
+      <option value="15">15 minutes</option>
+      <option value="60">1 hour</option>
+      <option value="1440">24 hours</option>
     </select>
   </div>
+</div>
 
-  <div class="section">
-    <div class="section-title">Default profile</div>
-    <select id="selProfile">
-      <option value="generated">Generated random profile</option>
-      <option value="US">US profile</option>
-      <option value="NL">NL profile</option>
-      <option value="custom">Custom profile</option>
-    </select>
+<div class="section">
+  <div class="section-title">Default profile</div>
+  <span class="label">Billing profile</span>
+  <select id="selProfile">
+    <option value="generated">Generated random profile</option>
+    <option value="US">US profile</option>
+    <option value="NL">NL profile</option>
+    <option value="custom">Custom profile</option>
+  </select>
+</div>
+
+<div class="section">
+  <div class="section-title">Custom profile</div>
+  <input id="profileName" placeholder="Full name">
+  <input id="profileAddr" placeholder="Address line 1">
+  <div class="grid2">
+    <input id="profileZip" placeholder="ZIP / postal">
+    <input id="profileCity" placeholder="City">
   </div>
-
-  <div class="section">
-    <div class="section-title">Custom profile</div>
-    <input id="profileName" placeholder="Full name">
-    <input id="profileAddr" placeholder="Address line 1">
-    <div class="grid2">
-      <input id="profileZip" placeholder="ZIP / postal">
-      <input id="profileCity" placeholder="City">
-    </div>
-    <div class="grid2">
-      <input id="profileCountry" placeholder="Country code, e.g. US">
-      <input id="profileCountryName" placeholder="Country name">
-    </div>
-    <button id="btnSaveProfile">Save custom profile</button>
+  <div class="grid2">
+    <input id="profileState" placeholder="State / province">
+    <input id="profilePhone" placeholder="Phone number">
   </div>
-
-  <div class="section">
-    <button class="danger" id="btnClearHistory">Clear history</button>
+  <input id="profileEmail" placeholder="Email address">
+  <div class="grid2">
+    <input id="profileCountry" placeholder="Country code (e.g. US)">
+    <input id="profileCountryName" placeholder="Country name">
   </div>
+  <button class="btn-sm primary" id="btnSaveProfile" style="width:100%;margin-top:6px;">Save custom profile</button>
+</div>
 
-  <button class="primary" id="btnSave">Save settings</button>
-  <div class="status" id="status"></div>
+<div class="section">
+  <div class="section-title">Data</div>
+  <button class="btn-sm danger" id="btnClearHistory" style="width:100%;">Clear history</button>
+</div>
+
+<button class="btn btn-primary" id="btnSave">Save settings</button>
+<div class="status" id="status"></div>
+
+<div class="footer">
+  <a href="https://github.com/adxptived" target="_blank">adxptived</a> &middot; <a href="https://github.com/NjProVk/CreditsCardTools" target="_blank">CreditsCardTools</a> &middot; Luhn-valid
+</div>
 
 <script src="extensionStorage.js"></script>
 <script src="permissions.js"></script>
 <script src="options.js"></script>
+</div>
 </body>
 </html>
