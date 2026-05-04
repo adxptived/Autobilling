@@ -82,12 +82,11 @@ function fillInput(input, value) {
     }
     input.dispatchEvent(new Event('input', { bubbles: true }));
     input.dispatchEvent(new Event('change', { bubbles: true }));
-    input.dispatchEvent(new Event('blur', { bubbles: true }));
-    // Verify the value actually stuck; if not, try execCommand approach
+    // Check if value stuck (React/Vue may reset on re-render)
     if (input.value !== value) {
+      // Try execCommand — selects only THIS input's text, not the whole page
       input.focus();
       input.select();
-      document.execCommand('selectAll', false, null);
       document.execCommand('insertText', false, value);
       input.dispatchEvent(new Event('input', { bubbles: true }));
       input.dispatchEvent(new Event('change', { bubbles: true }));
@@ -175,16 +174,14 @@ function fillCrossOriginIframe(iframe, value) {
     // Click the iframe to activate the input inside it
     iframe.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
     iframe.focus();
-    // Small delay for the iframe to register focus
     // Try accessing contentDocument (same-origin)
     try {
       var doc = iframe.contentDocument || iframe.contentWindow.document;
       if (doc) {
         var el = doc.activeElement;
-        if (el && el.tagName === 'INPUT') {
+        if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')) {
           el.focus();
           el.select();
-          doc.execCommand('selectAll', false, null);
           doc.execCommand('insertText', false, value);
           return true;
         }
@@ -193,14 +190,12 @@ function fillCrossOriginIframe(iframe, value) {
         if (inputs.length > 0) {
           inputs[0].focus();
           inputs[0].select();
-          doc.execCommand('selectAll', false, null);
           doc.execCommand('insertText', false, value);
           return true;
         }
       }
     } catch (e) {}
-    // Cross-origin: use document-level execCommand (targets activeElement after click)
-    document.execCommand('selectAll', false, null);
+    // Cross-origin: focus already on iframe input from click, just insert
     document.execCommand('insertText', false, value);
     return true;
   } catch (e) {}
