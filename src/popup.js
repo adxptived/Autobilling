@@ -98,8 +98,11 @@ function profilePerson(profile) {
       address2: '',
       postalCode: '10001',
       city: 'New York',
+      state: 'NY',
       country: 'US',
       countryName: 'United States',
+      phone: '+12125551234',
+      email: 'alex.morgan@gmail.com',
     };
   }
   if (profile === 'NL') {
@@ -111,8 +114,11 @@ function profilePerson(profile) {
       address2: '',
       postalCode: '1012 AB',
       city: 'Amsterdam',
+      state: 'NH',
       country: 'NL',
       countryName: 'Netherlands',
+      phone: '+31201234567',
+      email: 'daan.dejong@outlook.com',
     };
   }
   if (profile === 'custom' && state.savedProfiles.custom) {
@@ -135,11 +141,17 @@ function addHistory(card, person) {
     },
     person: {
       fullName: person.fullName,
+      firstName: person.firstName,
+      lastName: person.lastName,
       address1: person.address1,
+      address2: person.address2 || '',
       postalCode: person.postalCode,
       city: person.city,
+      state: person.state || '',
       country: person.country,
       countryName: person.countryName,
+      phone: person.phone || '',
+      email: person.email || '',
     },
     ts: Date.now(),
   };
@@ -164,12 +176,17 @@ function restoreHistory(idx) {
   };
   state.person = {
     fullName: h.person.fullName,
+    firstName: h.person.firstName || h.person.fullName.split(' ')[0] || '',
+    lastName: h.person.lastName || h.person.fullName.split(' ').slice(1).join(' ') || '',
     address1: h.person.address1,
-    address2: '',
+    address2: h.person.address2 || '',
     postalCode: h.person.postalCode,
     city: h.person.city,
+    state: h.person.state || '',
     country: h.person.country,
     countryName: h.person.countryName,
+    phone: h.person.phone || '',
+    email: h.person.email || '',
   };
 
   // Find matching BIN selector
