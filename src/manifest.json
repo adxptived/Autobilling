@@ -5,8 +5,20 @@
   "description": "Auto-fill bank card forms with generated valid cards. Universal checkout support.",
   "author": "adxptived",
   "permissions": ["activeTab", "storage", "scripting", "contextMenus"],
+  "host_permissions": [
+    "https://js.stripe.com/*",
+    "https://hooks.stripe.com/*"
+  ],
   "optional_host_permissions": [
     "https://lookup.binlist.net/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://*/*", "http://*/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle",
+      "all_frames": true
+    }
   ],
   "icons": {
     "16": "icons/icon16.png",

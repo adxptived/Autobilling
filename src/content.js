@@ -255,6 +255,48 @@ function fillIframeInput(iframe, value) {
 
 // ============ SCORE HELPERS ============
 
+function getFieldLabel(inp) {
+  var id = (inp.id || '').toLowerCase();
+  var label = '';
+  try {
+    // 1. label[for] attribute
+    if (id) {
+      var lblEl = document.querySelector('label[for="' + CSS.escape(inp.id || '') + '"]');
+      if (lblEl) label = lblEl.textContent || '';
+    }
+    // 2. labels property
+    if (!label && inp.labels && inp.labels.length) label = inp.labels[0].textContent || '';
+    // 3. aria-labelledby
+    if (!label) {
+      var labelledBy = inp.getAttribute('aria-labelledby');
+      if (labelledBy) {
+        var lbl = document.getElementById(labelledBy);
+        if (lbl) label = lbl.textContent || '';
+      }
+    }
+    // 4. parent label wrapping
+    if (!label && inp.parentElement && inp.parentElement.tagName === 'LABEL') {
+      label = inp.parentElement.textContent || '';
+    }
+    // 5. preceding sibling text node
+    if (!label && inp.parentElement) {
+      var prev = inp.previousElementSibling;
+      if (prev && (prev.tagName === 'LABEL' || prev.tagName === 'SPAN' || prev.tagName === 'DIV')) {
+        label = (prev.textContent || '').substring(0, 60);
+      }
+    }
+    // 6. parent container's first child text (common in modern UI frameworks)
+    if (!label && inp.parentElement && inp.parentElement.parentElement) {
+      var container = inp.parentElement;
+      var firstChild = container.firstElementChild;
+      if (firstChild && firstChild !== inp && firstChild.tagName !== 'INPUT' && firstChild.tagName !== 'SELECT') {
+        label = (firstChild.textContent || '').substring(0, 60);
+      }
+    }
+  } catch (e) {}
+  return label.toLowerCase().trim();
+}
+
 function fieldScore(inp, patterns, prefixes, suffixes) {
   var id = (inp.id || '').toLowerCase();
   var name = (inp.name || '').toLowerCase();
@@ -265,29 +307,11 @@ function fieldScore(inp, patterns, prefixes, suffixes) {
   // Collect common data-* attributes used for field identification
   var dataAttrs = [
     'data-role', 'data-tid', 'data-qa', 'data-testid', 'data-cy',
-    'data-field', 'data-elements-stable-field-name', 'data-placeholder',
-    'data-el-id', 'data-automation-id', 'data-testing-id',
+    'data-field', 'data-field-name', 'data-elements-stable-field-name', 'data-placeholder',
+    'data-el-id', 'data-automation-id', 'data-testing-id', 'data-name', 'data-label',
   ].map(function (a) { return (inp.getAttribute(a) || '').toLowerCase(); }).filter(Boolean).join(' ');
 
-  var label = '';
-
-  try {
-    if (inp.labels && inp.labels.length) label = inp.labels[0].textContent || '';
-    var labelledBy = inp.getAttribute('aria-labelledby');
-    if (!label && labelledBy) {
-      var lbl = document.getElementById(labelledBy);
-      if (lbl) label = (lbl.textContent || '').toLowerCase();
-    }
-    if (!label && id) {
-      var lblEl = document.querySelector('label[for="' + CSS.escape(id) + '"]');
-      if (lblEl) label = (lblEl.textContent || '').toLowerCase();
-    }
-    // Also check parent label wrapping
-    if (!label) {
-      var parent = inp.parentElement;
-      if (parent && parent.tagName === 'LABEL') label = (parent.textContent || '').toLowerCase();
-    }
-  } catch (e) {}
+  var label = getFieldLabel(inp);
 
   var combined = id + ' ' + name + ' ' + attr + ' ' + ph + ' ' + label + ' ' + aria + ' ' + title + ' ' + dataAttrs;
 
@@ -629,28 +653,15 @@ async function autofill(preCard, prePerson) {
   }
 
   // === STEP 5: Aggressive placeholder/label text matching ===
-  // For fields still not filled, try matching by placeholder text and surrounding label text
   var allFillable = queryAll('input:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="checkbox"]):not([type="radio"]), select, textarea');
   for (var i = 0; i < allFillable.length; i++) {
     var el = allFillable[i];
     if (used.has(el)) continue;
     if (el.value && el.value.length > 0 && el.tagName !== 'SELECT') continue;
 
-    var ph = (el.placeholder || '').toLowerCase();
-    var lbl = '';
-    try {
-      if (el.labels && el.labels.length) lbl = el.labels[0].textContent || '';
-      if (!lbl && el.id) {
-        var lblEl = document.querySelector('label[for="' + CSS.escape(el.id) + '"]');
-        if (lblEl) lbl = lblEl.textContent || '';
-      }
-      if (!lbl) {
-        var parent = el.parentElement;
-        if (parent && parent.tagName === 'LABEL') lbl = parent.textContent || '';
-      }
-    } catch (e) {}
-    lbl = lbl.toLowerCase();
-    var combined = ph + ' ' + lbl;
+    var ph = (el.placeholder || '').toLowerCase().trim();
+    var lbl = getFieldLabel(el);
+    var combined = (ph + ' ' + lbl).trim();
 
     var match = null;
     // Card fields — prioritize matching by input type / maxlength hints
@@ -706,15 +717,21 @@ async function autofill(preCard, prePerson) {
     )) {
       match = { key: 'lastName', value: person.lastName || person.fullName.split(' ').slice(1).join(' ') || '' };
     } else if (!filledMap(filled, 'name') && (
-      combined === 'name' || combined.indexOf('full name') > -1 ||
-      combined.indexOf('your name') > -1 || combined.indexOf('contact name') > -1 ||
-      combined.indexOf('имя') > -1 || combined.indexOf('nombre') > -1
+      combined.indexOf('full name') > -1 || combined.indexOf('your name') > -1 ||
+      combined.indexOf('contact name') > -1 || combined.indexOf('имя') > -1 ||
+      combined.indexOf('nombre') > -1 ||
+      (combined.indexOf('name') > -1 && combined.indexOf('card') === -1 && combined.indexOf('user') === -1 &&
+       combined.indexOf('last') === -1 && combined.indexOf('first') === -1 &&
+       combined.indexOf('file') === -1 && combined.indexOf('domain') === -1)
     )) {
       match = { key: 'name', value: person.fullName };
     } else if (!filledMap(filled, 'address1') && (
-      combined.indexOf('street') > -1 || combined.indexOf('address') > -1 ||
-      combined.indexOf('адрес') > -1 || combined.indexOf('adresse') > -1 ||
-      combined.indexOf('straß') > -1 || combined.indexOf('calle') > -1
+      combined.indexOf('street') > -1 || combined.indexOf('address 1') > -1 ||
+      combined.indexOf('address1') > -1 || combined.indexOf('адрес') > -1 ||
+      combined.indexOf('adresse') > -1 || combined.indexOf('straß') > -1 ||
+      combined.indexOf('calle') > -1 ||
+      (combined.indexOf('address') > -1 && combined.indexOf('email') === -1 &&
+       combined.indexOf('ip') === -1 && combined.indexOf('mac') === -1)
     )) {
       match = { key: 'address1', value: person.address1 };
     } else if (!filledMap(filled, 'postal') && (
@@ -772,6 +789,14 @@ async function autofill(preCard, prePerson) {
 
   console.log('[Autobilling] Fill complete. Fields filled:', filled.length > 0 ? filled.join(', ') : 'none detected');
   return { card: card, person: person, filled: filled };
+}
+
+function filledMap(filled, key) {
+  for (var i = 0; i < filled.length; i++) {
+    if (filled[i] === key) return true;
+    if (filled[i].indexOf(key) === 0) return true;
+  }
+  return false;
 }
 
 // ============ MESSAGING ============

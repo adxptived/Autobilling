@@ -59,6 +59,7 @@ function build(targetDir, options) {
     const manifestPath = path.join(targetDir, 'manifest.json');
     const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
     manifest.background = { scripts: [manifest.background.service_worker] };
+    delete manifest.host_permissions;
     fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
   }
 }

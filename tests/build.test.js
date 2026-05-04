@@ -22,12 +22,14 @@ assert.ok(!popupHtml.includes('popup.js'), 'popup.html should not load popup.js 
 
 const manifest = require(path.join(dist, 'manifest.json'));
 const firefoxManifest = require(path.join(firefoxDist, 'manifest.json'));
-assert.ok(!manifest.content_scripts, 'content_scripts should be omitted; content.js injects on demand');
-assert.ok(!manifest.host_permissions, 'Chromium BIN lookup host access must be optional');
+assert.ok(manifest.content_scripts, 'content_scripts required for auto-injection in all frames');
+assert.ok(manifest.content_scripts[0].all_frames === true, 'all_frames must be true');
+assert.ok(manifest.host_permissions, 'host_permissions required for Stripe cross-origin iframes');
 assert.deepStrictEqual(manifest.optional_host_permissions, ['https://lookup.binlist.net/*']);
 assert.deepStrictEqual(firefoxManifest.background, { scripts: ['background.js'] });
 assert.ok(!firefoxManifest.background.service_worker, 'Firefox manifest must not use background.service_worker');
-assert.ok(!firefoxManifest.host_permissions, 'Firefox BIN lookup host access must be optional');
+assert.ok(!firefoxManifest.host_permissions, 'Firefox host_permissions must be stripped');
+assert.ok(firefoxManifest.content_scripts, 'Firefox content_scripts is supported in MV3');
 assert.deepStrictEqual(firefoxManifest.optional_host_permissions, ['https://lookup.binlist.net/*']);
 
 console.log('Build tests passed');

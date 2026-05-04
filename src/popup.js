@@ -618,47 +618,14 @@ function doAutofill() {
     if (!tabs || !tabs[0]) { setStatus('No active tab', true); return; }
     var tab = tabs[0];
     saveSensitiveState(state, function () {
-      // Inject content script into ALL frames (incl. cross-origin Stripe iframes)
-      chrome.scripting.executeScript({
-        target: { tabId: tab.id, allFrames: true },
-        files: ['content.js'],
-      }, function () {
+      chrome.tabs.sendMessage(tab.id, { action: 'autofill', card: state.card, person: state.person }, function (resp) {
         if (chrome.runtime.lastError) {
-          // Fallback: top frame only
-          chrome.scripting.executeScript({
-            target: { tabId: tab.id },
-            files: ['content.js'],
-          }, function () {
-            if (chrome.runtime.lastError) {
-              setStatus('Cannot access page', true);
-            } else {
-              setTimeout(function () {
-                chrome.tabs.sendMessage(tab.id, { action: 'autofill', card: state.card, person: state.person }, function (r2) {
-                  if (chrome.runtime.lastError) {
-                    setStatus('Fill attempted (injected)', false);
-                  } else if (r2) {
-                    setStatus(formatAutofillStatus(r2), !r2.success);
-                  } else {
-                    setStatus('Fill completed', false);
-                  }
-                });
-              }, 200);
-            }
-          });
-          return;
+          setStatus('Content script not ready. Reload the page.', true);
+        } else if (resp) {
+          setStatus(formatAutofillStatus(resp), !resp.success);
+        } else {
+          setStatus('Fill completed', false);
         }
-        // Broadcast autofill to all frames
-        setTimeout(function () {
-          chrome.tabs.sendMessage(tab.id, { action: 'autofill', card: state.card, person: state.person }, function (r) {
-            if (chrome.runtime.lastError) {
-              setStatus('Fill attempted', false);
-            } else if (r) {
-              setStatus(formatAutofillStatus(r), !r.success);
-            } else {
-              setStatus('Fill completed', false);
-            }
-          });
-        }, 200);
       });
     });
   });
