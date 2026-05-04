@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Autobilling",
   "version": "1.3.0",
-  "description": "Auto-fill bank card forms with generated valid cards. Stripe support.",
+  "description": "Auto-fill bank card forms with generated valid cards. Universal checkout support.",
   "author": "adxptived",
   "permissions": ["activeTab", "storage", "scripting", "contextMenus"],
   "optional_host_permissions": [
@@ -37,7 +37,7 @@
         "default": "Ctrl+Shift+F",
         "mac": "Command+Shift+F"
       },
-      "description": "Autofill current Stripe form"
+      "description": "Autofill current checkout form"
     }
   },
   "browser_specific_settings": {
