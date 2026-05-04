@@ -482,8 +482,8 @@ async function autofill(preCard, prePerson) {
     {
       key: 'postal',
       patterns: [
-        /\bpostal-code\b/, /\bzip.?code\b/, /\bpostcode\b/, /\bzipcode\b/, /\bbe_postal\b/, /\bpc\b/,
-        /\bpost.?code\b/, /\bpincode\b/, /\bindex\b/, /\bzip\b/,
+        /\bpostal-code\b/, /\bzip.?code\b/, /\bpostcode\b/, /\bzipcode\b/, /\bbe_postal\b/,
+        /\bpost.?code\b/, /\bpincode\b/, /\bindex\b/, /\bpostalcode\b/, /\bzip\b/,
       ],
       prefixes: ['postal', 'zip', 'be_postal', 'postcode', 'pin', 'post'],
       suffixes: ['code', 'zip', 'postal', 'pincode', 'postalcode', 'index', 'number'],
@@ -492,11 +492,11 @@ async function autofill(preCard, prePerson) {
     {
       key: 'city',
       patterns: [
-        /\baddress-level2\b/, /\bcity\b/, /\btown\b/, /\bville\b/, /\bstadt\b/,
+        /\baddress-level2\b/, /\bcity\b/, /\btown\b/, /\blocality\b/, /\bville\b/, /\bstadt\b/,
         /\bгород\b/, /\bciudad\b/,
       ],
-      prefixes: ['city', 'town', 'billing', 'shipping'],
-      suffixes: ['city', 'town', 'ville'],
+      prefixes: ['city', 'town', 'billing', 'shipping', 'locality'],
+      suffixes: ['city', 'town', 'ville', 'locality'],
       value: person.city,
     },
     {
@@ -515,10 +515,10 @@ async function autofill(preCard, prePerson) {
       key: 'state',
       patterns: [
         /\baddress-level1\b/, /\bstate\b/, /\bprovince\b/, /\bregion\b/, /\bcounty\b/,
-        /\betat\b/, /\bbundesland\b/, /\bобласт\b/, /\bprov\b/,
+        /\badministrative\b/, /\betat\b/, /\bbundesland\b/, /\bобласт\b/, /\bprov\b/,
       ],
-      prefixes: ['state', 'province', 'region', 'county', 'billing', 'shipping'],
-      suffixes: ['state', 'province', 'region', 'county', 'prov'],
+      prefixes: ['state', 'province', 'region', 'county', 'billing', 'shipping', 'administrative'],
+      suffixes: ['state', 'province', 'region', 'county', 'prov', 'area'],
       value: person.state || '',
       isSelect: true,
     },
@@ -744,9 +744,10 @@ async function autofill(preCard, prePerson) {
     )) {
       match = { key: 'postal', value: person.postalCode };
     } else if (!filledMap(filled, 'city') && (
-      combined.indexOf('city') > -1 || combined.indexOf('town') > -1 ||
-      combined.indexOf('город') > -1 || combined.indexOf('ville') > -1 ||
-      combined.indexOf('stadt') > -1 || combined.indexOf('ciudad') > -1
+      combined.indexOf('city') > -1 || combined.indexOf('locality') > -1 ||
+      combined.indexOf('town') > -1 || combined.indexOf('город') > -1 ||
+      combined.indexOf('ville') > -1 || combined.indexOf('stadt') > -1 ||
+      combined.indexOf('ciudad') > -1
     )) {
       match = { key: 'city', value: person.city };
     } else if (!filledMap(filled, 'country') && (
