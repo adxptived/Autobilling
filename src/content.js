@@ -313,7 +313,9 @@ function fieldScore(inp, patterns, prefixes, suffixes) {
 
   var label = getFieldLabel(inp);
 
-  var combined = id + ' ' + name + ' ' + attr + ' ' + ph + ' ' + label + ' ' + aria + ' ' + title + ' ' + dataAttrs;
+  // Normalize: replace _ with space so \bzip\b matches shipping_address_zip
+  var combined = (id + ' ' + name + ' ' + attr + ' ' + ph + ' ' + label + ' ' + aria + ' ' + title + ' ' + dataAttrs)
+    .replace(/_/g, ' ').replace(/\[/g, ' ').replace(/\]/g, ' ');
 
   for (var i = 0; i < patterns.length; i++) {
     if (patterns[i].test(combined)) return 2;

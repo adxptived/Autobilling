@@ -14,6 +14,8 @@ var state = {
   validateBin: true,
   compactView: false,
   defaultCompact: false,
+  generatePhone: false,
+  generateEmail: false,
   sessionOnly: false,
   historyTtlMinutes: 0,
   selectedProfile: 'generated',
@@ -566,6 +568,8 @@ function loadState() {
     if (data.defaultCompact !== undefined) state.defaultCompact = data.defaultCompact;
     if (data.compactView !== undefined) state.compactView = data.compactView;
     else state.compactView = state.defaultCompact;
+    if (data.generatePhone !== undefined) state.generatePhone = data.generatePhone;
+    if (data.generateEmail !== undefined) state.generateEmail = data.generateEmail;
     if (data.sessionOnly !== undefined) state.sessionOnly = data.sessionOnly;
     if (data.historyTtlMinutes !== undefined) state.historyTtlMinutes = data.historyTtlMinutes;
     if (data.selectedProfile) state.selectedProfile = data.selectedProfile;
@@ -584,6 +588,8 @@ function loadState() {
       document.getElementById('selExpYear').value = state.expYear;
       document.getElementById('chkValidateBin').checked = state.validateBin;
       document.getElementById('chkDefaultCompact').checked = state.defaultCompact;
+      document.getElementById('chkGenPhone').checked = state.generatePhone;
+      document.getElementById('chkGenEmail').checked = state.generateEmail;
       document.getElementById('selProfile').value = state.selectedProfile;
 
       updateFavStar();
@@ -767,6 +773,16 @@ document.getElementById('chkDefaultCompact').addEventListener('change', function
   state.defaultCompact = this.checked;
   state.compactView = this.checked;
   applyCompact();
+  saveState();
+});
+
+document.getElementById('chkGenPhone').addEventListener('change', function () {
+  state.generatePhone = this.checked;
+  saveState();
+});
+
+document.getElementById('chkGenEmail').addEventListener('change', function () {
+  state.generateEmail = this.checked;
   saveState();
 });
 

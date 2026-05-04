@@ -36,9 +36,11 @@ function fillCustomProfile(profile) {
   document.getElementById('profileCountryName').value = profile.countryName || '';
 }
 
-chrome.storage.local.get(['defaultCompact', 'validateBin', 'selectedProfile', 'savedProfiles', 'sessionOnly', 'historyTtlMinutes'], function (data) {
+chrome.storage.local.get(['defaultCompact', 'validateBin', 'generatePhone', 'generateEmail', 'selectedProfile', 'savedProfiles', 'sessionOnly', 'historyTtlMinutes'], function (data) {
   document.getElementById('chkDefaultCompact').checked = !!data.defaultCompact;
   document.getElementById('chkValidateBin').checked = data.validateBin !== false;
+  document.getElementById('chkGenPhone').checked = !!data.generatePhone;
+  document.getElementById('chkGenEmail').checked = !!data.generateEmail;
   document.getElementById('selProfile').value = data.selectedProfile || 'generated';
   document.getElementById('chkSessionOnly').checked = !!data.sessionOnly;
   document.getElementById('selHistoryTtl').value = String(data.historyTtlMinutes || 0);
@@ -48,6 +50,8 @@ chrome.storage.local.get(['defaultCompact', 'validateBin', 'selectedProfile', 's
 document.getElementById('btnSave').addEventListener('click', function () {
   var defaultCompact = document.getElementById('chkDefaultCompact').checked;
   var validateBin = document.getElementById('chkValidateBin').checked;
+  var generatePhone = document.getElementById('chkGenPhone').checked;
+  var generateEmail = document.getElementById('chkGenEmail').checked;
   var selectedProfile = document.getElementById('selProfile').value;
   var sessionOnly = document.getElementById('chkSessionOnly').checked;
   var historyTtlMinutes = parseInt(document.getElementById('selHistoryTtl').value, 10) || 0;
@@ -57,6 +61,8 @@ document.getElementById('btnSave').addEventListener('click', function () {
       defaultCompact: defaultCompact,
       compactView: defaultCompact,
       validateBin: granted,
+      generatePhone: generatePhone,
+      generateEmail: generateEmail,
       selectedProfile: selectedProfile,
       sessionOnly: sessionOnly,
       historyTtlMinutes: historyTtlMinutes,

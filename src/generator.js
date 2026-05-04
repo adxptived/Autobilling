@@ -108,8 +108,8 @@ function generatePerson() {
     state: generateState(country.code),
     country: country.code,
     countryName: country.name,
-    phone: generatePhone(country.code),
-    email: generateEmail(firstName, lastName),
+    phone: state.generatePhone ? generatePhone(country.code) : '',
+    email: state.generateEmail ? generateEmail(firstName, lastName) : '',
   };
   return person;
 }
