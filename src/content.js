@@ -169,6 +169,33 @@ function fillSelect(select, value, valueName) {
   }
 }
 
+function typeChar(el, ch) {
+  el.dispatchEvent(new KeyboardEvent('keydown', { key: ch, code: 'Key' + ch.toUpperCase(), bubbles: true }));
+  el.dispatchEvent(new KeyboardEvent('keypress', { key: ch, code: 'Key' + ch.toUpperCase(), bubbles: true }));
+  el.dispatchEvent(new InputEvent('input', { data: ch, inputType: 'insertText', bubbles: true }));
+  el.dispatchEvent(new KeyboardEvent('keyup', { key: ch, code: 'Key' + ch.toUpperCase(), bubbles: true }));
+}
+
+function typeInIframe(iframe, value) {
+  // Simulate typing character by character into a cross-origin iframe
+  // by dispatching keyboard events on the iframe element
+  iframe.focus();
+  iframe.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+  iframe.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
+  iframe.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+
+  for (var i = 0; i < value.length; i++) {
+    var ch = value[i];
+    if (ch === '\t') {
+      iframe.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', code: 'Tab', keyCode: 9, bubbles: true }));
+      iframe.dispatchEvent(new KeyboardEvent('keyup', { key: 'Tab', code: 'Tab', keyCode: 9, bubbles: true }));
+    } else {
+      typeChar(iframe, ch);
+    }
+  }
+  return true;
+}
+
 function fillCrossOriginIframe(iframe, value) {
   try {
     // Click the iframe to activate the input inside it
@@ -195,9 +222,8 @@ function fillCrossOriginIframe(iframe, value) {
         }
       }
     } catch (e) {}
-    // Cross-origin: focus already on iframe input from click, just insert
-    document.execCommand('insertText', false, value);
-    return true;
+    // Cross-origin: simulate typing via keyboard events
+    return typeInIframe(iframe, value);
   } catch (e) {}
   return false;
 }
@@ -214,7 +240,7 @@ function findInputsInIframe(iframe) {
 function fillIframeInput(iframe, value) {
   if (!iframe || value === undefined || value === null) return false;
 
-  // Try same-origin access
+  // Try same-origin access first
   var inputs = findInputsInIframe(iframe);
   if (inputs.length > 0) {
     var first = inputs[0];
@@ -364,10 +390,8 @@ async function autofill(preCard, prePerson) {
 
   // If we found a combined payment iframe, try filling all card fields into it
   if (stripeCombined && !stripeCard) {
-    fillIframeInput(stripeCombined, card.number);
-    filled.push('cardNumber');
-    await sleep(120);
-    // Tab to expiry field inside combined iframe
+    // Try same-origin first
+    var combinedFilled = false;
     try {
       var combinedDoc = stripeCombined.contentDocument || (stripeCombined.contentWindow && stripeCombined.contentWindow.document);
       if (combinedDoc) {
@@ -383,11 +407,39 @@ async function autofill(preCard, prePerson) {
             fillInput(inp, card.cvv); filled.push('cvv');
           }
         }
+        combinedFilled = filled.indexOf('cardNumber') > -1;
       }
-    } catch (e) {
-      // Cross-origin combined iframe — fill sequentially with tab simulation
-      fillIframeInput(stripeCombined, card.number + '\t' + card.expMonth + card.expYear + '\t' + card.cvv);
-      filled.push('cardNumber', 'expiry', 'cvv');
+    } catch (e) {}
+
+    // Cross-origin: type card number, then Tab to expiry, Tab to cvc
+    if (!combinedFilled) {
+      // Focus the combined iframe
+      stripeCombined.focus();
+      stripeCombined.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+
+      // Type card number
+      typeInIframe(stripeCombined, card.number);
+      filled.push('cardNumber');
+      await sleep(200);
+
+      // Tab to expiry field
+      stripeCombined.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', code: 'Tab', keyCode: 9, bubbles: true }));
+      stripeCombined.dispatchEvent(new KeyboardEvent('keyup', { key: 'Tab', code: 'Tab', keyCode: 9, bubbles: true }));
+      await sleep(100);
+
+      // Type expiry as MM/YY
+      typeInIframe(stripeCombined, card.expMonth + card.expYear);
+      filled.push('expiry');
+      await sleep(200);
+
+      // Tab to CVC field
+      stripeCombined.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', code: 'Tab', keyCode: 9, bubbles: true }));
+      stripeCombined.dispatchEvent(new KeyboardEvent('keyup', { key: 'Tab', code: 'Tab', keyCode: 9, bubbles: true }));
+      await sleep(100);
+
+      // Type CVC
+      typeInIframe(stripeCombined, card.cvv);
+      filled.push('cvv');
     }
   }
 
@@ -443,7 +495,23 @@ async function autofill(preCard, prePerson) {
         }
       }
     } catch (e) {
-      // Cross-origin — cannot access Stripe address iframe directly
+      // Cross-origin address iframe — type fields sequentially with Tab
+      stripeAddress.focus();
+      stripeAddress.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      await sleep(100);
+      var addrFields = [person.fullName, person.address1, person.city, person.state || '', person.postalCode, person.countryName || person.country];
+      for (var af = 0; af < addrFields.length; af++) {
+        if (addrFields[af]) {
+          typeInIframe(stripeAddress, addrFields[af]);
+          await sleep(80);
+        }
+        if (af < addrFields.length - 1) {
+          stripeAddress.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', code: 'Tab', keyCode: 9, bubbles: true }));
+          stripeAddress.dispatchEvent(new KeyboardEvent('keyup', { key: 'Tab', code: 'Tab', keyCode: 9, bubbles: true }));
+          await sleep(80);
+        }
+      }
+      filled.push('name', 'address1', 'city', 'state', 'postal', 'country');
     }
   }
 
