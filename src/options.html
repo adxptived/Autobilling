@@ -2,265 +2,47 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link rel="stylesheet" href="common.css">
 <style>
-:root {
-  --bg: #070b12;
-  --panel: rgba(22, 27, 34, 0.82);
-  --panel-2: rgba(13, 17, 23, 0.74);
-  --border: rgba(139, 148, 158, 0.16);
-  --border-strong: rgba(139, 148, 158, 0.26);
-  --text: #d6deea;
-  --muted: #7d8590;
-  --dim: #545d68;
-  --accent: #ef476f;
-  --accent-2: #7c3aed;
-  --green: #3fb950;
-  --yellow: #d29922;
-}
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html, body {
-  width: 420px;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background: #070b12;
-}
-body {
-  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  font-size: 12px;
-  color: var(--text);
-}
-.app-shell {
-  width: 420px;
-  max-height: 600px;
-  padding: 14px;
-  overflow-y: auto;
-  background:
-    radial-gradient(circle at 15% 0%, rgba(124, 58, 237, 0.22), transparent 32%),
-    radial-gradient(circle at 90% 12%, rgba(239, 71, 111, 0.18), transparent 30%),
-    linear-gradient(180deg, #0d1117 0%, var(--bg) 100%);
-}
-button, select, input { font: inherit; }
-::-webkit-scrollbar { width: 10px; }
-::-webkit-scrollbar-track {
-  background: linear-gradient(180deg, rgba(13, 17, 23, 0.55), rgba(7, 11, 18, 0.92));
-  border-left: 1px solid rgba(139, 148, 158, 0.08);
-}
-::-webkit-scrollbar-thumb {
-  min-height: 42px;
-  background: linear-gradient(180deg, #334155, #1f2937);
-  border: 3px solid transparent;
-  border-radius: 999px;
-  background-clip: padding-box;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-}
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #475569, #334155);
-  border: 3px solid transparent;
-  background-clip: padding-box;
-}
-::-webkit-scrollbar-corner { background: transparent; }
-
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-.brand-title {
-  font-size: 17px;
-  font-weight: 850;
-  letter-spacing: -0.3px;
-  color: #f8fafc;
-}
-.brand-subtitle {
-  margin-top: 2px;
-  font-size: 10px;
-  color: var(--muted);
-}
-.header-pill {
-  padding: 7px 10px;
-  border: 1px solid rgba(239, 71, 111, 0.35);
-  border-radius: 999px;
-  background: rgba(239, 71, 111, 0.08);
-  color: #ff9aaa;
-  font-size: 10px;
-  font-weight: 800;
-  cursor: pointer;
-  box-shadow: 0 0 22px rgba(239, 71, 111, 0.08);
-}
-.header-pill:hover { background: rgba(239, 71, 111, 0.16); color: #fff; }
-
-.section {
-  position: relative;
-  padding: 12px;
-  margin-bottom: 10px;
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  background: linear-gradient(180deg, rgba(22, 27, 34, 0.9), rgba(13, 17, 23, 0.75));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 10px 24px rgba(0, 0, 0, 0.14);
-}
-.section-title {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-  color: #9ba3af;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-}
-.section-title::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  margin-right: 7px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 14px rgba(239, 71, 111, 0.55);
-}
-
-.settings-checks {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-top: 1px;
-}
-.check-inline {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  min-height: 30px;
-  padding: 6px 8px;
-  border: 1px solid rgba(139, 148, 158, 0.12);
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.025);
-  color: #9ba3af;
-  font-size: 11px;
-  cursor: pointer;
-}
-.check-inline:hover { border-color: rgba(239, 71, 111, 0.28); }
-.check-inline input[type="checkbox"] { width: auto; accent-color: var(--accent); }
-
-.label {
-  display: block;
-  margin-bottom: 5px;
-  color: #8b949e;
-  font-size: 10px;
-  font-weight: 750;
-}
-select,
-input[type="text"],
-input[type="number"] {
-  width: 100%;
-  height: 34px;
-  padding: 7px 9px;
-  border: 1px solid var(--border-strong);
-  border-radius: 10px;
-  background: rgba(7, 11, 18, 0.74);
-  color: var(--text);
-  font-size: 11px;
-  transition: border 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
-}
-select:hover,
-input:hover { border-color: rgba(239, 71, 111, 0.36); }
-select:focus,
-input:focus {
-  outline: none;
-  border-color: rgba(239, 71, 111, 0.75);
-  box-shadow: 0 0 0 3px rgba(239, 71, 111, 0.12);
-  background: rgba(7, 11, 18, 0.92);
-}
-
-.row { display: flex; gap: 9px; margin-bottom: 9px; }
-.row:last-child { margin-bottom: 0; }
-.row > * { flex: 1; min-width: 0; }
-.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-
-.btn,
-.btn-sm {
-  border: 1px solid var(--border-strong);
-  cursor: pointer;
-  font-weight: 800;
-  color: var(--text);
-  background: linear-gradient(180deg, rgba(48, 54, 61, 0.88), rgba(33, 38, 45, 0.9));
-  transition: transform 0.12s ease, border 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
-}
-.btn:hover,
-.btn-sm:hover { border-color: rgba(239, 71, 111, 0.36); background: rgba(48, 54, 61, 0.95); }
-.btn:active,
-.btn-sm:active { transform: translateY(1px); }
-.btn {
-  display: block;
-  width: 100%;
-  min-height: 38px;
-  padding: 9px 10px;
-  margin-bottom: 7px;
-  border-radius: 12px;
-  font-size: 13px;
-}
-.btn-primary {
-  border-color: rgba(239, 71, 111, 0.9);
-  color: #fff;
-  background: linear-gradient(135deg, #ef476f, #d6336c 58%, #9d174d);
-  box-shadow: 0 12px 26px rgba(239, 71, 111, 0.22);
-}
-.btn-primary:hover { background: linear-gradient(135deg, #ff5c7c, #e23a70 58%, #b21f58); }
-.btn-sm {
-  min-height: 32px;
-  padding: 6px 9px;
-  border-radius: 10px;
-  font-size: 11px;
-  white-space: nowrap;
-}
-.btn-sm.primary { border-color: rgba(63, 185, 80, 0.5); color: #fff; background: linear-gradient(180deg, #2ea043, #238636); }
-.btn-sm.primary:hover { background: linear-gradient(180deg, #3fb950, #238636); }
-.btn-sm.danger { border-color: rgba(239, 71, 111, 0.5); color: #ff7b91; background: rgba(239, 71, 111, 0.06); }
-.btn-sm.danger:hover { color: #fff; background: rgba(239, 71, 111, 0.24); }
-
-.status {
-  display: none;
-  margin: 4px 0 2px;
-  color: #7ee787;
-  font-size: 11px;
-  text-align: center;
-}
-.status:not(:empty) { display: block; }
-.status.error { color: #ff7b91; }
-
-.footer {
-  margin-top: 4px;
-  color: var(--dim);
-  font-size: 10px;
-  line-height: 1.4;
-  text-align: center;
-}
-.footer a { color: #9ba3af; text-decoration: none; }
-.footer a:hover { color: var(--accent); }
+.section input + input { margin-top: 8px; }
+.grid2 { margin-bottom: 8px; }
+.btn-row { display: flex; gap: 8px; margin-bottom: 7px; }
+.btn-row .btn { flex: 1; margin-bottom: 0; }
 </style>
 </head>
 <body>
 <div class="app-shell">
 
 <div class="header">
-  <div>
-    <div class="brand-title">Settings</div>
-    <div class="brand-subtitle">Autobilling preferences and profiles</div>
+  <div class="brand">
+    <div class="brand-logo" aria-hidden="true">A</div>
+    <div>
+      <div class="brand-title">Settings</div>
+      <div class="brand-subtitle" id="subVersion">Autobilling preferences and profiles</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="padding:10px 12px;">
+  <div style="display:flex;align-items:center;gap:8px;color:var(--muted);font-size:11px;line-height:1.4;">
+    <span aria-hidden="true" style="font-size:15px;">💡</span>
+    <span>These settings are also available from the popup — click <strong style="color:#c0c6cf;">⚙ Settings</strong> in the extension popup for a faster inline experience.</span>
   </div>
 </div>
 
 <div class="section">
-  <div class="section-title">Preferences</div>
+  <div class="section-title"><span class="dot-accent" aria-hidden="true"></span><span class="ico" aria-hidden="true">⚙</span> Preferences</div>
   <div class="settings-checks">
     <label class="check-inline"><input type="checkbox" id="chkDefaultCompact"> Compact card</label>
     <label class="check-inline"><input type="checkbox" id="chkValidateBin"> Live BIN info</label>
     <label class="check-inline"><input type="checkbox" id="chkSessionOnly"> Session only</label>
     <label class="check-inline"><input type="checkbox" id="chkGenPhone"> Generate phone</label>
     <label class="check-inline"><input type="checkbox" id="chkGenEmail"> Generate email</label>
+    <label class="check-inline"><input type="checkbox" id="chkAutoDetectCountry"> Auto-detect country by tab URL</label>
   </div>
   <div style="margin-top:8px;">
     <span class="label">History retention</span>
-    <select id="selHistoryTtl">
+    <select id="selHistoryTtl" aria-label="History retention">
       <option value="0">Keep until cleared</option>
       <option value="15">15 minutes</option>
       <option value="60">1 hour</option>
@@ -270,9 +52,9 @@ input:focus {
 </div>
 
 <div class="section">
-  <div class="section-title">Default profile</div>
+  <div class="section-title"><span class="dot-accent" aria-hidden="true"></span><span class="ico" aria-hidden="true">👤</span> Default profile</div>
   <span class="label">Billing profile</span>
-  <select id="selProfile">
+  <select id="selProfile" aria-label="Default billing profile">
     <option value="generated">Generated random profile</option>
     <option value="US">US profile</option>
     <option value="NL">NL profile</option>
@@ -281,35 +63,48 @@ input:focus {
 </div>
 
 <div class="section">
-  <div class="section-title">Custom profile</div>
-  <input id="profileName" placeholder="Full name">
-  <input id="profileAddr" placeholder="Address line 1">
-  <div class="grid2">
-    <input id="profileZip" placeholder="ZIP / postal">
-    <input id="profileCity" placeholder="City">
+  <div class="section-title"><span class="dot-accent" aria-hidden="true"></span><span class="ico" aria-hidden="true">✏</span> Custom profile</div>
+  <input type="text" id="profileName" placeholder="Full name" autocomplete="name" aria-label="Full name">
+  <input type="text" id="profileAddr" placeholder="Address line 1" autocomplete="address-line1" aria-label="Address" style="margin-top:8px;">
+  <div class="grid2" style="margin-top:8px;">
+    <input type="text" id="profileZip" placeholder="ZIP / postal" autocomplete="postal-code" aria-label="ZIP">
+    <input type="text" id="profileCity" placeholder="City" autocomplete="address-level2" aria-label="City">
   </div>
   <div class="grid2">
-    <input id="profileState" placeholder="State / province">
-    <input id="profilePhone" placeholder="Phone number">
+    <input type="text" id="profileState" placeholder="State / province" autocomplete="address-level1" aria-label="State or province">
+    <input type="tel" id="profilePhone" placeholder="Phone number" autocomplete="tel" aria-label="Phone">
   </div>
-  <input id="profileEmail" placeholder="Email address">
-  <div class="grid2">
-    <input id="profileCountry" placeholder="Country code (e.g. US)">
-    <input id="profileCountryName" placeholder="Country name">
+  <input type="email" id="profileEmail" placeholder="Email address" autocomplete="email" aria-label="Email">
+  <div class="grid2" style="margin-top:8px;">
+    <input type="text" id="profileCountry" placeholder="Country code (e.g. US)" maxlength="2" autocomplete="country" aria-label="Country code">
+    <input type="text" id="profileCountryName" placeholder="Country name" autocomplete="country-name" aria-label="Country name">
   </div>
-  <button class="btn-sm primary" id="btnSaveProfile" style="width:100%;margin-top:6px;">Save custom profile</button>
+  <button class="btn-sm primary" id="btnSaveProfile" style="width:100%;margin-top:10px;">Save custom profile</button>
 </div>
 
 <div class="section">
-  <div class="section-title">Data</div>
-  <button class="btn-sm danger" id="btnClearHistory" style="width:100%;">Clear history</button>
+  <div class="section-title"><span class="dot-accent" aria-hidden="true"></span><span class="ico" aria-hidden="true">💳</span> Custom BINs</div>
+  <div class="bin-list" id="binList"></div>
+  <div id="binListEmpty" style="color:var(--dim);font-size:11px;text-align:center;padding:12px 6px;">No custom BINs saved yet. Add one from the popup.</div>
 </div>
 
-<button class="btn btn-primary" id="btnSave">Save settings</button>
-<div class="status" id="status"></div>
+<div class="section">
+  <div class="section-title"><span class="dot-accent" aria-hidden="true"></span><span class="ico" aria-hidden="true">🗃</span> Data</div>
+  <div class="btn-row">
+    <button class="btn" id="btnExport" aria-label="Export settings as JSON"><span aria-hidden="true">⬇</span> Export JSON</button>
+    <button class="btn" id="btnImport" aria-label="Import settings from JSON"><span aria-hidden="true">⬆</span> Import JSON</button>
+  </div>
+  <input type="file" id="fileImport" accept="application/json" style="display:none;">
+  <button class="btn-sm danger" id="btnClearHistory" style="width:100%;margin-bottom:6px;">Clear history</button>
+  <button class="btn-sm danger" id="btnResetAll" style="width:100%;">Reset all settings to defaults</button>
+</div>
+
+<button class="btn btn-primary" id="btnSave"><span aria-hidden="true">💾</span> Save settings</button>
+<div class="version-line">Autobilling <kbd id="txtVersion">—</kbd></div>
+<div class="status" id="status" role="status" aria-live="polite"></div>
 
 <div class="footer">
-  <a href="https://github.com/adxptived" target="_blank">adxptived</a> &middot; <a href="https://github.com/NjProVk/CreditsCardTools" target="_blank">CreditsCardTools</a> &middot; Luhn-valid
+  <a href="https://github.com/adxptived" target="_blank" rel="noopener">adxptived</a> &middot; <a href="https://github.com/NjProVk/CreditsCardTools" target="_blank" rel="noopener">CreditsCardTools</a> &middot; Luhn-valid
 </div>
 
 <script src="extensionStorage.js"></script>

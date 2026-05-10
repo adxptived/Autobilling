@@ -18,11 +18,13 @@ var state = {
   generateEmail: false,
   sessionOnly: false,
   historyTtlMinutes: 0,
+  autoDetectCountry: false,
   selectedProfile: 'generated',
   savedProfiles: {
     custom: null,
   },
   favBins: [],     // prefix strings the user starred
+  favCountries: [],// country codes the user starred
   customBins: [],  // {brand, prefix, length} added by user
   card: null,
   person: null,
@@ -88,6 +90,15 @@ function generateAll(options) {
   addHistory(card, person);
   render();
   saveState();
+
+  // Subtle shimmer animation on card to acknowledge generation
+  var visual = document.getElementById('cardVisual');
+  if (visual && !visual.classList.contains('compact')) {
+    visual.classList.remove('shimmer');
+    void visual.offsetWidth;
+    visual.classList.add('shimmer');
+    setTimeout(function () { visual.classList.remove('shimmer'); }, 700);
+  }
 }
 
 function profilePerson(profile) {
@@ -209,6 +220,7 @@ function restoreHistory(idx) {
 
   render();
   updateFavStar();
+  updateCountryFavStar();
   saveState();
   setStatus('Restored card');
 }
@@ -231,7 +243,10 @@ function toggleHistory() {
   var btn = document.getElementById('btnToggleHistory');
   var show = panel.style.display === 'none';
   panel.style.display = show ? 'block' : 'none';
-  btn.textContent = show ? 'History \u25B2' : 'History \u25BC';
+  btn.setAttribute('aria-expanded', show ? 'true' : 'false');
+  btn.innerHTML = show
+    ? '<span aria-hidden="true">\uD83D\uDD52</span> History <span aria-hidden="true">\u25B2</span>'
+    : '<span aria-hidden="true">\uD83D\uDD52</span> History <span aria-hidden="true">\u25BC</span>';
   if (show) renderHistory();
 }
 
@@ -241,7 +256,11 @@ function renderHistory() {
   if (!state.history.length) {
     var empty = document.createElement('div');
     empty.className = 'history-empty';
-    empty.textContent = 'No cards yet';
+    var emoji = document.createElement('span');
+    emoji.className = 'emoji';
+    emoji.textContent = '\uD83D\uDCB3';
+    empty.appendChild(emoji);
+    empty.appendChild(document.createTextNode('No cards yet'));
     container.appendChild(empty);
     return;
   }
@@ -249,49 +268,145 @@ function renderHistory() {
     var h = state.history[i];
     var ago = Math.floor((Date.now() - h.ts) / 60000);
     var agoStr = ago < 1 ? 'now' : ago < 60 ? ago + 'm ago' : Math.floor(ago / 60) + 'h ago';
+
     var item = document.createElement('div');
     item.className = 'history-item';
+
+    var content = document.createElement('div');
+    content.className = 'history-content';
+
+    var brand = document.createElement('span');
+    var brandKey = String(h.card.brand || '').toLowerCase();
+    brand.className = 'history-brand ' + brandKey;
+    brand.textContent = brandShort(h.card.brand);
+
     var text = document.createElement('div');
+    text.className = 'history-text';
     var cardText = document.createElement('div');
     cardText.className = 'history-card';
-    cardText.textContent = h.card.brand + ' ' + h.card.formatted.slice(-4);
+    cardText.textContent = '\u2022\u2022\u2022\u2022 ' + h.card.formatted.slice(-4) + ' \u00B7 ' + h.card.expMonth + '/' + h.card.expYear;
     var meta = document.createElement('div');
     meta.className = 'history-meta';
-    meta.textContent = h.person.countryName + ' · ' + agoStr;
-    var actions = document.createElement('div');
-    actions.className = 'history-actions';
-    var del = document.createElement('button');
-    del.className = 'btn-sm ghost history-delete';
-    del.textContent = 'X';
-
-    // Click handler for history items
-    (function (idx, itemEl, delEl) {
-      itemEl.addEventListener('click', function () { restoreHistory(idx); });
-
-      // Delete buttons
-      delEl.addEventListener('click', function (e) { deleteHistory(idx, e); });
-    })(i, item, del);
-
+    meta.textContent = h.person.countryName + ' \u00B7 ' + agoStr;
     text.appendChild(cardText);
     text.appendChild(meta);
+
+    content.appendChild(brand);
+    content.appendChild(text);
+
+    var actions = document.createElement('div');
+    actions.className = 'history-actions';
+    var copyBtn = document.createElement('button');
+    copyBtn.className = 'btn-sm ghost history-copy';
+    copyBtn.title = 'Copy this entry';
+    copyBtn.setAttribute('aria-label', 'Copy this entry');
+    copyBtn.textContent = '\uD83D\uDCCB';
+    var del = document.createElement('button');
+    del.className = 'btn-sm ghost history-delete';
+    del.title = 'Delete';
+    del.setAttribute('aria-label', 'Delete entry');
+    del.textContent = 'X';
+    actions.appendChild(copyBtn);
     actions.appendChild(del);
-    item.appendChild(text);
+
+    // Click handlers (closure captures current i / h)
+    (function (idx, entry, itemEl, delEl, copyEl) {
+      itemEl.addEventListener('click', function () { restoreHistory(idx); });
+      delEl.addEventListener('click', function (e) { deleteHistory(idx, e); });
+      copyEl.addEventListener('click', function (e) {
+        e.stopPropagation();
+        copyHistoryEntry(entry);
+      });
+    })(i, h, item, del, copyBtn);
+
+    item.appendChild(content);
     item.appendChild(actions);
     container.appendChild(item);
   }
 }
 
+function copyHistoryEntry(h) {
+  if (!h) return;
+  var lines = [
+    'Card: ' + h.card.formatted,
+    'Exp: ' + h.card.expMonth + '/' + h.card.expYear,
+    'CVV: ' + h.card.cvv,
+    'Name: ' + h.person.fullName,
+    'Addr: ' + h.person.address1,
+    'City: ' + h.person.city,
+    'ZIP: ' + h.person.postalCode,
+    'Country: ' + h.person.countryName,
+  ];
+  copyToClipboard(lines.join('\n'), function () { setStatus('Copied entry'); });
+}
+
 // ============ RENDER ============
+
+var BRAND_CLASS_MAP = {
+  'Visa': 'brand-visa',
+  'Mastercard': 'brand-mastercard',
+  'Amex': 'brand-amex',
+  'Discover': 'brand-discover',
+  'UnionPay': 'brand-unionpay',
+  'JCB': 'brand-jcb',
+  'Diners': 'brand-diners',
+};
+var ALL_BRAND_CLASSES = ['brand-visa','brand-mastercard','brand-amex','brand-discover','brand-unionpay','brand-jcb','brand-diners'];
+
+function brandShort(brand) {
+  if (brand === 'Mastercard') return 'MC';
+  if (brand === 'Visa') return 'VISA';
+  return String(brand || '').toUpperCase();
+}
+
+function updateBinBar() {
+  var bar = document.getElementById('binBar');
+  var txt = document.getElementById('binBarText');
+  var visual = document.getElementById('cardVisual');
+  if (!bar || !txt) return;
+  if (!state.card) {
+    bar.style.display = 'none';
+    if (visual) visual.classList.remove('is-test');
+    return;
+  }
+  var bi = state.card.binInfo;
+  if (bi) {
+    bar.style.display = 'flex';
+    var isTest = bi.category === 'TEST';
+    if (visual) visual.classList.toggle('is-test', !!isTest);
+    bar.className = 'bin-bar ' + (isTest ? 'test' : 'valid');
+    var pieces = [bi.bank, bi.countryName, bi.type];
+    if (bi.category) pieces.push(bi.category);
+    var full = pieces.filter(Boolean).join(' · ');
+    txt.textContent = full;
+    bar.title = full;
+    return;
+  }
+  if (visual) visual.classList.remove('is-test');
+  if (state.validateBin) {
+    bar.style.display = 'flex';
+    bar.className = 'bin-bar warn';
+    txt.textContent = 'Custom BIN · no live info';
+    bar.title = 'No BIN metadata found in live database';
+    return;
+  }
+  bar.style.display = 'none';
+  bar.title = '';
+}
 
 function render() {
   if (state.card) {
     document.getElementById('cardNum').textContent = state.card.formatted;
     document.getElementById('expiry').textContent = state.card.expMonth + '/' + state.card.expYear;
     document.getElementById('cvv').textContent = state.card.cvv;
-    document.getElementById('cardNetwork').textContent =
-      state.card.brand === 'Mastercard' ? 'MC' : state.card.brand === 'Visa' ? 'VISA' : state.card.brand.toUpperCase();
+    document.getElementById('cardNetwork').textContent = brandShort(state.card.brand);
 
     var cardVisual = document.getElementById('cardVisual');
+    // Apply brand-specific gradient
+    for (var b = 0; b < ALL_BRAND_CLASSES.length; b++) cardVisual.classList.remove(ALL_BRAND_CLASSES[b]);
+    var brandClass = BRAND_CLASS_MAP[state.card.brand];
+    if (brandClass) cardVisual.classList.add(brandClass);
+
     if (state.card.binInfo && state.validateBin) {
       var bi = state.card.binInfo;
       cardVisual.title = bi.bank + ' (' + bi.countryName + ') \u2014 ' + bi.type + ' ' + bi.category;
@@ -311,12 +426,13 @@ function render() {
 
   // Compact card elements
   if (state.card) {
-    document.getElementById('compactBrand').textContent =
-      state.card.brand === 'Mastercard' ? 'MC' : state.card.brand === 'Visa' ? 'VISA' : state.card.brand.toUpperCase();
+    document.getElementById('compactBrand').textContent = brandShort(state.card.brand);
     document.getElementById('compactNum').textContent = '...' + state.card.number.slice(-4);
     document.getElementById('compactExp').textContent = state.card.expMonth + '/' + state.card.expYear;
     document.getElementById('compactCvv').textContent = state.card.cvv;
   }
+
+  updateBinBar();
 }
 
 function applyCompact(skipAnimation) {
@@ -325,10 +441,12 @@ function applyCompact(skipAnimation) {
   card.classList.add('no-animate');
   if (state.compactView) {
     card.classList.add('compact');
-    btn.textContent = '▲';
+    btn.textContent = '\u25B4';
+    btn.title = 'Expand card view';
   } else {
     card.classList.remove('compact');
-    btn.textContent = '▼';
+    btn.textContent = '\u25BE';
+    btn.title = 'Compact card view';
   }
   if (skipAnimation) {
     requestAnimationFrame(function () {
@@ -410,6 +528,7 @@ function toggleFavCurrent() {
   buildBins();
   saveState();
   updateFavStar();
+  updateDeleteBinButton();
 }
 
 function updateFavStar() {
@@ -423,17 +542,74 @@ function updateFavStar() {
 function buildCountries() {
   var sel = document.getElementById('selCountry');
   sel.innerHTML = '';
-  for (var i = 0; i < COUNTRIES.length; i++) {
+
+  // Sort: favorites first (in the order the user starred them), then the rest by their COUNTRIES index.
+  var ordered = [];
+  var seen = {};
+  for (var f = 0; f < state.favCountries.length; f++) {
+    for (var i = 0; i < COUNTRIES.length; i++) {
+      if (COUNTRIES[i].code === state.favCountries[f] && !seen[COUNTRIES[i].code]) {
+        ordered.push(i);
+        seen[COUNTRIES[i].code] = true;
+        break;
+      }
+    }
+  }
+  for (var j = 0; j < COUNTRIES.length; j++) {
+    if (!seen[COUNTRIES[j].code]) {
+      ordered.push(j);
+      seen[COUNTRIES[j].code] = true;
+    }
+  }
+
+  for (var o = 0; o < ordered.length; o++) {
+    var ci = ordered[o];
     var opt = document.createElement('option');
-    opt.value = i;
-    opt.textContent = COUNTRIES[i].name + ' (' + COUNTRIES[i].code + ')';
+    opt.value = ci;
+    var star = state.favCountries.indexOf(COUNTRIES[ci].code) >= 0 ? '\u2605 ' : '';
+    opt.textContent = star + COUNTRIES[ci].name + ' (' + COUNTRIES[ci].code + ')';
     sel.appendChild(opt);
   }
+
   sel.value = state.countryIdx || 0;
-  sel.addEventListener('change', function () {
+  sel.onchange = function () {
     state.countryIdx = parseInt(this.value);
+    updateCountryFavStar();
     generateAll();
-  });
+  };
+}
+
+function toggleFavCountry() {
+  var country = COUNTRIES[state.countryIdx];
+  if (!country) return;
+  var code = country.code;
+  var idx = state.favCountries.indexOf(code);
+  if (idx >= 0) {
+    state.favCountries.splice(idx, 1);
+  } else {
+    state.favCountries.push(code);
+  }
+  buildCountries();
+  // After rebuilding, the selected country index may shift (fav moved to top).
+  // Find the country's new option index and sync the selector without regenerating.
+  var sel = document.getElementById('selCountry');
+  for (var i = 0; i < sel.options.length; i++) {
+    if (parseInt(sel.options[i].value) === state.countryIdx) {
+      sel.selectedIndex = i;
+      break;
+    }
+  }
+  updateCountryFavStar();
+  saveState();
+}
+
+function updateCountryFavStar() {
+  var btn = document.getElementById('btnToggleFavCountry');
+  if (!btn) return;
+  var country = COUNTRIES[state.countryIdx];
+  var isFav = country && state.favCountries.indexOf(country.code) >= 0;
+  btn.textContent = isFav ? '\u2605' : '\u2606';
+  btn.style.color = isFav ? '#e94560' : '#8b949e';
 }
 
 function buildExpiry() {
@@ -572,15 +748,18 @@ function loadState() {
     if (data.generateEmail !== undefined) state.generateEmail = data.generateEmail;
     if (data.sessionOnly !== undefined) state.sessionOnly = data.sessionOnly;
     if (data.historyTtlMinutes !== undefined) state.historyTtlMinutes = data.historyTtlMinutes;
+    if (data.autoDetectCountry !== undefined) state.autoDetectCountry = data.autoDetectCountry;
     if (data.selectedProfile) state.selectedProfile = data.selectedProfile;
     if (data.savedProfiles) state.savedProfiles = data.savedProfiles;
     if (data.favBins) state.favBins = data.favBins;
+    if (data.favCountries) state.favCountries = data.favCountries;
     if (data.customBins) state.customBins = data.customBins;
 
     loadSensitiveState(state.sessionOnly, function (sensitiveData) {
       if (sensitiveData.history) state.history = pruneHistory(sensitiveData.history, state.historyTtlMinutes);
 
       buildBins();
+      buildCountries();
 
       document.getElementById('selBin').value = state.binIdx;
       document.getElementById('selCountry').value = state.countryIdx;
@@ -593,6 +772,7 @@ function loadState() {
       document.getElementById('selProfile').value = state.selectedProfile;
 
       updateFavStar();
+      updateCountryFavStar();
       updateDeleteBinButton();
       applyCompact(true);
 
@@ -609,19 +789,39 @@ function loadState() {
 
 // ============ ACTIONS ============
 
+var STATUS_TIMER = null;
+
 function setStatus(text, isError) {
   var el = document.getElementById('status');
   el.textContent = text;
   el.className = 'status' + (isError ? ' error' : '');
-  if (text && !isError) {
-    setTimeout(function () { if (el.textContent === text) el.textContent = ''; }, 2500);
+  if (STATUS_TIMER) { clearTimeout(STATUS_TIMER); STATUS_TIMER = null; }
+  if (text) {
+    // Restart slide-in animation
+    el.style.animation = 'none';
+    void el.offsetWidth;
+    el.style.animation = '';
+    STATUS_TIMER = setTimeout(function () {
+      if (el.textContent === text) el.textContent = '';
+    }, isError ? 3600 : 2400);
   }
 }
 
+function flashCopied(el) {
+  if (!el) return;
+  el.classList.remove('copied');
+  void el.offsetWidth;
+  el.classList.add('copied');
+  setTimeout(function () { el.classList.remove('copied'); }, 600);
+}
+
 function doAutofill() {
+  var btn = document.getElementById('btnAutofill');
+  btn.classList.add('loading');
   setStatus('Filling...', false);
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    if (!tabs || !tabs[0]) { setStatus('No active tab', true); return; }
+    function done() { btn.classList.remove('loading'); }
+    if (!tabs || !tabs[0]) { done(); setStatus('No active tab', true); return; }
     var tab = tabs[0];
     saveSensitiveState(state, function () {
       // Inject into all frames including dynamically-created Stripe iframes
@@ -631,6 +831,7 @@ function doAutofill() {
       }, function () {
         // Ignore injection errors — content.js may already be loaded via content_scripts
         chrome.tabs.sendMessage(tab.id, { action: 'autofill', card: state.card, person: state.person }, function (resp) {
+          done();
           if (chrome.runtime.lastError) {
             setStatus('Fill attempted', false);
           } else if (resp) {
@@ -653,11 +854,257 @@ function saveCustomProfile() {
   setStatus('Custom profile saved');
 }
 
+// ============ INLINE SETTINGS VIEW ============
+
 function openOptions() {
-  if (chrome.runtime.openOptionsPage) {
-    chrome.runtime.openOptionsPage();
+  var main = document.getElementById('mainView');
+  var settings = document.getElementById('settingsView');
+  if (!main || !settings) {
+    // Fallback: if markup is missing, fall back to external page.
+    if (chrome.runtime.openOptionsPage) chrome.runtime.openOptionsPage();
+    return;
+  }
+  main.classList.remove('slide-in', 'slide-in-left');
+  settings.classList.remove('slide-in', 'slide-in-left');
+  populateSettingsView();
+  main.hidden = true;
+  settings.hidden = false;
+  settings.classList.add('slide-in');
+  // Scroll the shell to top so the Back button is always visible first.
+  var shell = document.querySelector('.app-shell');
+  if (shell) shell.scrollTop = 0;
+}
+
+function closeOptions() {
+  var main = document.getElementById('mainView');
+  var settings = document.getElementById('settingsView');
+  if (!main || !settings) return;
+  settings.hidden = true;
+  settings.classList.remove('slide-in', 'slide-in-left');
+  main.hidden = false;
+  main.classList.remove('slide-in');
+  main.classList.add('slide-in-left');
+  var shell = document.querySelector('.app-shell');
+  if (shell) shell.scrollTop = 0;
+}
+
+function populateSettingsView() {
+  // Version in sub-title + kbd line
+  try {
+    var m = chrome.runtime.getManifest();
+    var v = (m && m.version) || '';
+    var sub = document.getElementById('sSubVersion');
+    var kbd = document.getElementById('sTxtVersion');
+    if (sub) sub.textContent = 'Preferences · v' + v;
+    if (kbd) kbd.textContent = 'v' + v;
+  } catch (e) {}
+
+  // Checkboxes / selects (mirror current state)
+  document.getElementById('sChkSessionOnly').checked = !!state.sessionOnly;
+  document.getElementById('sChkAutoDetectCountry').checked = !!state.autoDetectCountry;
+  document.getElementById('sSelHistoryTtl').value = String(state.historyTtlMinutes || 0);
+
+  // Custom profile
+  var profile = (state.savedProfiles && state.savedProfiles.custom) || {};
+  document.getElementById('sProfileName').value = profile.fullName || '';
+  document.getElementById('sProfileAddr').value = profile.address1 || '';
+  document.getElementById('sProfileZip').value = profile.postalCode || '';
+  document.getElementById('sProfileCity').value = profile.city || '';
+  document.getElementById('sProfileState').value = profile.state || '';
+  document.getElementById('sProfilePhone').value = profile.phone || '';
+  document.getElementById('sProfileEmail').value = profile.email || '';
+  document.getElementById('sProfileCountry').value = profile.country || '';
+  document.getElementById('sProfileCountryName').value = profile.countryName || '';
+
+  renderSettingsBinList();
+}
+
+function renderSettingsBinList() {
+  var list = document.getElementById('sBinList');
+  var empty = document.getElementById('sBinListEmpty');
+  list.textContent = '';
+  var bins = state.customBins || [];
+  if (!bins.length) {
+    empty.style.display = '';
+    list.style.display = 'none';
+    return;
+  }
+  empty.style.display = 'none';
+  list.style.display = '';
+  for (var i = 0; i < bins.length; i++) {
+    (function (bin) {
+      var row = document.createElement('div');
+      row.className = 'bin-list-item';
+      var info = document.createElement('div');
+      var prefix = document.createElement('div');
+      prefix.className = 'prefix';
+      prefix.textContent = bin.prefix;
+      var brand = document.createElement('div');
+      brand.className = 'brand';
+      brand.textContent = bin.brand || 'Card';
+      info.appendChild(prefix);
+      info.appendChild(brand);
+
+      var del = document.createElement('button');
+      del.className = 'btn-sm danger';
+      del.textContent = 'Delete';
+      del.addEventListener('click', function () {
+        state.customBins = state.customBins.filter(function (b) { return b.prefix !== bin.prefix; });
+        state.favBins = state.favBins.filter(function (p) { return p !== bin.prefix; });
+        if (state.binIdx >= BINS.length) state.binIdx = 0;
+        buildBins();
+        document.getElementById('selBin').value = state.binIdx;
+        updateFavStar();
+        updateDeleteBinButton();
+        renderSettingsBinList();
+        saveState();
+        setStatus('Deleted BIN: ' + bin.prefix);
+      });
+      row.appendChild(info);
+      row.appendChild(del);
+      list.appendChild(row);
+    })(bins[i]);
   }
 }
+
+function saveSettingsCustomProfile() {
+  var fullName = document.getElementById('sProfileName').value.trim();
+  if (!fullName) { setStatus('Full name is required', true); return; }
+  var parts = fullName.split(/\s+/);
+  var custom = {
+    firstName: parts[0] || '',
+    lastName: parts.slice(1).join(' ') || '',
+    fullName: fullName,
+    address1: document.getElementById('sProfileAddr').value.trim(),
+    address2: '',
+    postalCode: document.getElementById('sProfileZip').value.trim(),
+    city: document.getElementById('sProfileCity').value.trim(),
+    state: document.getElementById('sProfileState').value.trim(),
+    phone: document.getElementById('sProfilePhone').value.trim(),
+    email: document.getElementById('sProfileEmail').value.trim(),
+    country: document.getElementById('sProfileCountry').value.trim().toUpperCase(),
+    countryName: document.getElementById('sProfileCountryName').value.trim(),
+  };
+  if (!custom.address1 || !custom.postalCode || !custom.city || !custom.country || !custom.countryName) {
+    setStatus('Fill address, ZIP, city, country code and country name', true);
+    return;
+  }
+  state.savedProfiles = state.savedProfiles || {};
+  state.savedProfiles.custom = custom;
+  state.selectedProfile = 'custom';
+  document.getElementById('selProfile').value = 'custom';
+  saveState();
+  setStatus('Custom profile saved');
+}
+
+function bindInlineSettingsHandlers() {
+  var back = document.getElementById('btnSettingsBack');
+  if (back) back.addEventListener('click', closeOptions);
+
+  // Session only
+  var sess = document.getElementById('sChkSessionOnly');
+  if (sess) sess.addEventListener('change', function () {
+    state.sessionOnly = this.checked;
+    // saveState() will migrate sensitive data to the correct storage backend.
+    saveState();
+    setStatus('Session-only ' + (this.checked ? 'enabled' : 'disabled'));
+  });
+
+  // Auto-detect country
+  var auto = document.getElementById('sChkAutoDetectCountry');
+  if (auto) auto.addEventListener('change', function () {
+    state.autoDetectCountry = this.checked;
+    saveState();
+  });
+
+  // History TTL
+  var ttl = document.getElementById('sSelHistoryTtl');
+  if (ttl) ttl.addEventListener('change', function () {
+    state.historyTtlMinutes = parseInt(this.value, 10) || 0;
+    state.history = pruneHistory(state.history, state.historyTtlMinutes);
+    saveState();
+    renderHistory();
+  });
+
+  // Save profile
+  var saveProf = document.getElementById('sBtnSaveProfile');
+  if (saveProf) saveProf.addEventListener('click', saveSettingsCustomProfile);
+
+  // Clear history
+  var clearH = document.getElementById('sBtnClearHistory');
+  if (clearH) clearH.addEventListener('click', function () {
+    clearStoredHistory(function () {
+      state.history = [];
+      renderHistory();
+      setStatus('History cleared');
+    });
+  });
+
+  // Export
+  var exp = document.getElementById('sBtnExport');
+  if (exp) exp.addEventListener('click', function () {
+    chrome.storage.local.get(null, function (data) {
+      var clean = Object.assign({}, data);
+      delete clean.card; delete clean.person; delete clean.history;
+      var version = '';
+      try { version = (chrome.runtime.getManifest() || {}).version || ''; } catch (e) {}
+      var payload = { _format: 'autobilling', _version: version, data: clean };
+      var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'autobilling-settings.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      setStatus('Exported');
+    });
+  });
+
+  // Import
+  var imp = document.getElementById('sBtnImport');
+  var file = document.getElementById('sFileImport');
+  if (imp && file) {
+    imp.addEventListener('click', function () { file.click(); });
+    file.addEventListener('change', function (e) {
+      var f = e.target.files && e.target.files[0];
+      if (!f) return;
+      var reader = new FileReader();
+      reader.onload = function (ev) {
+        try {
+          var parsed = JSON.parse(ev.target.result);
+          var data = parsed && parsed._format === 'autobilling' ? parsed.data : parsed;
+          if (!data || typeof data !== 'object') throw new Error('Invalid file');
+          delete data.card; delete data.person; delete data.history;
+          chrome.storage.local.set(data, function () {
+            setStatus('Imported — reloading');
+            setTimeout(function () { window.location.reload(); }, 700);
+          });
+        } catch (err) {
+          setStatus('Import failed: ' + (err.message || 'invalid JSON'), true);
+        }
+      };
+      reader.readAsText(f);
+      e.target.value = '';
+    });
+  }
+
+  // Reset all
+  var reset = document.getElementById('sBtnResetAll');
+  if (reset) reset.addEventListener('click', function () {
+    if (!window.confirm('Reset all Autobilling settings, custom BINs, favorites, profile and history? This cannot be undone.')) return;
+    chrome.storage.local.clear(function () {
+      if (chrome.storage.session && chrome.storage.session.clear) {
+        chrome.storage.session.clear(function () { window.location.reload(); });
+      } else {
+        window.location.reload();
+      }
+    });
+  });
+}
+
+bindInlineSettingsHandlers();
 
 function copyCard() {
   if (!state.card) return;
@@ -693,11 +1140,15 @@ document.getElementById('btnDeleteBin').addEventListener('click', doDeleteCustom
 document.getElementById('btnClearHistory').addEventListener('click', clearHistory);
 document.getElementById('btnToggleHistory').addEventListener('click', toggleHistory);
 document.getElementById('btnToggleFav').addEventListener('click', toggleFavCurrent);
+document.getElementById('btnToggleFavCountry').addEventListener('click', toggleFavCountry);
 document.getElementById('btnCompactToggle').addEventListener('click', toggleCompact);
 
 // Quick copy: delegated click on .copyable elements inside cardVisual
-function copyText(text) {
-  copyToClipboard(text, function (copied) { setStatus('Copied: ' + copied); });
+function copyText(text, el) {
+  copyToClipboard(text, function (copied) {
+    setStatus('Copied: ' + copied);
+    if (el) flashCopied(el);
+  });
 }
 
 document.getElementById('cardVisual').addEventListener('click', function (e) {
@@ -719,7 +1170,7 @@ document.getElementById('cardVisual').addEventListener('click', function (e) {
     text = state.card ? state.card.cvv : '';
   }
 
-  copyText(text);
+  copyText(text, el);
 });
 
 document.querySelector('.person-compact').addEventListener('click', function (e) {
@@ -739,14 +1190,14 @@ document.querySelector('.person-compact').addEventListener('click', function (e)
     text = state.person ? state.person.countryName : '';
   }
 
-  copyText(text);
+  copyText(text, el);
 });
 
 // Quick-copy buttons
 function bindCopyBtn(id, getter) {
   document.getElementById(id).addEventListener('click', function () {
     if (!state.person) return;
-    copyText(getter(state.person));
+    copyText(getter(state.person), this);
   });
 }
 bindCopyBtn('btnCopyName', function (p) { return p.fullName; });
@@ -798,20 +1249,69 @@ document.getElementById('customBin').addEventListener('keydown', function (e) {
   if (e.key === 'Enter') doAddCustomBin();
 });
 
+// Keyboard support for .copyable elements (Enter / Space)
+document.addEventListener('keydown', function (e) {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  var el = document.activeElement;
+  if (!el || !el.classList || !el.classList.contains('copyable')) return;
+  e.preventDefault();
+  // Delegate to click — handlers on cardVisual / person-compact pick up the element.
+  el.click();
+});
+
 buildBins();
 buildCountries();
 buildExpiry();
 loadState();
 
+// ===== Checkout detection + TLD auto-country =====
+var TLD_TO_COUNTRY = {
+  'us': 'US', 'com': null, 'uk': 'GB', 'co.uk': 'GB', 'de': 'DE', 'fr': 'FR',
+  'it': 'IT', 'es': 'ES', 'nl': 'NL', 'be': 'BE', 'pl': 'PL', 'at': 'AT',
+  'ch': 'CH', 'cz': 'CZ', 'dk': 'DK', 'fi': 'FI', 'ie': 'IE', 'gr': 'GR',
+  'hu': 'HU', 'no': 'NO', 'pt': 'PT', 'ro': 'RO', 'se': 'SE', 'au': 'AU',
+  'com.au': 'AU', 'nz': 'NZ', 'co.nz': 'NZ', 'jp': 'JP', 'co.jp': 'JP',
+  'kr': 'KR', 'co.kr': 'KR', 'cn': 'CN', 'hk': 'HK', 'com.hk': 'HK',
+  'sg': 'SG', 'com.sg': 'SG', 'tw': 'TW', 'com.tw': 'TW', 'th': 'TH',
+  'co.th': 'TH', 'vn': 'VN', 'com.vn': 'VN', 'id': 'ID', 'co.id': 'ID',
+  'ph': 'PH', 'com.ph': 'PH', 'in': 'IN', 'co.in': 'IN', 'il': 'IL',
+  'co.il': 'IL', 'tr': 'TR', 'com.tr': 'TR', 'ae': 'AE', 'com.ae': 'AE',
+  'za': 'ZA', 'co.za': 'ZA', 'br': 'BR', 'com.br': 'BR', 'mx': 'MX',
+  'com.mx': 'MX', 'ar': 'AR', 'com.ar': 'AR', 'cl': 'CL', 'ca': 'CA',
+};
+function tldToCountry(hostname) {
+  if (!hostname) return null;
+  var parts = hostname.toLowerCase().split('.');
+  if (parts.length < 2) return null;
+  var last = parts.slice(-1).join('.');
+  var last2 = parts.slice(-2).join('.');
+  return TLD_TO_COUNTRY[last2] || TLD_TO_COUNTRY[last] || null;
+}
+
 chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-  if (tabs && tabs[0] && tabs[0].url) {
-    var url = tabs[0].url.toLowerCase();
-    var isCheckout = /checkout|payment|subscribe|billing|order|cart|pay\./i.test(url);
-    if (isCheckout) {
-      var btn = document.getElementById('btnAutofill');
-      btn.style.background = '#e94560';
-      btn.style.borderColor = '#e94560';
-      btn.style.color = '#fff';
-    }
+  if (!tabs || !tabs[0] || !tabs[0].url) return;
+  var url = tabs[0].url;
+  var btn = document.getElementById('btnAutofill');
+  if (/checkout|payment|subscribe|billing|order|cart|pay\./i.test(url)) {
+    btn.classList.add('checkout-detected');
   }
+
+  // Auto-detect country by TLD (only if user opted in and has not picked a country this session).
+  chrome.storage.local.get(['autoDetectCountry'], function (data) {
+    if (!data.autoDetectCountry) return;
+    try {
+      var host = new URL(url).hostname;
+      var code = tldToCountry(host);
+      if (!code) return;
+      for (var i = 0; i < COUNTRIES.length; i++) {
+        if (COUNTRIES[i].code === code && state.countryIdx !== i) {
+          state.countryIdx = i;
+          document.getElementById('selCountry').value = i;
+          updateCountryFavStar();
+          generateAll();
+          break;
+        }
+      }
+    } catch (e) {}
+  });
 });

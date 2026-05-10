@@ -2,96 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link rel="stylesheet" href="common.css">
 <style>
-:root {
-  --bg: #070b12;
-  --panel: rgba(22, 27, 34, 0.82);
-  --panel-2: rgba(13, 17, 23, 0.74);
-  --border: rgba(139, 148, 158, 0.16);
-  --border-strong: rgba(139, 148, 158, 0.26);
-  --text: #d6deea;
-  --muted: #7d8590;
-  --dim: #545d68;
-  --accent: #ef476f;
-  --accent-2: #7c3aed;
-  --green: #3fb950;
-  --yellow: #d29922;
-}
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html,
-body {
-  width: 420px;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background: #070b12;
-}
-body {
-  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  font-size: 12px;
-  color: var(--text);
-}
-.app-shell {
-  width: 420px;
-  max-height: 600px;
-  padding: 14px;
-  overflow-y: auto;
-  background:
-    radial-gradient(circle at 15% 0%, rgba(124, 58, 237, 0.22), transparent 32%),
-    radial-gradient(circle at 90% 12%, rgba(239, 71, 111, 0.18), transparent 30%),
-    linear-gradient(180deg, #0d1117 0%, var(--bg) 100%);
-}
-button, select, input { font: inherit; }
-::-webkit-scrollbar { width: 10px; }
-::-webkit-scrollbar-track {
-  background: linear-gradient(180deg, rgba(13, 17, 23, 0.55), rgba(7, 11, 18, 0.92));
-  border-left: 1px solid rgba(139, 148, 158, 0.08);
-}
-::-webkit-scrollbar-thumb {
-  min-height: 42px;
-  background: linear-gradient(180deg, #334155, #1f2937);
-  border: 3px solid transparent;
-  border-radius: 999px;
-  background-clip: padding-box;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-}
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #475569, #334155);
-  border: 3px solid transparent;
-  background-clip: padding-box;
-}
-::-webkit-scrollbar-corner { background: transparent; }
-
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-.brand-title {
-  font-size: 17px;
-  font-weight: 850;
-  letter-spacing: -0.3px;
-  color: #f8fafc;
-}
-.brand-subtitle {
-  margin-top: 2px;
-  font-size: 10px;
-  color: var(--muted);
-}
-.header-pill {
-  padding: 7px 10px;
-  border: 1px solid rgba(239, 71, 111, 0.35);
-  border-radius: 999px;
-  background: rgba(239, 71, 111, 0.08);
-  color: #ff9aaa;
-  font-size: 10px;
-  font-weight: 800;
-  cursor: pointer;
-  box-shadow: 0 0 22px rgba(239, 71, 111, 0.08);
-}
-.header-pill:hover { background: rgba(239, 71, 111, 0.16); color: #fff; }
-
+/* ===== CARD VISUAL ===== */
 .card-visual {
   position: relative;
   height: 176px;
@@ -107,7 +20,42 @@ button, select, input { font: inherit; }
     radial-gradient(circle at 80% 12%, rgba(255, 255, 255, 0.14), transparent 28%),
     linear-gradient(135deg, #111827 0%, #1e1b4b 42%, #0f3460 100%);
   box-shadow: 0 18px 38px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  transition: height 0.18s ease, transform 0.18s ease;
+  transition: height 0.22s cubic-bezier(0.4, 0, 0.2, 1), transform 0.22s ease;
+}
+.card-visual.brand-visa {
+  background:
+    radial-gradient(circle at 80% 12%, rgba(255, 255, 255, 0.16), transparent 28%),
+    linear-gradient(135deg, #0a2540 0%, #133b6a 50%, #1e5aa8 100%);
+}
+.card-visual.brand-mastercard {
+  background:
+    radial-gradient(circle at 80% 12%, rgba(255, 255, 255, 0.16), transparent 28%),
+    linear-gradient(135deg, #1a1a2e 0%, #4a1c1c 50%, #6f2323 100%);
+}
+.card-visual.brand-amex {
+  background:
+    radial-gradient(circle at 80% 12%, rgba(255, 255, 255, 0.16), transparent 28%),
+    linear-gradient(135deg, #062a3a 0%, #0b6179 50%, #108a9d 100%);
+}
+.card-visual.brand-discover {
+  background:
+    radial-gradient(circle at 80% 12%, rgba(255, 255, 255, 0.16), transparent 28%),
+    linear-gradient(135deg, #2a1a05 0%, #8a4a0b 50%, #ff6900 100%);
+}
+.card-visual.brand-unionpay {
+  background:
+    radial-gradient(circle at 80% 12%, rgba(255, 255, 255, 0.16), transparent 28%),
+    linear-gradient(135deg, #0a1a2a 0%, #0f4c75 50%, #3282b8 100%);
+}
+.card-visual.brand-jcb {
+  background:
+    radial-gradient(circle at 80% 12%, rgba(255, 255, 255, 0.16), transparent 28%),
+    linear-gradient(135deg, #1a1a2e 0%, #283593 50%, #3949ab 100%);
+}
+.card-visual.brand-diners {
+  background:
+    radial-gradient(circle at 80% 12%, rgba(255, 255, 255, 0.16), transparent 28%),
+    linear-gradient(135deg, #1a1a1a 0%, #424242 50%, #616161 100%);
 }
 .card-visual::before {
   content: '';
@@ -116,7 +64,8 @@ button, select, input { font: inherit; }
   width: 210px;
   height: 210px;
   border-radius: 50%;
-  background: rgba(239, 71, 111, 0.16);
+  background: rgba(255, 255, 255, 0.08);
+  pointer-events: none;
 }
 .card-visual::after {
   content: '';
@@ -126,7 +75,8 @@ button, select, input { font: inherit; }
   width: 180px;
   height: 180px;
   border-radius: 50%;
-  background: rgba(124, 58, 237, 0.14);
+  background: rgba(0, 0, 0, 0.16);
+  pointer-events: none;
 }
 .card-visual.no-animate { transition: none; }
 .card-visual.compact {
@@ -137,6 +87,12 @@ button, select, input { font: inherit; }
 }
 .card-visual.compact::before,
 .card-visual.compact::after { display: none; }
+.card-visual.shimmer { animation: cardShimmer 0.6s ease; }
+@keyframes cardShimmer {
+  0% { box-shadow: 0 18px 38px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 0 0 0 rgba(239, 71, 111, 0.4); }
+  50% { box-shadow: 0 18px 38px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 0 0 5px rgba(239, 71, 111, 0.12); }
+  100% { box-shadow: 0 18px 38px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 0 0 0 rgba(239, 71, 111, 0); }
+}
 .card-toggle {
   position: absolute;
   top: 10px;
@@ -144,13 +100,36 @@ button, select, input { font: inherit; }
   z-index: 2;
   width: 26px;
   height: 26px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.62);
+  color: rgba(255, 255, 255, 0.72);
   cursor: pointer;
+  font-size: 9px;
+  line-height: 1;
+  transition: background 0.15s ease, color 0.15s ease;
 }
-.card-toggle:hover { background: rgba(255, 255, 255, 0.14); color: #fff; }
+.card-toggle:hover { background: rgba(255, 255, 255, 0.18); color: #fff; }
+.card-test-badge {
+  position: absolute;
+  top: 10px;
+  left: 44px;
+  z-index: 2;
+  padding: 2px 8px;
+  border: 1px solid rgba(210, 153, 34, 0.8);
+  border-radius: 999px;
+  background: rgba(210, 153, 34, 0.9);
+  color: #1b1304;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  box-shadow: 0 4px 12px rgba(210, 153, 34, 0.32);
+  pointer-events: none;
+  display: none;
+}
+.card-visual.is-test .card-test-badge { display: inline-block; }
+.card-visual.compact .card-test-badge { display: none; }
 .card-chip {
   position: relative;
   z-index: 1;
@@ -158,19 +137,34 @@ button, select, input { font: inherit; }
   height: 32px;
   margin-top: 12px;
   border-radius: 8px;
-  background: linear-gradient(135deg, #f4d35e, #b88a10);
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.18);
-  opacity: 0.9;
+  background:
+    linear-gradient(135deg, #f4d35e, #b88a10),
+    radial-gradient(circle at 30% 40%, #ffd969, transparent);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  opacity: 0.92;
+}
+.card-chip::after {
+  content: '';
+  position: absolute;
+  inset: 6px 5px;
+  border: 1px solid rgba(0, 0, 0, 0.35);
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
 }
 .card-network {
   position: absolute;
-  top: 18px;
+  top: 16px;
   right: 18px;
   z-index: 1;
-  font-size: 13px;
-  font-weight: 850;
-  letter-spacing: 1.3px;
-  color: rgba(255, 255, 255, 0.48);
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 1.4px;
+  color: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(6px);
 }
 .card-number {
   position: relative;
@@ -181,14 +175,14 @@ button, select, input { font: inherit; }
   line-height: 1.25;
   letter-spacing: 2.2px;
   color: #fff;
-  text-shadow: 0 1px 14px rgba(255, 255, 255, 0.12);
+  text-shadow: 0 1px 14px rgba(255, 255, 255, 0.14);
 }
 .card-details {
   position: relative;
   z-index: 1;
   display: flex;
   gap: 8px;
-  color: rgba(255, 255, 255, 0.56);
+  color: rgba(255, 255, 255, 0.62);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.4px;
@@ -198,12 +192,13 @@ button, select, input { font: inherit; }
   align-items: center;
   gap: 6px;
   padding: 6px 9px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(6px);
 }
 .card-details span span {
-  color: rgba(255, 255, 255, 0.94);
+  color: rgba(255, 255, 255, 0.96);
   font-family: "SFMono-Regular", Consolas, "Courier New", monospace;
 }
 .card-compact-row {
@@ -226,16 +221,12 @@ button, select, input { font: inherit; }
 #compactBrand { color: #a5b4fc; font-weight: 850; }
 #compactNum { font-family: "SFMono-Regular", Consolas, "Courier New", monospace; font-weight: 800; }
 
-.copyable {
-  cursor: pointer;
-  border-radius: 6px;
-  transition: color 0.12s ease, background 0.12s ease, transform 0.12s ease;
-}
-.copyable:hover { color: var(--accent) !important; background: rgba(239, 71, 111, 0.09); }
-.card-visual .copyable:hover { background: transparent; text-shadow: 0 0 14px rgba(239, 71, 111, 0.35); }
-.copyable:active { transform: scale(0.98); }
-
+/* ===== BIN BAR ===== */
 .bin-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   padding: 8px 10px;
   margin-bottom: 10px;
   border: 1px solid var(--border);
@@ -244,63 +235,35 @@ button, select, input { font: inherit; }
   color: var(--muted);
   font-size: 10px;
   font-weight: 650;
+  letter-spacing: 0.2px;
   text-align: center;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: border 0.15s ease, color 0.15s ease, background 0.15s ease;
+  cursor: help;
 }
-.bin-bar.valid { color: #7ee787; border-color: rgba(63, 185, 80, 0.34); background: rgba(35, 134, 54, 0.1); }
-.bin-bar.warn { color: #f2cc60; border-color: rgba(210, 153, 34, 0.35); background: rgba(210, 153, 34, 0.09); }
-
-.section {
-  position: relative;
-  padding: 12px;
-  margin-bottom: 10px;
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  background: linear-gradient(180deg, rgba(22, 27, 34, 0.9), rgba(13, 17, 23, 0.75));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 10px 24px rgba(0, 0, 0, 0.14);
-}
-.section-title {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  color: #9ba3af;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-}
-.section-title::before {
-  content: '';
+.bin-bar .dot {
   width: 6px;
   height: 6px;
-  margin-right: 7px;
   border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 14px rgba(239, 71, 111, 0.55);
+  background: var(--muted);
+  flex-shrink: 0;
 }
-.section-title { justify-content: flex-start; }
-.section-title .btn-sm { margin-left: auto; }
+.bin-bar.valid { color: #7ee787; border-color: rgba(63, 185, 80, 0.36); background: rgba(35, 134, 54, 0.08); }
+.bin-bar.valid .dot { background: #3fb950; box-shadow: 0 0 8px rgba(63, 185, 80, 0.5); }
+.bin-bar.warn { color: #f2cc60; border-color: rgba(210, 153, 34, 0.38); background: rgba(210, 153, 34, 0.08); }
+.bin-bar.warn .dot { background: #d29922; box-shadow: 0 0 8px rgba(210, 153, 34, 0.5); }
+.bin-bar.test { color: #c4a7f7; border-color: rgba(124, 58, 237, 0.38); background: rgba(124, 58, 237, 0.08); }
+.bin-bar.test .dot { background: #7c3aed; box-shadow: 0 0 8px rgba(124, 58, 237, 0.5); }
 
+/* ===== PERSON ===== */
 .person-compact {
   display: grid;
   grid-template-columns: 58px 1fr;
   gap: 8px 10px;
   align-items: center;
   font-size: 11px;
-}
-.copy-stack {
-  display: flex;
-  gap: 6px;
-  margin-top: 8px;
-}
-.copy-stack .btn-sm {
-  flex: 1;
-  min-height: 28px;
-  padding: 4px 6px;
-  font-size: 10px;
 }
 .person-compact .row-label {
   color: var(--dim);
@@ -318,53 +281,54 @@ button, select, input { font: inherit; }
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: color 0.12s ease, background 0.12s ease;
 }
-.person-compact .copyable:hover { background: rgba(239, 71, 111, 0.08); color: var(--accent); }
+.copy-stack {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+.copy-stack .btn-sm {
+  flex: 1;
+  min-height: 28px;
+  padding: 4px 6px;
+  font-size: 10px;
+}
 .profile-row {
   display: grid;
   grid-template-columns: 1fr 96px;
   gap: 8px;
   margin-top: 10px;
+  align-items: stretch;
+}
+.profile-row .btn-sm { min-height: 34px; height: 34px; }
+
+/* ===== COPYABLE ===== */
+.copyable {
+  cursor: pointer;
+  border-radius: 6px;
+  transition: color 0.12s ease, background 0.12s ease, transform 0.12s ease;
+}
+.copyable:hover { color: var(--accent) !important; background: rgba(239, 71, 111, 0.09); }
+.copyable:focus-visible {
+  outline: 2px solid rgba(239, 71, 111, 0.6);
+  outline-offset: 2px;
+}
+.card-visual .copyable:hover { background: transparent; text-shadow: 0 0 14px rgba(239, 71, 111, 0.35); }
+.copyable:active { transform: scale(0.98); }
+.copyable.copied { animation: copiedFlash 0.6s ease; }
+@keyframes copiedFlash {
+  0%   { background: rgba(63, 185, 80, 0.24); color: #7ee787 !important; }
+  100% { background: transparent; color: inherit; }
 }
 
-.row { display: flex; gap: 9px; margin-bottom: 9px; }
-.row:last-child { margin-bottom: 0; }
-.row > * { flex: 1; min-width: 0; }
+/* ===== CONFIGURATION HELPERS ===== */
 .settings-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 9px;
   margin-bottom: 9px;
   align-items: end;
-}
-.label {
-  display: block;
-  margin-bottom: 5px;
-  color: #8b949e;
-  font-size: 10px;
-  font-weight: 750;
-}
-select,
-input[type="text"],
-input[type="number"] {
-  width: 100%;
-  height: 34px;
-  padding: 7px 9px;
-  border: 1px solid var(--border-strong);
-  border-radius: 10px;
-  background: rgba(7, 11, 18, 0.74);
-  color: var(--text);
-  font-size: 11px;
-  transition: border 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
-}
-select:hover,
-input:hover { border-color: rgba(239, 71, 111, 0.36); }
-select:focus,
-input:focus {
-  outline: none;
-  border-color: rgba(239, 71, 111, 0.75);
-  box-shadow: 0 0 0 3px rgba(239, 71, 111, 0.12);
-  background: rgba(7, 11, 18, 0.92);
 }
 .bin-select-row {
   display: grid;
@@ -382,149 +346,105 @@ input:focus {
   display: grid;
   grid-template-columns: 1fr 48px 58px;
   gap: 7px;
+  align-items: stretch;
 }
-
-.btn,
-.btn-sm {
-  border: 1px solid var(--border-strong);
-  cursor: pointer;
-  font-weight: 800;
-  color: var(--text);
-  background: linear-gradient(180deg, rgba(48, 54, 61, 0.88), rgba(33, 38, 45, 0.9));
-  transition: transform 0.12s ease, border 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
-}
-.btn:hover,
-.btn-sm:hover { border-color: rgba(239, 71, 111, 0.36); background: rgba(48, 54, 61, 0.95); }
-.btn:active,
-.btn-sm:active { transform: translateY(1px); }
-.btn {
-  display: block;
-  width: 100%;
-  min-height: 38px;
-  padding: 9px 10px;
-  margin-bottom: 7px;
-  border-radius: 12px;
-  font-size: 13px;
-}
-.btn-primary {
-  border-color: rgba(239, 71, 111, 0.9);
-  color: #fff;
-  background: linear-gradient(135deg, #ef476f, #d6336c 58%, #9d174d);
-  box-shadow: 0 12px 26px rgba(239, 71, 111, 0.22);
-}
-.btn-primary:hover { background: linear-gradient(135deg, #ff5c7c, #e23a70 58%, #b21f58); }
-.btn-row { display: flex; gap: 9px; }
-.btn-row .btn { flex: 1; }
-.btn-sm {
-  min-height: 32px;
-  padding: 6px 9px;
-  border-radius: 10px;
-  font-size: 11px;
-  white-space: nowrap;
-}
-.btn-sm.primary { border-color: rgba(63, 185, 80, 0.5); color: #fff; background: linear-gradient(180deg, #2ea043, #238636); }
-.btn-sm.primary:hover { background: linear-gradient(180deg, #3fb950, #238636); }
-.btn-sm.danger { border-color: rgba(239, 71, 111, 0.5); color: #ff7b91; background: rgba(239, 71, 111, 0.06); }
-.btn-sm.danger:hover { color: #fff; background: rgba(239, 71, 111, 0.24); }
-.btn-sm.ghost { background: rgba(255, 255, 255, 0.03); color: #9ba3af; }
+.bin-add-row .btn-sm { min-height: 34px; height: 34px; }
 .bin-select-row .btn-sm { min-height: 34px; padding: 0; font-size: 15px; }
 
+/* ===== HISTORY ===== */
 .history-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 7px 6px;
-  border-bottom: 1px solid rgba(139, 148, 158, 0.1);
-  border-radius: 9px;
-  font-size: 11px;
-  cursor: pointer;
-}
-.history-item:last-child { border-bottom: none; }
-.history-item:hover { background: rgba(255, 255, 255, 0.04); }
-.history-card { font-family: "SFMono-Regular", Consolas, "Courier New", monospace; color: var(--text); font-weight: 750; }
-.history-meta { margin-top: 2px; color: var(--dim); font-size: 10px; }
-.history-actions { display: flex; gap: 2px; }
-.history-empty { padding: 10px 0; color: var(--dim); text-align: center; font-size: 11px; }
-
-.settings-checks {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-top: 1px;
-}
-.check-inline {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  min-height: 30px;
-  padding: 6px 8px;
-  border: 1px solid rgba(139, 148, 158, 0.12);
+  padding: 8px 8px;
+  border: 1px solid transparent;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.025);
-  color: #9ba3af;
   font-size: 11px;
   cursor: pointer;
+  transition: background 0.12s ease, border 0.12s ease;
 }
-.check-inline:hover { border-color: rgba(239, 71, 111, 0.28); }
-.check-inline input[type="checkbox"] { width: auto; accent-color: var(--accent); }
-
-.action-stack { margin-top: 10px; }
-.status {
-  display: none;
-  margin: 4px 0 2px;
-  color: #7ee787;
-  font-size: 11px;
+.history-item + .history-item { margin-top: 4px; }
+.history-item:hover { background: rgba(255, 255, 255, 0.04); border-color: rgba(139, 148, 158, 0.12); }
+.history-content { display: flex; align-items: center; gap: 9px; min-width: 0; flex: 1; }
+.history-brand {
+  flex-shrink: 0;
+  padding: 3px 8px;
+  min-width: 44px;
   text-align: center;
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.8px;
+  color: #fff;
+  background: linear-gradient(135deg, #334155, #1e293b);
 }
-.status:not(:empty) { display: block; }
-.status.error { color: #ff7b91; }
-.footer {
-  margin-top: 4px;
+.history-brand.visa       { background: linear-gradient(135deg, #1e5aa8, #0a2540); }
+.history-brand.mastercard { background: linear-gradient(135deg, #c0392b, #6f2323); }
+.history-brand.amex       { background: linear-gradient(135deg, #108a9d, #062a3a); }
+.history-brand.discover   { background: linear-gradient(135deg, #ff6900, #8a4a0b); color: #fff; }
+.history-brand.unionpay   { background: linear-gradient(135deg, #3282b8, #0f4c75); }
+.history-brand.jcb        { background: linear-gradient(135deg, #3949ab, #283593); }
+.history-brand.diners     { background: linear-gradient(135deg, #616161, #424242); }
+.history-text { min-width: 0; flex: 1; }
+.history-card { font-family: "SFMono-Regular", Consolas, "Courier New", monospace; color: var(--text); font-weight: 750; font-size: 11px; }
+.history-meta { margin-top: 2px; color: var(--dim); font-size: 10px; }
+.history-actions { display: flex; gap: 2px; flex-shrink: 0; }
+.history-empty {
+  padding: 18px 10px 14px;
   color: var(--dim);
-  font-size: 10px;
-  line-height: 1.4;
   text-align: center;
+  font-size: 11px;
 }
-.footer a { color: #9ba3af; text-decoration: none; }
-.footer a:hover { color: var(--accent); }
+.history-empty .emoji { display: block; font-size: 22px; margin-bottom: 6px; opacity: 0.7; }
+
+.action-stack { margin-top: 10px; margin-bottom: 4px; }
 </style>
 </head>
 <body>
 <div class="app-shell">
+<div class="view" id="mainView">
 
 <div class="header">
-  <div>
-    <div class="brand-title">Autobilling</div>
-    <div class="brand-subtitle">Luhn card generator + Universal autofill</div>
+  <div class="brand">
+    <div class="brand-logo" aria-hidden="true">A</div>
+    <div>
+      <div class="brand-title">Autobilling</div>
+      <div class="brand-subtitle">Luhn card generator + Universal autofill</div>
+    </div>
   </div>
-  <button class="header-pill" id="btnOptions" title="Open settings">Settings</button>
+  <button class="header-pill" id="btnOptions" aria-label="Open settings" title="Open settings"><span aria-hidden="true">⚙</span> Settings</button>
 </div>
 
 <div class="card-visual no-animate" id="cardVisual">
-  <button class="card-toggle" id="btnCompactToggle" title="Compact view">&#9660;</button>
+  <button class="card-toggle" id="btnCompactToggle" aria-label="Toggle compact card view" title="Toggle compact view"><span aria-hidden="true">▾</span></button>
+  <span class="card-test-badge" aria-hidden="true">TEST</span>
   <div class="card-network" id="cardNetwork">MC</div>
-  <div class="card-chip"></div>
-  <div class="card-number copyable" id="cardNum" title="Click to copy card number">---- ---- ---- ----</div>
+  <div class="card-chip" aria-hidden="true"></div>
+  <div class="card-number copyable" id="cardNum" role="button" tabindex="0" title="Click to copy card number" aria-label="Copy card number">---- ---- ---- ----</div>
   <div class="card-details">
-    <span>EXP <span class="copyable" id="expiry" title="Click to copy expiry">--/--</span></span>
-    <span>CVV <span class="copyable" id="cvv" title="Click to copy CVV">---</span></span>
+    <span>EXP <span class="copyable" id="expiry" role="button" tabindex="0" title="Click to copy expiry" aria-label="Copy expiry">--/--</span></span>
+    <span>CVV <span class="copyable" id="cvv" role="button" tabindex="0" title="Click to copy CVV" aria-label="Copy CVV">---</span></span>
   </div>
   <div class="card-compact-row">
     <span id="compactBrand">MC</span>
-    <span class="copyable" id="compactNum" title="Click to copy">····</span>
-    <span>| EXP <span class="copyable" id="compactExp" title="Click to copy">--/--</span></span>
-    <span>| CVV <span class="copyable" id="compactCvv" title="Click to copy">---</span></span>
+    <span class="copyable" id="compactNum" role="button" tabindex="0" title="Click to copy" aria-label="Copy card number">····</span>
+    <span>| EXP <span class="copyable" id="compactExp" role="button" tabindex="0" title="Click to copy" aria-label="Copy expiry">--/--</span></span>
+    <span>| CVV <span class="copyable" id="compactCvv" role="button" tabindex="0" title="Click to copy" aria-label="Copy CVV">---</span></span>
   </div>
 </div>
 
+<div class="bin-bar" id="binBar" style="display:none;" role="status" aria-live="polite">
+  <span class="dot" aria-hidden="true"></span><span id="binBarText">—</span>
+</div>
+
 <div class="section">
-  <div class="section-title">Billing</div>
+  <div class="section-title"><span class="dot-accent" aria-hidden="true"></span><span class="ico" aria-hidden="true">👤</span> Billing</div>
   <div class="person-compact">
-    <span class="row-label">Name</span><span class="val copyable" id="personName" title="Click to copy name">---</span>
-    <span class="row-label">Addr</span><span class="val copyable" id="personAddr" title="Click to copy address">---</span>
-    <span class="row-label">City</span><span class="val copyable" id="personCity" title="Click to copy city">---</span>
-    <span class="row-label">ZIP</span><span class="val copyable" id="personZip" title="Click to copy ZIP only">---</span>
-    <span class="row-label">Country</span><span class="val copyable" id="personCountry" title="Click to copy country">---</span>
+    <span class="row-label">Name</span><span class="val copyable" id="personName" role="button" tabindex="0" title="Click to copy name" aria-label="Copy name">---</span>
+    <span class="row-label">Addr</span><span class="val copyable" id="personAddr" role="button" tabindex="0" title="Click to copy address" aria-label="Copy address">---</span>
+    <span class="row-label">City</span><span class="val copyable" id="personCity" role="button" tabindex="0" title="Click to copy city" aria-label="Copy city">---</span>
+    <span class="row-label">ZIP</span><span class="val copyable" id="personZip" role="button" tabindex="0" title="Click to copy ZIP" aria-label="Copy ZIP">---</span>
+    <span class="row-label">Country</span><span class="val copyable" id="personCountry" role="button" tabindex="0" title="Click to copy country" aria-label="Copy country">---</span>
   </div>
   <div class="copy-stack">
     <button class="btn-sm ghost" id="btnCopyName" title="Copy full name">Name</button>
@@ -534,7 +454,7 @@ input:focus {
     <button class="btn-sm ghost" id="btnCopyCountry" title="Copy country">Ctry</button>
   </div>
   <div class="profile-row">
-    <select id="selProfile">
+    <select id="selProfile" aria-label="Billing profile">
       <option value="generated">Generated</option>
       <option value="US">US profile</option>
       <option value="NL">NL profile</option>
@@ -545,38 +465,42 @@ input:focus {
 </div>
 
 <div class="action-stack">
-  <button class="btn btn-primary" id="btnAutofill">Autofill Form</button>
+  <button class="btn btn-primary" id="btnAutofill" aria-label="Autofill form on the current page"><span aria-hidden="true">⚡</span> Autofill Form</button>
+  <div class="btn-hint">or press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>F</kbd> on the checkout page</div>
   <div class="btn-row">
-    <button class="btn" id="btnGenerate">Generate</button>
-    <button class="btn" id="btnCopy">Copy all</button>
+    <button class="btn" id="btnGenerate" aria-label="Generate new card and profile"><span aria-hidden="true">🎲</span> Generate</button>
+    <button class="btn" id="btnCopy" aria-label="Copy card and billing data"><span aria-hidden="true">📋</span> Copy all</button>
   </div>
 </div>
 
 <div class="section">
-  <div class="section-title">Configuration</div>
+  <div class="section-title"><span class="dot-accent" aria-hidden="true"></span><span class="ico" aria-hidden="true">⚙</span> Configuration</div>
 
   <div class="settings-grid">
     <div>
       <span class="label">BIN</span>
       <div class="bin-select-row">
-        <select id="selBin"></select>
-        <button class="btn-sm ghost" id="btnToggleFav" title="Toggle favorite">&#9734;</button>
+        <select id="selBin" aria-label="Select BIN"></select>
+        <button class="btn-sm ghost" id="btnToggleFav" aria-label="Toggle favorite BIN" title="Toggle favorite">☆</button>
       </div>
     </div>
     <div>
       <span class="label">Country</span>
-      <select id="selCountry"></select>
+      <div class="bin-select-row">
+        <select id="selCountry" aria-label="Select country"></select>
+        <button class="btn-sm ghost" id="btnToggleFavCountry" aria-label="Toggle favorite country" title="Toggle favorite country">☆</button>
+      </div>
     </div>
   </div>
   <div class="row">
-    <div><span class="label">Exp Month</span><select id="selExpMonth"></select></div>
-    <div><span class="label">Exp Year</span><select id="selExpYear"></select></div>
+    <div><span class="label">Exp Month</span><select id="selExpMonth" aria-label="Expiry month"></select></div>
+    <div><span class="label">Exp Year</span><select id="selExpYear" aria-label="Expiry year"></select></div>
   </div>
   <div class="row">
     <div>
       <span class="label">Custom BIN</span>
       <div class="bin-add-row">
-        <input type="text" id="customBin" placeholder="Add custom prefix" maxlength="14">
+        <input type="text" id="customBin" placeholder="Add custom prefix" maxlength="14" aria-label="Custom BIN prefix">
         <button class="btn-sm primary" id="btnAddBin">Add</button>
         <button class="btn-sm danger" id="btnDeleteBin" title="Delete selected custom BIN">Delete</button>
       </div>
@@ -598,18 +522,90 @@ input:focus {
   </div>
 </div>
 
-<button class="btn" id="btnToggleHistory" style="margin-bottom:4px;">History ▼</button>
+<button class="btn" id="btnToggleHistory" aria-expanded="false" aria-controls="historyPanel" style="margin-bottom:4px;"><span aria-hidden="true">🕒</span> History <span aria-hidden="true">▼</span></button>
 <div class="section" id="historyPanel" style="display:none;">
   <div class="section-title">
-    History
+    <span class="dot-accent" aria-hidden="true"></span><span class="ico" aria-hidden="true">🕒</span> History
     <button class="btn-sm ghost" id="btnClearHistory">Clear</button>
   </div>
-  <div id="historyList"><div class="history-empty">No cards yet</div></div>
+  <div id="historyList"><div class="history-empty"><span class="emoji" aria-hidden="true">💳</span>No cards yet</div></div>
 </div>
 
-<div class="status" id="status"></div>
+</div><!-- /#mainView -->
+
+<div class="view" id="settingsView" hidden>
+  <div class="header">
+    <div class="brand">
+      <button class="back-btn" id="btnSettingsBack" aria-label="Back to card"><span aria-hidden="true">◀</span> Back</button>
+      <div>
+        <div class="brand-title">Settings</div>
+        <div class="brand-subtitle" id="sSubVersion">Preferences &amp; profile editor</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="dot-accent" aria-hidden="true"></span><span class="ico" aria-hidden="true">⚙</span> Preferences</div>
+    <div class="settings-checks">
+      <label class="check-inline"><input type="checkbox" id="sChkSessionOnly"> Session only</label>
+      <label class="check-inline"><input type="checkbox" id="sChkAutoDetectCountry"> Auto country by URL</label>
+    </div>
+    <div style="margin-top:8px;">
+      <span class="label">History retention</span>
+      <select id="sSelHistoryTtl" aria-label="History retention">
+        <option value="0">Keep until cleared</option>
+        <option value="15">15 minutes</option>
+        <option value="60">1 hour</option>
+        <option value="1440">24 hours</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="dot-accent" aria-hidden="true"></span><span class="ico" aria-hidden="true">✏</span> Custom profile</div>
+    <input type="text" id="sProfileName" placeholder="Full name" autocomplete="name" aria-label="Full name">
+    <input type="text" id="sProfileAddr" placeholder="Address line 1" autocomplete="address-line1" aria-label="Address" style="margin-top:8px;">
+    <div class="grid2" style="margin-top:8px;">
+      <input type="text" id="sProfileZip" placeholder="ZIP / postal" autocomplete="postal-code" aria-label="ZIP">
+      <input type="text" id="sProfileCity" placeholder="City" autocomplete="address-level2" aria-label="City">
+    </div>
+    <div class="grid2" style="margin-top:8px;">
+      <input type="text" id="sProfileState" placeholder="State / province" autocomplete="address-level1" aria-label="State">
+      <input type="tel" id="sProfilePhone" placeholder="Phone number" autocomplete="tel" aria-label="Phone">
+    </div>
+    <input type="email" id="sProfileEmail" placeholder="Email address" autocomplete="email" aria-label="Email" style="margin-top:8px;">
+    <div class="grid2" style="margin-top:8px;">
+      <input type="text" id="sProfileCountry" placeholder="Country code (e.g. US)" maxlength="2" autocomplete="country" aria-label="Country code">
+      <input type="text" id="sProfileCountryName" placeholder="Country name" autocomplete="country-name" aria-label="Country name">
+    </div>
+    <button class="btn-sm primary" id="sBtnSaveProfile" style="width:100%;margin-top:10px;">Save custom profile</button>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="dot-accent" aria-hidden="true"></span><span class="ico" aria-hidden="true">💳</span> Custom BINs</div>
+    <div id="sBinList" class="bin-list"></div>
+    <div id="sBinListEmpty" style="color:var(--dim);font-size:11px;text-align:center;padding:12px 6px;">
+      No custom BINs saved. Add one in the main Configuration section.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="dot-accent" aria-hidden="true"></span><span class="ico" aria-hidden="true">🗃</span> Data</div>
+    <div class="btn-row" style="margin-bottom:6px;">
+      <button class="btn" id="sBtnExport" aria-label="Export settings"><span aria-hidden="true">⬇</span> Export JSON</button>
+      <button class="btn" id="sBtnImport" aria-label="Import settings"><span aria-hidden="true">⬆</span> Import JSON</button>
+    </div>
+    <input type="file" id="sFileImport" accept="application/json" style="display:none;">
+    <button class="btn-sm danger" id="sBtnClearHistory" style="width:100%;margin-bottom:6px;">Clear history</button>
+    <button class="btn-sm danger" id="sBtnResetAll" style="width:100%;">Reset all settings</button>
+  </div>
+
+  <div class="version-line" style="margin-top:6px;">Autobilling <kbd id="sTxtVersion">—</kbd></div>
+</div><!-- /#settingsView -->
+
+<div class="status" id="status" role="status" aria-live="polite"></div>
 <div class="footer">
-  <a href="https://github.com/adxptived" target="_blank">adxptived</a> &middot; <a href="https://github.com/NjProVk/CreditsCardTools" target="_blank">CreditsCardTools</a> &middot; Luhn-valid
+  <a href="https://github.com/adxptived" target="_blank" rel="noopener">adxptived</a> &middot; <a href="https://github.com/NjProVk/CreditsCardTools" target="_blank" rel="noopener">CreditsCardTools</a> &middot; Luhn-valid
 </div>
 
 <script src="bins.js"></script>

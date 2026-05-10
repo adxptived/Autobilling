@@ -12,9 +12,11 @@ var SETTINGS_STORAGE_KEYS = [
   'selectedProfile',
   'savedProfiles',
   'favBins',
+  'favCountries',
   'customBins',
   'sessionOnly',
   'historyTtlMinutes',
+  'autoDetectCountry',
 ];
 
 function hasSessionStorage() {
@@ -39,9 +41,11 @@ function saveExtensionSettings(state, done) {
     selectedProfile: state.selectedProfile,
     savedProfiles: state.savedProfiles,
     favBins: state.favBins,
+    favCountries: state.favCountries,
     customBins: state.customBins,
     sessionOnly: state.sessionOnly,
     historyTtlMinutes: state.historyTtlMinutes,
+    autoDetectCountry: state.autoDetectCountry,
   }, done);
 }
 
