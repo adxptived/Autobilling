@@ -40,6 +40,62 @@ function validatePersonData(person) {
   if (!person.fullName || person.fullName.length < 3) return 'Invalid name';
   if (!person.address1 || person.address1.length < 3) return 'Invalid address';
   if (!person.country) return 'No country code';
+
+  // Postal format check per country — Stripe Tax rejects malformed pairs.
+  var postalPatterns = {
+    US: /^\d{5}(-\d{4})?$/,
+    CA: /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/,
+    GB: /^[A-Za-z]{1,2}\d[A-Za-z\d]?[ ]?\d[A-Za-z]{2}$/,
+    DE: /^\d{5}$/,
+    FR: /^\d{5}$/,
+    NL: /^\d{4}[ ]?[A-Za-z]{2}$/,
+    JP: /^\d{3}-?\d{4}$/,
+    AU: /^\d{4}$/,
+    IT: /^\d{5}$/,
+    ES: /^\d{5}$/,
+    AT: /^\d{4}$/,
+    BE: /^\d{4}$/,
+    CH: /^\d{4}$/,
+    CZ: /^\d{3}[ ]?\d{2}$/,
+    DK: /^\d{4}$/,
+    FI: /^\d{5}$/,
+    GR: /^\d{3}[ ]?\d{2}$/,
+    HU: /^\d{4}$/,
+    IE: /^[A-Za-z]\d[A-Za-z\d][ ]?[A-Za-z\d]{4}$/,
+    IL: /^\d{5}(\d{2})?$/,
+    IN: /^\d{6}$/,
+    KR: /^\d{5}$/,
+    MX: /^\d{5}$/,
+    NO: /^\d{4}$/,
+    NZ: /^\d{4}$/,
+    PL: /^\d{2}-\d{3}$/,
+    PT: /^\d{4}-\d{3}$/,
+    RO: /^\d{6}$/,
+    SE: /^\d{3}[ ]?\d{2}$/,
+    SG: /^\d{6}$/,
+    TH: /^\d{5}$/,
+    TR: /^\d{5}$/,
+    TW: /^\d{3}(\d{2})?$/,
+    ZA: /^\d{4}$/,
+    BR: /^\d{5}-?\d{3}$/,
+    AR: /^[A-Z]?\d{4}[A-Z]{0,3}$/i,
+    CL: /^\d{7}$/,
+    ID: /^\d{5}$/,
+    PH: /^\d{4}$/,
+    VN: /^\d{5,6}$/,
+    // AE (UAE) and HK don't use postal codes — accept empty or any
+    AE: null,
+    HK: null,
+  };
+  var pat = postalPatterns[person.country];
+  // Explicit null means "no postal code expected" — tolerate empty or any value.
+  if (pat && person.postalCode && !pat.test(person.postalCode)) {
+    return 'Invalid postal code for ' + person.country + ': ' + person.postalCode;
+  }
+  // US: require state so Stripe Tax can locate the customer.
+  if (person.country === 'US' && (!person.state || person.state === 'N/A')) {
+    return 'US profile requires a state';
+  }
   return null; // OK
 }
 
@@ -126,42 +182,34 @@ function fillTextarea(textarea, value) {
 
 function fillSelect(select, value, valueName) {
   if (!select || !value) return;
+  function commit(opt) {
+    select.value = opt.value;
+    select.dispatchEvent(new Event('input', { bubbles: true }));
+    select.dispatchEvent(new Event('change', { bubbles: true }));
+    // Stripe Elements' address autocomplete recomputes tax on blur, not change.
+    select.dispatchEvent(new Event('blur', { bubbles: true }));
+    return true;
+  }
   try {
     var vLower = value.toLowerCase();
     var nameLower = (valueName || '').toLowerCase();
     // Try by value first (exact match)
     for (var i = 0; i < select.options.length; i++) {
-      if (select.options[i].value.toLowerCase() === vLower) {
-        select.value = select.options[i].value;
-        select.dispatchEvent(new Event('change', { bubbles: true }));
-        return true;
-      }
+      if (select.options[i].value.toLowerCase() === vLower) return commit(select.options[i]);
     }
     // Try by option text (exact)
     for (var i = 0; i < select.options.length; i++) {
       if (select.options[i].textContent.trim().toLowerCase() === vLower ||
-          select.options[i].textContent.trim().toLowerCase() === nameLower) {
-        select.value = select.options[i].value;
-        select.dispatchEvent(new Event('change', { bubbles: true }));
-        return true;
-      }
+          select.options[i].textContent.trim().toLowerCase() === nameLower) return commit(select.options[i]);
     }
     // Try by option text (partial — value is substring)
     for (var i = 0; i < select.options.length; i++) {
       var optText = select.options[i].textContent.trim().toLowerCase();
-      if (optText.indexOf(vLower) > -1 || (nameLower && optText.indexOf(nameLower) > -1)) {
-        select.value = select.options[i].value;
-        select.dispatchEvent(new Event('change', { bubbles: true }));
-        return true;
-      }
+      if (optText.indexOf(vLower) > -1 || (nameLower && optText.indexOf(nameLower) > -1)) return commit(select.options[i]);
     }
     // Try by option value containing country code
     for (var i = 0; i < select.options.length; i++) {
-      if (select.options[i].value.indexOf(vLower) > -1) {
-        select.value = select.options[i].value;
-        select.dispatchEvent(new Event('change', { bubbles: true }));
-        return true;
-      }
+      if (select.options[i].value.indexOf(vLower) > -1) return commit(select.options[i]);
     }
     return false;
   } catch (e) {
@@ -545,9 +593,22 @@ async function autofill(preCard, prePerson) {
   ];
 
   // === STEP 2: Universal field matching ===
-  for (var f = 0; f < fields.length; f++) {
-    var field = fields[f];
-    if (filled.indexOf(field.key) > -1) continue;
+  // Order matters: country must be filled before state/postal so Stripe Elements
+  // re-renders the state dropdown with the correct country's subdivisions first.
+  // Otherwise state gets wiped on country change → Stripe Tax sees empty state
+  // → "customer's location isn't recognized".
+  var addressKeys = { country: 1, state: 1, postal: 1, city: 1 };
+  var addressOrder = ['country', 'state', 'city', 'postal'];
+  var nonAddress = [];
+  var addressFields = {};
+  for (var fi = 0; fi < fields.length; fi++) {
+    if (addressKeys[fields[fi].key]) addressFields[fields[fi].key] = fields[fi];
+    else nonAddress.push(fields[fi]);
+  }
+
+  async function fillOne(field) {
+    if (!field) return;
+    if (filled.indexOf(field.key) > -1) return;
     var r = bestInput('input:not([type="hidden"]), select, textarea', field.patterns, field.prefixes, field.suffixes, used);
     if (r.el && r.score > 0) {
       if (field.isSelect && r.el.tagName === 'SELECT') {
@@ -561,6 +622,22 @@ async function autofill(preCard, prePerson) {
       used.add(r.el);
     }
   }
+
+  for (var f = 0; f < nonAddress.length; f++) {
+    await fillOne(nonAddress[f]);
+  }
+  // Address fields in strict order: country → state → city → postal.
+  for (var ao = 0; ao < addressOrder.length; ao++) {
+    await fillOne(addressFields[addressOrder[ao]]);
+    // After country, let Stripe Elements re-render the state select before we target it.
+    if (addressOrder[ao] === 'country') await sleep(150);
+  }
+
+  // Blur the last-filled address input so Stripe recomputes tax with the final value.
+  try {
+    var active = document.activeElement;
+    if (active && active !== document.body && typeof active.blur === 'function') active.blur();
+  } catch (e) {}
 
   // === STEP 3: Fallback by autocomplete ===
   var autoInputs = queryAll('input[autocomplete]:not([type="hidden"]), select[autocomplete], textarea[autocomplete]');
