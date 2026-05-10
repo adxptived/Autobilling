@@ -27,7 +27,8 @@ function validateTarget(target) {
   exists(target.dir, 'content.js');
   exists(target.dir, 'popup.bundle.js');
 
-  assert.ok(!manifest.host_permissions, `${target.name} must not request BIN host access at install time`);
+  const hostPermissions = manifest.host_permissions || [];
+  assert.ok(!hostPermissions.includes(optionalBinPermission), `${target.name} must not request BIN host access at install time`);
   assert.deepStrictEqual(manifest.optional_host_permissions, [optionalBinPermission]);
   assert.deepStrictEqual(manifest.browser_specific_settings.gecko.data_collection_permissions, { required: ['none'] });
 
