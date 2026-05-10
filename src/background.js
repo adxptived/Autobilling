@@ -58,7 +58,42 @@ function doAutofill(tab) {
 
 // ============ BIN Proxy (avoid CORS from popup) ============
 
-var binCache = {};
+// TTL/LRU cache: entries older than BIN_TTL_MS are evicted, and at most BIN_CACHE_MAX are kept.
+var BIN_TTL_MS = 10 * 60 * 1000;
+var BIN_CACHE_MAX = 200;
+var BIN_FETCH_TIMEOUT_MS = 5000;
+var binCache = {}; // prefix -> { ts, payload }
+
+function binCacheGet(prefix) {
+  var entry = binCache[prefix];
+  if (!entry) return null;
+  if (Date.now() - entry.ts > BIN_TTL_MS) {
+    delete binCache[prefix];
+    return null;
+  }
+  // Bump recency for LRU
+  entry.ts = Date.now();
+  return entry.payload;
+}
+
+function binCacheSet(prefix, payload) {
+  binCache[prefix] = { ts: Date.now(), payload: payload };
+  var keys = Object.keys(binCache);
+  if (keys.length > BIN_CACHE_MAX) {
+    // Evict oldest entries until within cap
+    keys.sort(function (a, b) { return binCache[a].ts - binCache[b].ts; });
+    var toRemove = keys.length - BIN_CACHE_MAX;
+    for (var i = 0; i < toRemove; i++) delete binCache[keys[i]];
+  }
+}
+
+function fetchWithTimeout(url, options, timeoutMs) {
+  if (typeof AbortController === 'undefined') return fetch(url, options);
+  var ctrl = new AbortController();
+  var timer = setTimeout(function () { ctrl.abort(); }, timeoutMs);
+  var opts = Object.assign({}, options || {}, { signal: ctrl.signal });
+  return fetch(url, opts).finally(function () { clearTimeout(timer); });
+}
 
 chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
   if (msg.action === 'getStorage') {
@@ -70,23 +105,16 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
 
   if (msg.action === 'lookupBin') {
     var prefix = msg.prefix;
-    // Try cache first
-    if (binCache[prefix]) {
-      sendResponse(binCache[prefix]);
+    var cached = binCacheGet(prefix);
+    if (cached) {
+      sendResponse(cached);
       return false;
     }
 
-    // Try static DB (passed from popup)
-    if (msg.staticInfo) {
-      binCache[prefix] = { cached: true, info: msg.staticInfo };
-      sendResponse(binCache[prefix]);
-      return false;
-    }
-
-    // Fetch from binlist.net
-    fetch('https://lookup.binlist.net/' + prefix, {
+    // Fetch from binlist.net with a hard timeout so the popup never spins forever.
+    fetchWithTimeout('https://lookup.binlist.net/' + prefix, {
       headers: { 'Accept-Version': '3' },
-    })
+    }, BIN_FETCH_TIMEOUT_MS)
       .then(function (r) {
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return r.json();
@@ -99,13 +127,17 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
           type: (json.type || '').toUpperCase() || '',
           category: (json.scheme || '').toUpperCase() || '',
         };
-        binCache[prefix] = { cached: false, info: info };
-        sendResponse(binCache[prefix]);
+        var payload = { cached: false, info: info };
+        binCacheSet(prefix, payload);
+        sendResponse(payload);
       })
       .catch(function (err) {
-        console.log('[Autobilling] BIN lookup failed:', err.message);
-        binCache[prefix] = { cached: false, info: null, error: err.message };
-        sendResponse(binCache[prefix]);
+        var msgText = (err && err.name === 'AbortError') ? 'timeout' : (err && err.message) || 'unknown';
+        console.log('[Autobilling] BIN lookup failed:', msgText);
+        var payload = { cached: false, info: null, error: msgText };
+        // Cache the negative result briefly so we do not hammer the API.
+        binCacheSet(prefix, payload);
+        sendResponse(payload);
       });
     return true; // async
   }
