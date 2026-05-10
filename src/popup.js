@@ -42,6 +42,17 @@ function findByPrefix(prefix) {
   return detectBin(prefix, BINS);
 }
 
+function clearElement(el) {
+  while (el.firstChild) el.removeChild(el.firstChild);
+}
+
+function appendHiddenText(el, text) {
+  var span = document.createElement('span');
+  span.setAttribute('aria-hidden', 'true');
+  span.textContent = text;
+  el.appendChild(span);
+}
+
 // ============ GENERATION ============
 
 function lookupLiveBin(card, requestPermission) {
@@ -244,9 +255,10 @@ function toggleHistory() {
   var show = panel.style.display === 'none';
   panel.style.display = show ? 'block' : 'none';
   btn.setAttribute('aria-expanded', show ? 'true' : 'false');
-  btn.innerHTML = show
-    ? '<span aria-hidden="true">\uD83D\uDD52</span> History <span aria-hidden="true">\u25B2</span>'
-    : '<span aria-hidden="true">\uD83D\uDD52</span> History <span aria-hidden="true">\u25BC</span>';
+  clearElement(btn);
+  appendHiddenText(btn, '\uD83D\uDD52');
+  btn.appendChild(document.createTextNode(' History '));
+  appendHiddenText(btn, show ? '\u25B2' : '\u25BC');
   if (show) renderHistory();
 }
 
@@ -469,7 +481,7 @@ function toggleCompact() {
 
 function buildBins() {
   var sel = document.getElementById('selBin');
-  sel.innerHTML = '';
+  clearElement(sel);
 
   // Merge custom BINs
   BINS = HARD_BINS.slice();
@@ -541,7 +553,7 @@ function updateFavStar() {
 
 function buildCountries() {
   var sel = document.getElementById('selCountry');
-  sel.innerHTML = '';
+  clearElement(sel);
 
   // Sort: favorites first (in the order the user starred them), then the rest by their COUNTRIES index.
   var ordered = [];
