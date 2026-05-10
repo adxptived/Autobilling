@@ -1,6 +1,8 @@
 # Build output
 /dist/
 /dist-firefox/
+*.crx
+*.pem
 
 # Keep the source extension icon
 !icon.png
@@ -24,3 +26,7 @@ desktop.ini
 
 # Logs
 *.log
+
+# Downloaded junk
+*.загрузка
+*_files/
