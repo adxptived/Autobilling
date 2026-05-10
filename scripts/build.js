@@ -27,6 +27,7 @@ const copyFiles = [
   'popup.html',
   'options.html',
   'options.js',
+  'common.css',
 ];
 const rootFiles = ['README.md', 'PRIVACY.md', 'CHANGELOG.md', 'LICENSE'];
 
